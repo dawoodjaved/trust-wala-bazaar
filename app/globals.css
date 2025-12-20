@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Deep midnight dashboard theme (default) */
+    --background: 222 47% 6%;         /* near-slate-950 */
+    --foreground: 210 40% 96%;        /* soft off-white */
+    --card: 222 47% 9%;               /* slightly lighter than background */
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 45 96% 65%;            /* warm golden highlight */
+    --primary-foreground: 222 47% 6%;
+    --secondary: 222 36% 12%;         /* dark panels */
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 32% 16%;
+    --muted-foreground: 215 20% 72%;
+    --accent: 222 84% 56%;            /* electric blue / indigo accent */
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 32% 22%;
+    --input: 222 32% 22%;
+    --ring: 45 96% 65%;
+    --radius: 1.1rem;
+  }
+
+  .dark {
+    /* Keep dark mode consistent with base theme */
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 45 96% 65%;
+    --primary-foreground: 222 47% 6%;
+    --secondary: 222 36% 12%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 32% 16%;
+    --muted-foreground: 215 20% 72%;
+    --accent: 222 84% 56%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 32% 22%;
+    --input: 222 32% 22%;
+    --ring: 45 96% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
+}
+
+/* Accessibility: Focus visible */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
+
+/* Simple mode styles */
+.simple-mode {
+  font-size: 1.5rem;
+  line-height: 1.8;
+}
+
+.simple-mode button,
+.simple-mode a {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 1rem;
+}
+
+/* Urdu RTL support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Modern animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .card-hover:hover::before {
+    left: 100%;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 30px 70px -20px rgba(15, 23, 42, 0.9),
+      0 0 0 1px rgba(250, 204, 21, 0.18);
+    border-color: rgba(250, 204, 21, 0.35);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.12), transparent 55%),
+      radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.12), transparent 55%),
+      rgb(15, 23, 42);
+    border-radius: 1.5rem;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.5rem;
+    padding: 2px;
+    background: conic-gradient(from 180deg at 50% 50%, #facc15, #38bdf8, #a855f7, #facc15);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #facc15, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .modern-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .modern-shadow-lg {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .modern-shadow-xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Modern background patterns */
+body {
+  background:
+    radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.24), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(circle at 0 100%, rgba(250, 204, 21, 0.12), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(30, 64, 175, 0.28), transparent 70%),
+    linear-gradient(to bottom, #020617 0%, #020617 45%, #020617 100%);
+  min-height: 100vh;
+}
+
+/* Enhanced focus states */
+*:focus-visible {
+  outline: 2px solid hsl(45, 96%, 65%);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Selection colors */
+::selection {
+  background-color: rgba(250, 204, 21, 0.2);
+  color: inherit;
+}
+
