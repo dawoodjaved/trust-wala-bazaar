@@ -46,14 +46,14 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-slate-800/80 bg-slate-950/80 h-[calc(100vh-4rem)] sticky top-16 shadow-[0_18px_45px_rgba(0,0,0,0.8)]">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-[rgba(255,255,255,0.08)] bg-[#0a0f0d] h-[calc(100vh-5rem)] sticky top-20 shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         <Link href="/home">
           <Button
             variant={pathname === "/home" ? "secondary" : "ghost"}
             className={cn(
-              "w-full justify-start rounded-2xl text-slate-200",
-              pathname === "/home" && "bg-slate-800 text-white shadow-[0_14px_40px_rgba(15,23,42,0.9)]"
+              "w-full justify-start rounded-2xl text-[#e5e7eb]",
+              pathname === "/home" && "bg-[#111614] text-[#c8d96f] border border-[rgba(200,217,111,0.15)]"
             )}
           >
             <Home className="mr-3 h-4 w-4" />
@@ -62,7 +62,7 @@ export function Sidebar() {
         </Link>
 
         <div className="pt-4">
-          <h3 className="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <h3 className="px-3 mb-2 text-[11px] font-semibold text-[#9ca3af] uppercase tracking-[0.1em]">
             Categories
           </h3>
           {categories.map((category) => {
@@ -73,8 +73,8 @@ export function Sidebar() {
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
-                    "w-full justify-start rounded-2xl text-slate-300",
-                    isActive && "bg-slate-800 text-white shadow-[0_10px_30px_rgba(15,23,42,0.9)]"
+                    "w-full justify-start rounded-2xl text-[#e5e7eb]",
+                    isActive && "bg-[#111614] text-[#c8d96f] border border-[rgba(200,217,111,0.15)]"
                   )}
                 >
                   <Icon className="mr-3 h-4 w-4" />
@@ -85,8 +85,8 @@ export function Sidebar() {
           })}
         </div>
 
-        <div className="pt-4 border-t border-slate-800">
-          <h3 className="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="pt-4 border-t border-[rgba(255,255,255,0.08)]">
+          <h3 className="px-3 mb-2 text-[11px] font-semibold text-[#9ca3af] uppercase tracking-[0.1em]">
             Quick Links
           </h3>
           {quickLinks.map((link) => {
@@ -97,8 +97,8 @@ export function Sidebar() {
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
-                    "w-full justify-start rounded-2xl text-slate-300",
-                    isActive && "bg-slate-800 text-white shadow-[0_10px_30px_rgba(15,23,42,0.9)]"
+                    "w-full justify-start rounded-2xl text-[#e5e7eb]",
+                    isActive && "bg-[#111614] text-[#c8d96f] border border-[rgba(200,217,111,0.15)]"
                   )}
                 >
                   <Icon className="mr-3 h-4 w-4" />

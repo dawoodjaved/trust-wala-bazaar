@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import {
   Search,
   LayoutGrid as Grid,
@@ -18,6 +19,8 @@ import { Slider } from "@/components/ui/slider";
 import { ProductCard } from "@/components/product/product-card";
 import { VoiceSearchButton } from "@/components/features/voice-search-button";
 import { VisualSearchButton } from "@/components/features/visual-search-button";
+import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { EmptySearchSVG } from "@/components/ui/marketplace-illustrations";
 import {
   Dialog,
   DialogContent,
@@ -41,46 +44,72 @@ export function SearchContent() {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
-  // Mock search results
-  const searchResults = [
-    {
-      id: "1",
-      title: "iPhone 15 Pro Max 256GB",
-      price: 350000,
-      originalPrice: 380000,
-      image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-      trustScore: 92,
-      verified: true,
-      rating: 4.8,
-      reviews: 127,
-      discount: 8,
+  // Fetch search results from backend with dummy data fallback
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: ["search", searchQuery, priceRange, sortBy],
+    queryFn: async () => {
+      if (!searchQuery) {
+        // Return all dummy products if no search query
+        const { getDummyProducts } = await import("@/lib/dummy-data");
+        return getDummyProducts(50);
+      }
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
+        const params = new URLSearchParams({
+          q: searchQuery,
+          minPrice: priceRange[0].toString(),
+          maxPrice: priceRange[1].toString(),
+        });
+        
+        const response = await fetch(`${apiUrl}/api/search?${params}`, {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) && data.length > 0 ? data : [];
+        }
+        // Fallback to dummy data search
+        const { searchDummyProducts } = await import("@/lib/dummy-data");
+        return searchDummyProducts(searchQuery, 50);
+      } catch (error: any) {
+        // Silently fallback to dummy data - suppress network errors
+        // The error is caught and handled gracefully with dummy data
+        // No need to log "Failed to fetch" errors as they're expected
+        // when backend is not available
+        const { searchDummyProducts } = await import("@/lib/dummy-data");
+        return searchDummyProducts(searchQuery, 50);
+      }
     },
-    {
-      id: "2",
-      title: "Samsung Galaxy S24 Ultra",
-      price: 280000,
-      originalPrice: 300000,
-      image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop",
-      trustScore: 85,
-      verified: true,
-      rating: 4.7,
-      reviews: 203,
-      discount: 7,
-    },
-    {
-      id: "3",
-      title: "MacBook Pro M3 14-inch",
-      price: 450000,
-      originalPrice: 480000,
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-      trustScore: 88,
-      verified: true,
-      rating: 4.9,
-      reviews: 89,
-      discount: 6,
-    },
-  ];
+    staleTime: 60000, // 1 minute
+    retry: false, // Don't retry failed requests
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    enabled: true, // Always enabled to show dummy data
+  });
+
+  // Transform results to frontend format (works with both API and dummy data)
+  const displayResults = searchResults.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    image: p.images?.[0] || p.image || p.thumbnail || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+    trustScore: p.trustScore || 0,
+    verified: p.seller?.cnicVerified || p.verified || false,
+    rating: p.rating || (p.reviews?.length > 0 ? p.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / p.reviews.length : 0),
+    reviews: p.reviewCount || p.reviews?.length || 0,
+    discount: p.originalPrice ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : undefined,
+    location: p.city || p.location || "Unknown",
+  }));
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -197,7 +226,7 @@ export function SearchContent() {
       {/* Results Header */}
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-muted-foreground">
-          Showing 1-{searchResults.length} of {searchResults.length} results
+          {isLoading ? "Searching..." : `Showing 1-${displayResults.length} of ${displayResults.length} results`}
           {searchQuery && ` for "${searchQuery}"`}
         </p>
         <div className="flex items-center space-x-4">
@@ -237,7 +266,11 @@ export function SearchContent() {
 
       {/* Search Results */}
       <AnimatePresence mode="wait">
-        {searchResults.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">
+            Searching...
+          </div>
+        ) : displayResults.length > 0 ? (
           <motion.div
             key="results"
             initial={{ opacity: 0 }}
@@ -249,7 +282,7 @@ export function SearchContent() {
                 : "space-y-4"
             }
           >
-            {searchResults.map((product, idx) => (
+            {displayResults.map((product: any, idx: number) => (
               <ProductCard key={product.id} product={product} index={idx} />
             ))}
           </motion.div>
@@ -260,17 +293,13 @@ export function SearchContent() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <Card className="border-2 border-dashed">
+            <Card className="border-2 border-dashed border-[var(--border-subtle)]">
               <CardContent className="p-12 text-center">
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  className="inline-block mb-4"
-                >
-                  <Sparkles className="h-16 w-16 text-muted-foreground mx-auto" />
-                </motion.div>
-                <p className="text-xl font-bold mb-2">No results found</p>
-                <p className="text-muted-foreground mb-6">
+                <AnimatedSVG duration={2000} delay={0} className="w-48 h-48 mx-auto mb-6 opacity-30">
+                  <EmptySearchSVG />
+                </AnimatedSVG>
+                <p className="text-xl font-bold mb-2 text-[var(--text-primary)]">No results found</p>
+                <p className="text-[var(--text-secondary)] mb-6">
                   Try different keywords or use voice/visual search
                 </p>
                 <Button variant="outline" className="rounded-xl" asChild>

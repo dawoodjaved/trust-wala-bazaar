@@ -21,7 +21,7 @@ export function IconKeycap({ icon: Icon, size = "md", className }: IconKeycapPro
   return (
     <div
       className={cn(
-        "relative mx-auto flex items-center justify-center rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 shadow-[0_18px_45px_rgba(0,0,0,0.9)] ring-2 ring-slate-700/70 group-hover:ring-amber-300 group-hover:ring-4 group-hover:ring-offset-2 group-hover:ring-offset-slate-950 transition-all duration-300",
+        "relative mx-auto flex items-center justify-center rounded-2xl bg-[#111614] border border-[rgba(255,255,255,0.08)] shadow-[0_8px_24px_rgba(0,0,0,0.4)] group-hover:border-[rgba(200,217,111,0.3)] group-hover:ring-2 group-hover:ring-[rgba(200,217,111,0.2)] transition-all duration-300",
         sizes.box,
         className,
       )}

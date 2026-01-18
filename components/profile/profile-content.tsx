@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/auth-hook";
 import { useState } from "react";
 import {
   Settings,
@@ -19,14 +19,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product/product-card";
 
 export function ProfileContent() {
-  // Safely get user
-  let user: any = null;
-  try {
-    const clerkUser = useUser();
-    user = clerkUser.user;
-  } catch {
-    user = null;
-  }
+  const { user } = useAuth();
 
   // Mock data
   const stats = {

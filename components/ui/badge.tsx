@@ -3,24 +3,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shadow-sm",
+  "inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#c8d96f] focus:ring-offset-2 shadow-sm",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-300 text-slate-950 hover:shadow-[0_10px_30px_rgba(250,204,21,0.6)] hover:scale-105",
+          "border-transparent bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084] hover:shadow-[0_0_20px_rgba(200,217,111,0.4)] hover:scale-105",
         secondary:
-          "border-transparent bg-slate-800/80 text-slate-100 hover:bg-slate-700/80",
+          "border-transparent bg-[#111614] text-[#e5e7eb] border border-[rgba(255,255,255,0.08)] hover:bg-[#0d1512]",
         destructive:
-          "border-transparent bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-[0_10px_30px_rgba(248,113,113,0.6)]",
+          "border-transparent bg-red-600 text-white hover:bg-red-700 hover:shadow-[0_10px_30px_rgba(248,113,113,0.6)]",
         outline:
-          "text-foreground border border-slate-500 hover:bg-slate-800/80 hover:border-amber-300",
+          "text-[#e5e7eb] border border-[rgba(200,217,111,0.3)] hover:bg-[rgba(200,217,111,0.1)] hover:border-[#c8d96f]",
         success:
-          "border-transparent bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 hover:shadow-[0_10px_30px_rgba(16,185,129,0.6)] hover:scale-105",
+          "border-transparent bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084] hover:shadow-[0_0_20px_rgba(200,217,111,0.4)]",
         warning:
-          "border-transparent bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 hover:shadow-[0_10px_30px_rgba(245,158,11,0.7)]",
+          "border-transparent bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084]",
         verified:
-          "border-transparent bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 text-slate-950 shadow-lg hover:shadow-xl hover:scale-105",
+          "border-transparent bg-[#c8d96f] text-[#0a0f0d] shadow-[0_0_20px_rgba(200,217,111,0.4)] hover:shadow-[0_0_30px_rgba(200,217,111,0.5)] hover:scale-105",
       },
     },
     defaultVariants: {

@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#00A651",
+  themeColor: "#0a0f0d",
 };
 
 export default function RootLayout({
@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#00A651" />
+        <meta name="theme-color" content="#0a0f0d" />
       </head>
       <body className={inter.variable}>
         <ClerkProviderWrapper>

@@ -12,7 +12,7 @@ export default function ProductDetailPage({
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex pt-20">
         <Sidebar />
         <main className="flex-1 pb-20 lg:pb-4">
           <ProductDetailContent productId={params.id} />

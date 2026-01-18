@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IconKeycap } from "@/components/ui/icon-keycap";
+import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { HelpSupportSVG } from "@/components/ui/marketplace-illustrations";
 
 export function HelpContent() {
   const faqs = [
@@ -37,13 +39,18 @@ export function HelpContent() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 text-center"
       >
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-indigo-400 flex items-center justify-center mx-auto mb-4 shadow-[0_14px_40px_rgba(250,204,21,0.7)]">
-          <HelpCircle className="h-8 w-8 text-slate-950" />
+        <div className="relative mb-8">
+          <AnimatedSVG duration={2000} delay={200} className="w-32 h-32 mx-auto opacity-30">
+            <HelpSupportSVG />
+          </AnimatedSVG>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-[rgba(200,217,111,0.1)] border border-[rgba(200,217,111,0.2)] flex items-center justify-center shadow-[0_14px_40px_rgba(200,217,111,0.3)]">
+            <HelpCircle className="h-8 w-8 text-[#c8d96f]" />
+          </div>
         </div>
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-2 text-[var(--text-primary)]">
           Help Center
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-[var(--text-secondary)] text-lg">
           Get answers to your questions
         </p>
       </motion.div>
@@ -63,7 +70,7 @@ export function HelpContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className="card-hover border-2 border-transparent hover:border-amber-300/40">
+              <Card className="card-hover border-2 border-transparent hover:border-[rgba(200,217,111,0.3)]">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-3">
                     <div className="group">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/auth-hook";
 import {
   Send,
   Mic,
@@ -38,14 +38,8 @@ interface ChatContentProps {
 }
 
 export function ChatContent({ conversationId }: ChatContentProps) {
-  // Safely get user
-  let user: any = null;
-  try {
-    const clerkUser = useUser();
-    user = clerkUser.user;
-  } catch {
-    user = { id: "demo-user", firstName: "Demo", lastName: "User", imageUrl: "" };
-  }
+  // Get user from auth hook
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -54,14 +48,60 @@ export function ChatContent({ conversationId }: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [socket, setSocket] = useState<any>(null);
 
-  // Mock data for now
+  // Real-time chat with polling fallback
   useEffect(() => {
-    // TODO: Connect to Socket.io
-    // const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001');
-    // newSocket.emit('join-room', { conversationId });
-    // setSocket(newSocket);
-    
-    // Mock messages
+    // Try to connect to Socket.io if available
+    let socketInstance: any = null;
+    let pollInterval: NodeJS.Timeout | null = null;
+
+    const initializeChat = async () => {
+      try {
+        // Try to load socket.io-client dynamically
+        const io = (await import('socket.io-client')).default;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+        socketInstance = io(apiUrl, {
+          transports: ['websocket', 'polling'],
+        });
+
+        socketInstance.on('connect', () => {
+          console.log('Connected to chat server');
+          socketInstance.emit('join-room', { conversationId });
+        });
+
+        socketInstance.on('message', (message: Message) => {
+          setMessages(prev => [...prev, message]);
+        });
+
+        socketInstance.on('disconnect', () => {
+          console.log('Disconnected from chat server');
+        });
+
+        setSocket(socketInstance);
+      } catch (error) {
+        console.warn('Socket.io not available, using polling fallback');
+        // Fallback to polling
+        pollInterval = setInterval(async () => {
+          try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+            const response = await fetch(`${apiUrl}/api/messages/${conversationId}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+              },
+            });
+            if (response.ok) {
+              const data = await response.json();
+              if (Array.isArray(data)) {
+                setMessages(data);
+              }
+            }
+          } catch (err) {
+            // Silently fail - using mock data
+          }
+        }, 3000); // Poll every 3 seconds
+      }
+    };
+
+    // Initialize with mock data first
     setMessages([
       {
         id: "1",
@@ -78,9 +118,16 @@ export function ChatContent({ conversationId }: ChatContentProps) {
       },
     ]);
 
+    initializeChat();
+
     // Cleanup
     return () => {
-      // if (socket) socket.disconnect();
+      if (socketInstance) {
+        socketInstance.disconnect();
+      }
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
     };
   }, [conversationId]);
 
@@ -108,15 +155,31 @@ export function ChatContent({ conversationId }: ChatContentProps) {
     setMessages([...messages, newMessage]);
     setInput("");
 
-    // TODO: Send via Socket.io
-    // if (socket) {
-    //   socket.emit('send-message', {
-    //     conversationId,
-    //     receiverId: 'other-user-id',
-    //     type: 'TEXT',
-    //     content: input,
-    //   });
-    // }
+    // Send via Socket.io or API
+    if (socket) {
+      socket.emit('send-message', {
+        conversationId,
+        type: 'TEXT',
+        content: input,
+      });
+    } else {
+      // Fallback to API call
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      fetch(`${apiUrl}/api/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+        body: JSON.stringify({
+          conversationId,
+          content: input,
+          type: 'TEXT',
+        }),
+      }).catch(() => {
+        // Silently fail - message already added to UI
+      });
+    }
   };
 
   const handleOffer = () => {

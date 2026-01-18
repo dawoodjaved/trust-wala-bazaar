@@ -134,10 +134,25 @@ export class ProductsService {
       throw new NotFoundException('Product not found or unauthorized');
     }
 
-    return this.prisma.product.update({
+    const updated = await this.prisma.product.update({
       where: { id },
       data: dto,
+      include: {
+        seller: {
+          select: {
+            id: true,
+            cnicVerified: true,
+            videoVerified: true,
+          },
+        },
+        reviews: true,
+      },
     });
+
+    // Recalculate trust score after update
+    await this.recalculateTrustScore(id);
+
+    return updated;
   }
 
   async delete(id: string, userId: string) {
@@ -153,6 +168,36 @@ export class ProductsService {
       where: { id },
       data: { isActive: false },
     });
+  }
+
+  async recalculateTrustScore(productId: string): Promise<number> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        seller: {
+          select: {
+            id: true,
+            cnicVerified: true,
+            videoVerified: true,
+          },
+        },
+        reviews: true,
+      },
+    });
+
+    if (!product) {
+      return 0;
+    }
+
+    const trustScore = await this.calculateTrustScore(product);
+    
+    // Update trust score in database
+    await this.prisma.product.update({
+      where: { id: productId },
+      data: { trustScore },
+    });
+
+    return trustScore;
   }
 
   private async calculateTrustScore(product: any): Promise<number> {

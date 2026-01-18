@@ -1,13 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto';
 import { AiService } from '../ai/ai.service';
+import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     private prisma: PrismaService,
     private aiService: AiService,
+    @Inject(forwardRef(() => ProductsService))
+    private productsService: ProductsService,
   ) {}
 
   async create(userId: string, dto: CreateReviewDto) {
@@ -27,6 +30,11 @@ export class ReviewsService {
     await this.prisma.review.update({
       where: { id: review.id },
       data: { aiSummary: summary.summary },
+    });
+
+    // Trigger trust score recalculation for the product
+    this.productsService.recalculateTrustScore(dto.productId).catch((error) => {
+      console.error('Error recalculating trust score after review:', error);
     });
 
     return review;

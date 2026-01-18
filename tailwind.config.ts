@@ -10,7 +10,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Dark, neon dashboard palette
+        // Veon AI Color Palette
+        veon: {
+          bg: {
+            primary: "#0a0f0d",
+            secondary: "#111614",
+            tertiary: "#0d1512",
+            "gradient-start": "#1a221e",
+            "gradient-end": "#080c0a",
+          },
+          green: {
+            primary: "#c8d96f",
+            secondary: "#b8cc52",
+            hover: "#d4e084",
+            glow: "rgba(200, 217, 111, 0.4)",
+          },
+          text: {
+            primary: "#ffffff",
+            secondary: "#e5e7eb",
+            muted: "#9ca3af",
+            "dark-muted": "#6b7280",
+          },
+          border: {
+            subtle: "rgba(255, 255, 255, 0.08)",
+            card: "rgba(200, 217, 111, 0.15)",
+          },
+          star: "#fbbf24",
+        },
+        // Dark, neon dashboard palette (legacy)
         primary: {
           DEFAULT: "#FACC15", // golden highlight
           dark: "#EAB308",
