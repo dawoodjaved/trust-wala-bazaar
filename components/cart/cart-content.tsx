@@ -8,6 +8,8 @@ import { X, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { EmptyCartSVG } from "@/components/ui/marketplace-illustrations";
 
 interface CartItem {
   id: string;
@@ -72,26 +74,38 @@ export function CartContent() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Breadcrumbs */}
-      <div className="mb-6 text-sm text-gray-600">
-        <Link href="/home" className="hover:text-black">Home</Link>
+      <div className="mb-6 text-sm text-[var(--text-muted)]">
+        <Link href="/home" className="hover:text-[var(--text-primary)]">Home</Link>
         <span className="mx-2">/</span>
-        <span className="text-black font-medium">Cart</span>
+        <span className="text-[var(--text-primary)] font-medium">Cart</span>
       </div>
 
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold mb-12">YOUR CART</h1>
+      <h1 className="text-4xl md:text-5xl font-bold mb-12 text-[var(--text-primary)]">YOUR CART</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-6">
-          {cartItems.map((item, idx) => (
+      {cartItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <AnimatedSVG duration={2000} delay={0} className="w-64 h-64 mb-8">
+            <EmptyCartSVG />
+          </AnimatedSVG>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Your cart is empty</h2>
+          <p className="text-[var(--text-secondary)] mb-6">Start shopping to add items to your cart</p>
+          <Button asChild>
+            <Link href="/home">Browse Products</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-6">
+            {cartItems.map((item, idx) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className="border-2 border-gray-100 hover:border-gray-200 transition-colors">
+              <Card className="border-2 border-[var(--border-subtle)] hover:border-[var(--border-card)] transition-colors">
                 <CardContent className="p-6">
                   <div className="flex gap-6">
                     {/* Product Image */}
@@ -110,9 +124,9 @@ export function CartContent() {
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>Size: <span className="font-medium text-black">{item.size}</span></span>
-                            <span>Color: <span className="font-medium text-black">{item.color}</span></span>
+                          <div className="flex items-center gap-4 text-sm text-slate-400">
+                            <span>Size: <span className="font-medium text-slate-200">{item.size}</span></span>
+                            <span>Color: <span className="font-medium text-slate-200">{item.color}</span></span>
                           </div>
                         </div>
                         <Button
@@ -128,7 +142,7 @@ export function CartContent() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span className="text-sm font-medium">Quantity:</span>
-                          <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg">
+                          <div className="flex items-center gap-2 border-2 border-slate-700 rounded-lg">
                             <Button
                               variant="ghost"
                               size="icon"
@@ -162,25 +176,25 @@ export function CartContent() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-24 border-2 border-gray-100">
+          <Card className="sticky top-24 border-2 border-[var(--border-subtle)]">
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
               <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-slate-400">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-black">PKR {subtotal.toLocaleString()}</span>
+                  <span className="font-semibold text-slate-200">PKR {subtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-green-600">
+                <div className="flex justify-between text-green-400">
                   <span>Discount (-20%)</span>
                   <span className="font-semibold">-PKR {discount.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-slate-400">
                   <span>Delivery Fee</span>
-                  <span className="font-semibold text-black">PKR {deliveryFee.toLocaleString()}</span>
+                  <span className="font-semibold text-slate-200">PKR {deliveryFee.toLocaleString()}</span>
                 </div>
-                <div className="border-t-2 border-gray-200 pt-4 flex justify-between">
-                  <span className="text-xl font-bold">Total</span>
-                  <span className="text-2xl font-bold">PKR {total.toLocaleString()}</span>
+                <div className="border-t-2 border-slate-700 pt-4 flex justify-between">
+                  <span className="text-xl font-bold text-slate-100">Total</span>
+                  <span className="text-2xl font-bold text-slate-100">PKR {total.toLocaleString()}</span>
                 </div>
               </div>
               <Button className="w-full h-12 text-lg font-semibold rounded-lg mb-4" asChild>
@@ -196,6 +210,7 @@ export function CartContent() {
           </Card>
         </div>
       </div>
+      )}
     </div>
   );
 }

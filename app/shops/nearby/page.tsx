@@ -8,7 +8,7 @@ export default function NearbyShopsPage() {
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex pt-20">
         <Sidebar />
         <main className="flex-1 pb-20 lg:pb-4">
           <NearbyShopsContent />

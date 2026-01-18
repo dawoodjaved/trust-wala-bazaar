@@ -29,10 +29,10 @@ export function CategoriesContent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 text-slate-50">
+        <h1 className="text-3xl font-bold mb-2 text-white">
           All Categories
         </h1>
-        <p className="text-slate-300">
+        <p className="text-[#9ca3af]">
           Browse products by category
         </p>
       </div>
@@ -42,15 +42,15 @@ export function CategoriesContent() {
           const Icon = category.icon;
           return (
             <Link key={category.slug} href={`/categories/${category.slug}`}>
-              <Card className="hover:shadow-[0_18px_45px_rgba(15,23,42,0.9)] transition-all duration-200 border border-slate-800/80 bg-gradient-to-br from-slate-900/95 via-slate-950 to-slate-900/90 h-full">
+              <Card className="hover:border-[rgba(200,217,111,0.3)] transition-all duration-300 h-full">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center mx-auto mb-4 shadow-[0_12px_35px_rgba(15,23,42,0.9)]">
-                    <Icon className="h-8 w-8 text-slate-100" strokeWidth={2.2} />
+                  <div className="w-16 h-16 rounded-2xl bg-[rgba(200,217,111,0.1)] border border-[rgba(200,217,111,0.15)] flex items-center justify-center mx-auto mb-4">
+                    <Icon className="h-8 w-8 text-[#c8d96f]" strokeWidth={2.2} />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2 text-slate-50">
+                  <h3 className="text-lg font-semibold mb-2 text-white">
                     {category.name}
                   </h3>
-                  <p className="text-sm text-slate-300">
+                  <p className="text-sm text-[#9ca3af]">
                     {category.count.toLocaleString()} products
                   </p>
                 </CardContent>

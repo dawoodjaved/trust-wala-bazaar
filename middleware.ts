@@ -19,8 +19,19 @@ function isPublicRoute(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
   // If Clerk is not configured, allow all routes (for development)
   if (!hasClerk) {
+    // Check for protected routes and allow access in demo mode
+    const protectedRoutes = ["/profile", "/settings", "/listings/create", "/messages", "/saved"];
+    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+    
+    if (isProtected) {
+      // In demo mode, allow access (users can use demo login)
+      return NextResponse.next();
+    }
+    
     return NextResponse.next();
   }
 
@@ -34,6 +45,7 @@ export async function middleware(request: NextRequest) {
       "/products/(.*)",
       "/categories/(.*)",
       "/auth/(.*)",
+      "/home",
     ]);
 
     return clerkMiddleware(async (auth, req) => {
@@ -42,8 +54,8 @@ export async function middleware(request: NextRequest) {
       }
     })(request);
   } catch (error) {
-    // If Clerk fails, allow the request
-    console.warn("Clerk middleware error:", error);
+    // If Clerk fails, allow the request (graceful degradation)
+    console.warn("Clerk middleware error, allowing request:", error);
     return NextResponse.next();
   }
 }

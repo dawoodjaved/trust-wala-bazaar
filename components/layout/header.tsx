@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/auth-hook";
 import {
   Search,
   Mic,
@@ -17,45 +17,54 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { VoiceSearchButton } from "@/components/features/voice-search-button";
 import { VisualSearchButton } from "@/components/features/visual-search-button";
+import { NotificationsDropdown } from "@/components/features/notifications-dropdown";
 
 export function Header() {
-  let user: any = null;
-  let isSignedIn = false;
-  
-  try {
-    const clerkUser = useUser();
-    user = clerkUser.user;
-    isSignedIn = clerkUser.isSignedIn ?? false;
-  } catch (error) {
-    user = null;
-    isSignedIn = false;
-  }
-  
+  const { user, isSignedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800/70 bg-slate-950/95 backdrop-blur-2xl supports-[backdrop-filter]:bg-slate-950/80 shadow-[0_18px_45px_rgba(0,0,0,0.65)]">
-      <div className="container flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-yellow-300 text-slate-950 font-bold text-xl shadow-[0_14px_40px_rgba(250,204,21,0.7)]">
-            T
-          </div>
-          <span className="font-bold text-xl hidden sm:inline-block bg-gradient-to-r from-amber-200 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-            TrustWala Bazaar
-          </span>
+    <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-16 flex items-center justify-between">
+      {/* Logo */}
+      <Link href="/" className="text-2xl font-bold text-white">
+        TrustWala Bazaar
+      </Link>
+
+      {/* Navigation Items */}
+      <div className="hidden md:flex items-center gap-8">
+        <Link href="/home#about" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          About
         </Link>
+        <Link href="/home#solutions" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          Solutions
+        </Link>
+        <Link href="/home#features" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          Features
+        </Link>
+        <Link href="/categories" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          Categories
+        </Link>
+      </div>
+
+      {/* Right Side Actions */}
+      <div className="flex items-center space-x-2">
+        {/* Mobile Search Button */}
+        <Button variant="ghost" size="icon" className="md:hidden text-white" asChild>
+          <Link href="/search">
+            <Search className="h-5 w-5" />
+          </Link>
+        </Button>
 
         {/* Search Bar - Desktop */}
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
           <div className="relative w-full group">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-amber-300 transition-colors" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#9ca3af] group-focus-within:text-[#c8d96f] transition-colors" />
             <Input
               type="text"
               placeholder="Search products, categories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-24 h-11 rounded-2xl border border-slate-700/80 bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:border-amber-300 focus-visible:ring-0 shadow-[0_12px_35px_rgba(15,23,42,0.9)]"
+              className="pl-12 pr-24 h-11 rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(17,22,20,0.8)] text-white placeholder:text-[#9ca3af] focus:border-[#c8d96f] focus-visible:ring-0"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && searchQuery) {
                   window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
@@ -69,60 +78,43 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right Side Actions */}
-        <div className="flex items-center space-x-2">
-          {/* Mobile Search Button */}
-          <Button variant="ghost" size="icon" className="md:hidden" asChild>
-            <Link href="/search">
-              <Search className="h-5 w-5" />
+        {/* Notifications */}
+        {isSignedIn && <NotificationsDropdown />}
+
+        {/* Cart/Saved */}
+        {isSignedIn && (
+          <Button variant="ghost" size="icon" className="text-white" asChild>
+            <Link href="/cart">
+              <ShoppingBag className="h-5 w-5" />
             </Link>
           </Button>
+        )}
 
-          {/* Notifications */}
-          {isSignedIn && (
-            <Button variant="ghost" size="icon" className="relative rounded-xl">
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-accent text-white rounded-full border-2 border-white">
-                3
-              </Badge>
+        {/* User Menu */}
+        {isSignedIn ? (
+          <Link href="/profile">
+            <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-[rgba(200,217,111,0.4)] hover:ring-[rgba(200,217,111,0.6)] transition-all">
+              <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+              <AvatarFallback className="bg-[#c8d96f] text-[#0a0f0d] font-bold">
+                {user?.firstName?.[0] || user?.emailAddresses[0]?.emailAddress[0] || "U"}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" className="rounded-xl text-[#e5e7eb] hover:text-[#c8d96f]" asChild>
+              <Link href="/auth/login">Login</Link>
             </Button>
-          )}
-
-          {/* Cart/Saved */}
-          {isSignedIn && (
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/cart">
-                <ShoppingBag className="h-5 w-5" />
-              </Link>
+            <Button className="rounded-[30px] bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084] hover:scale-105 transition-all" asChild>
+              <Link href="/auth/signup">Sign Up</Link>
             </Button>
-          )}
+          </div>
+        )}
 
-          {/* User Menu */}
-          {isSignedIn ? (
-            <Link href="/profile">
-              <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-amber-300/40 hover:ring-amber-200/80 transition-all shadow-md hover:shadow-lg">
-                <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
-                <AvatarFallback className="bg-gradient-to-br from-amber-300 via-amber-400 to-yellow-300 text-slate-950 font-bold">
-                  {user?.firstName?.[0] || user?.emailAddresses[0]?.emailAddress[0] || "U"}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" className="rounded-xl" asChild>
-                <Link href="/auth/login">Login</Link>
-              </Button>
-              <Button className="rounded-xl shadow-md hover:shadow-lg bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-300 text-slate-950" asChild>
-                <Link href="/auth/signup">Sign Up</Link>
-              </Button>
-            </div>
-          )}
-
-          {/* Mobile Menu */}
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-5 w-5" />
-          </Button>
-        </div>
+        {/* Mobile Menu */}
+        <Button variant="ghost" size="icon" className="md:hidden text-white">
+          <Menu className="h-5 w-5" />
+        </Button>
       </div>
     </header>
   );

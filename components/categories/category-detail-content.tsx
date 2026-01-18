@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product/product-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,43 +35,75 @@ export function CategoryDetailContent({ slug }: CategoryDetailContentProps) {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("default");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
-  // Mock products
-  const products = [
-    {
-      id: "1",
-      title: `${category.name} Product 1`,
-      price: 350000,
-      originalPrice: 380000,
-      location: "Lahore",
-      image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-      trustScore: 92,
-      verified: true,
-      rating: 4.5,
+  // Fetch products for this category with dummy data fallback
+  const { data: categoryProducts = [], isLoading } = useQuery({
+    queryKey: ["category", slug],
+    queryFn: async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
+        const response = await fetch(`${apiUrl}/api/products?categoryId=${slug}&limit=20`, {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) && data.length > 0 ? data : [];
+        }
+        // Fallback to dummy data
+        const { getDummyProductsByCategory, getDummyProducts } = await import("@/lib/dummy-data");
+        // Try category-specific first, then fallback to all products filtered by category name
+        const categoryProducts = getDummyProductsByCategory(slug, 20);
+        if (categoryProducts.length === 0) {
+          // If no products found by categoryId, filter by category name
+          const allProducts = getDummyProducts();
+          const categoryName = categoryMap[slug]?.name || slug;
+          return allProducts
+            .filter(p => p.category.toLowerCase().includes(categoryName.toLowerCase()) || 
+                         p.categoryId.toLowerCase().includes(slug.toLowerCase()))
+            .slice(0, 20);
+        }
+        return categoryProducts;
+      } catch (error: any) {
+        // Silently fallback to dummy data
+        const { getDummyProductsByCategory, getDummyProducts } = await import("@/lib/dummy-data");
+        const categoryProducts = getDummyProductsByCategory(slug, 20);
+        if (categoryProducts.length === 0) {
+          const allProducts = getDummyProducts();
+          const categoryName = categoryMap[slug]?.name || slug;
+          return allProducts
+            .filter(p => p.category.toLowerCase().includes(categoryName.toLowerCase()) || 
+                         p.categoryId.toLowerCase().includes(slug.toLowerCase()))
+            .slice(0, 20);
+        }
+        return categoryProducts;
+      }
     },
-    {
-      id: "2",
-      title: `${category.name} Product 2`,
-      price: 280000,
-      originalPrice: 300000,
-      location: "Karachi",
-      image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop",
-      trustScore: 85,
-      verified: true,
-      rating: 4.0,
-    },
-    {
-      id: "3",
-      title: `${category.name} Product 3`,
-      price: 450000,
-      originalPrice: 480000,
-      location: "Islamabad",
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-      trustScore: 88,
-      verified: true,
-      rating: 4.8,
-    },
-  ];
+    staleTime: 60000, // 1 minute
+    retry: false, // Don't retry failed requests
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+  });
+
+  // Transform products to frontend format
+  const products = categoryProducts.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    location: p.city || p.location || "Unknown",
+    image: p.images?.[0] || p.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+    trustScore: p.trustScore || 0,
+    verified: p.seller?.cnicVerified || p.verified || false,
+    rating: p.rating || 0,
+  }));
 
   const toggleColor = (color: string) => {
     setSelectedColors((prev) =>
@@ -183,11 +216,21 @@ export function CategoryDetailContent({ slug }: CategoryDetailContentProps) {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product, idx) => (
-              <ProductCard key={product.id} product={product} index={idx} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <p className="text-slate-400">Loading products...</p>
+            </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product, idx) => (
+                <ProductCard key={product.id} product={product} index={idx} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-12">
+              <p className="text-slate-400">No products found in this category.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

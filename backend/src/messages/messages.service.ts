@@ -11,10 +11,17 @@ export class MessagesService {
   ) {}
 
   async create(senderId: string, dto: CreateMessageDto) {
+    // Auto-detect language if not provided
+    let detectedLanguage = dto.originalLanguage;
+    if (dto.content && !detectedLanguage) {
+      detectedLanguage = await this.aiService.detectLanguage(dto.content);
+    }
+
     const message = await this.prisma.message.create({
       data: {
         ...dto,
         senderId,
+        originalLanguage: detectedLanguage,
       },
       include: {
         sender: {
@@ -28,13 +35,24 @@ export class MessagesService {
       },
     });
 
-    // Auto-translate if needed
-    if (dto.content && dto.originalLanguage) {
-      const translated = await this.aiService.translate(dto.content, 'en');
-      await this.prisma.message.update({
-        where: { id: message.id },
-        data: { translatedContent: translated, aiTranslated: true },
-      });
+    // Auto-translate if content exists and language is detected
+    if (dto.content && detectedLanguage) {
+      try {
+        // Translate to English for storage (can be extended to translate to receiver's preferred language)
+        const translated = await this.aiService.translate(dto.content, 'en');
+        if (translated !== dto.content) {
+          await this.prisma.message.update({
+            where: { id: message.id },
+            data: { translatedContent: translated, aiTranslated: true },
+          });
+          // Update message object for response
+          message.translatedContent = translated;
+          message.aiTranslated = true;
+        }
+      } catch (error) {
+        console.error('Translation error:', error);
+        // Continue without translation
+      }
     }
 
     return message;

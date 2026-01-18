@@ -11,7 +11,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(clerkId: string, email: string) {
+  async validateUser(clerkId: string, email: string, firstName?: string, lastName?: string) {
     let user = await this.prisma.user.findUnique({
       where: { clerkId },
     });
@@ -21,7 +21,18 @@ export class AuthService {
       user = await this.usersService.create({
         clerkId,
         email,
+        firstName: firstName || email.split('@')[0],
+        lastName: lastName || '',
       });
+    } else {
+      // Update user info if provided
+      if (firstName || lastName || email !== user.email) {
+        user = await this.usersService.update(user.id, {
+          email,
+          firstName: firstName || user.firstName,
+          lastName: lastName || user.lastName,
+        });
+      }
     }
 
     return user;

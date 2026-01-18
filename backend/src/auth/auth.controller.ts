@@ -10,8 +10,8 @@ export class AuthController {
 
   @Post('verify')
   @ApiOperation({ summary: 'Verify Clerk token and get JWT' })
-  async verify(@Body() body: { clerkId: string; email: string }) {
-    const user = await this.authService.validateUser(body.clerkId, body.email);
+  async verify(@Body() body: { clerkId: string; email: string; firstName?: string; lastName?: string }) {
+    const user = await this.authService.validateUser(body.clerkId, body.email, body.firstName, body.lastName);
     return this.authService.login(user);
   }
 

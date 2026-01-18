@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck as Shield, Bell, Globe, Eye, Database } from "lucide-react";
 import { IconKeycap } from "@/components/ui/icon-keycap";
+import { VideoVerification } from "@/components/features/video-verification";
+import { CNICUpload } from "@/components/features/cnic-upload";
 
 export function SettingsContent() {
   const { isSimpleMode, toggleSimpleMode, fontSize, setFontSize, highContrast, toggleHighContrast } = useSimpleMode();
@@ -41,23 +43,32 @@ export function SettingsContent() {
                 Verify your identity to increase trust and safety
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">CNIC Verification</p>
-                  <p className="text-sm text-muted-foreground">Upload your CNIC for verification</p>
-                </div>
-                <Button variant="outline">Upload CNIC</Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Video Verification</p>
-                  <p className="text-sm text-muted-foreground">Record a short video</p>
-                </div>
-                <Button variant="outline">Record Video</Button>
-              </div>
+            <CardContent>
+              <CNICUpload
+                onVerified={() => {
+                  console.log("CNIC verified successfully");
+                }}
+              />
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Video Verification</CardTitle>
+              <CardDescription>
+                Complete video verification to verify your identity with face recognition
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <VideoVerification
+                onVerified={() => {
+                  // Refresh user data or show success message
+                  console.log("Video verified successfully");
+                }}
+              />
+            </CardContent>
+          </Card>
+
         </TabsContent>
 
         <TabsContent value="preferences" className="space-y-4">
