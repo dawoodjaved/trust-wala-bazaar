@@ -4,22 +4,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-[30px] text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d96f] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-gradient-to-br from-amber-300 via-amber-400 to-yellow-300 text-slate-950 shadow-[0_14px_40px_rgba(250,204,21,0.6)] hover:from-amber-200 hover:via-amber-300 hover:to-yellow-200",
+          "bg-[#c8d96f] text-[#0a0f0d] shadow-[0_0_30px_rgba(200,217,111,0.4),0_4px_12px_rgba(0,0,0,0.3)] hover:bg-[#d4e084] hover:scale-105 hover:shadow-[0_0_40px_rgba(200,217,111,0.5),0_8px_16px_rgba(0,0,0,0.3)]",
         destructive:
           "bg-red-600 text-white hover:bg-red-700 shadow-[0_12px_30px_rgba(248,113,113,0.55)]",
         outline:
-          "border border-slate-600/80 bg-slate-900/40 text-slate-100 hover:bg-slate-800/80 hover:border-slate-400/80",
+          "border border-[rgba(200,217,111,0.3)] bg-transparent text-[#e5e7eb] hover:bg-[rgba(200,217,111,0.1)] hover:border-[#c8d96f]",
         secondary:
-          "bg-slate-800 text-slate-100 hover:bg-slate-700 shadow-[0_10px_30px_rgba(15,23,42,0.8)]",
-        ghost: "text-slate-200 hover:bg-slate-800/80 hover:text-white",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-[#111614] text-[#e5e7eb] hover:bg-[#0d1512] border border-[rgba(255,255,255,0.08)]",
+        ghost: "text-[#e5e7eb] hover:bg-[rgba(200,217,111,0.1)] hover:text-[#c8d96f]",
+        link: "text-[#c8d96f] underline-offset-4 hover:underline hover:text-[#d4e084]",
         accent:
-          "bg-gradient-to-br from-indigo-400 via-indigo-500 to-sky-400 text-white shadow-[0_14px_40px_rgba(79,70,229,0.8)] hover:from-indigo-300 hover:via-indigo-400 hover:to-sky-300",
+          "bg-[#c8d96f] text-[#0a0f0d] shadow-[0_0_30px_rgba(200,217,111,0.4)] hover:bg-[#d4e084] hover:scale-105",
       },
       size: {
         default: "h-10 px-4 py-2",

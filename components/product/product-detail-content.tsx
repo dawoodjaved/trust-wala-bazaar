@@ -3,10 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Star, Plus, Minus, ShoppingCart, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { Star, Plus, Minus, ShoppingCart, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { TrustScoreIndicator } from "@/components/features/trust-score-indicator";
+import { AIChatBubble } from "@/components/features/ai-chat-bubble";
+import { useCartStore } from "@/lib/store/cart-store";
+import { getApiBase } from "@/lib/api-base";
 
 interface ProductDetailContentProps {
   productId: string;
@@ -17,38 +22,114 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
   const [selectedColor, setSelectedColor] = useState("Green");
   const [selectedSize, setSelectedSize] = useState("Large");
   const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+  const apiUrl = getApiBase();
 
-  const product = {
-    id: productId,
-    title: "iPhone 15 Pro Max 256GB - Deep Purple",
-    price: 350000,
-    originalPrice: 380000,
-    rating: 4.5,
-    description: "Brand new iPhone 15 Pro Max in sealed box. Never opened. Full warranty. All accessories included. This premium smartphone features the latest A17 Pro chip, 48MP camera system, and stunning titanium design.",
-    images: [
-      "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop",
-    ],
-    colors: ["Blue", "Green", "Black"],
-    sizes: ["Medium", "Large", "X-Large"],
+  // Fetch product from backend (dummy fallback only if API unavailable)
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(`${apiUrl}/api/products/${productId}`, {
+          signal: controller.signal,
+          headers: { "Content-Type": "application/json" },
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          return response.json();
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    },
+    staleTime: 60000,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-7xl flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-7xl text-center">
+        <h2 className="text-2xl font-bold mb-4">Product not found</h2>
+        <Button asChild>
+          <Link href="/home">Go to Home</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const categorySlug = product.category?.slug || product.categoryId || "all";
+  const categoryName = product.category?.name || "Shop";
+
+  // Transform product data
+  const productData = {
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    originalPrice: product.originalPrice,
+    rating:
+      product.reviews?.length > 0
+        ? product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
+          product.reviews.length
+        : 0,
+    description: product.description,
+    images:
+      product.images?.length > 0
+        ? product.images
+        : product.thumbnail
+          ? [product.thumbnail]
+          : [
+              "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+            ],
+    trustScore: product.trustScore || 0,
+    trustBreakdown: product.trustBreakdown,
+    seller: product.seller,
+    reviews: product.reviews || [],
+    specifications: product.specifications,
+    city: product.city,
   };
 
-  const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+  const discount = productData.originalPrice
+    ? Math.round(
+        ((productData.originalPrice - productData.price) /
+          productData.originalPrice) *
+          100,
+      )
+    : 0;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Breadcrumbs */}
-      <div className="mb-6 text-sm text-gray-600">
-        <Link href="/home" className="hover:text-black">Home</Link>
+      <div className="mb-6 text-sm text-[#9ca3af]">
+        <Link href="/home" className="hover:text-white">
+          Home
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Shop</Link>
+        <Link href="/categories" className="hover:text-white">
+          Categories
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Mobiles</Link>
+        <Link href={`/categories/${categorySlug}`} className="hover:text-white">
+          {categoryName}
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Smartphones</Link>
-        <span className="mx-2">/</span>
-        <span className="text-black font-medium">{product.title}</span>
+        <span className="text-white font-medium">{productData.title}</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -56,8 +137,8 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
         <div className="space-y-4">
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
             <Image
-              src={product.images[selectedImage]}
-              alt={product.title}
+              src={productData.images[selectedImage] || productData.images[0]}
+              alt={productData.title}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -65,7 +146,7 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
             />
           </div>
           <div className="grid grid-cols-4 gap-3">
-            {product.images.map((img, idx) => (
+            {productData.images.map((img: string, idx: number) => (
               <button
                 key={idx}
                 onClick={() => setSelectedImage(idx)}
@@ -77,7 +158,7 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
               >
                 <Image
                   src={img}
-                  alt={`${product.title} ${idx + 1}`}
+                  alt={`${productData.title} ${idx + 1}`}
                   fill
                   className="object-cover"
                   unoptimized
@@ -90,79 +171,78 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
         {/* Right Column - Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{product.title.toUpperCase()}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{productData.title}</h1>
+            
+            {/* Trust Score */}
+            {productData.trustScore > 0 && (
+              <div className="mb-4">
+                <TrustScoreIndicator
+                  score={productData.trustScore}
+                  breakdown={productData.trustBreakdown}
+                />
+              </div>
+            )}
+
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`h-5 w-5 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor(productData.rating)
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-gray-600">({product.rating})</span>
+              <span className="text-gray-600">({productData.rating.toFixed(1)})</span>
+              {productData.reviews.length > 0 && (
+                <span className="text-gray-600">({productData.reviews.length} reviews)</span>
+              )}
             </div>
             <div className="flex items-center gap-4 mb-6">
-              <span className="text-3xl font-bold">PKR {product.price.toLocaleString()}</span>
-              <span className="text-xl text-gray-500 line-through">PKR {product.originalPrice.toLocaleString()}</span>
-              <Badge className="bg-red-500 text-white border-0">-{discount}%</Badge>
+              <span className="text-3xl font-bold">PKR {productData.price.toLocaleString()}</span>
+              {productData.originalPrice && (
+                <>
+                  <span className="text-xl text-gray-500 line-through">PKR {productData.originalPrice.toLocaleString()}</span>
+                  {discount > 0 && <Badge className="bg-red-500 text-white border-0">-{discount}%</Badge>}
+                </>
+              )}
             </div>
           </div>
 
           <div>
-            <p className="text-gray-700 leading-relaxed mb-6">{product.description}</p>
+            <p className="text-gray-700 leading-relaxed mb-6">{productData.description}</p>
           </div>
 
-          {/* Color Selection */}
-          <div>
-            <p className="text-sm font-semibold mb-3">Colors:</p>
-            <div className="flex gap-3">
-              {product.colors.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-12 h-12 rounded-full border-2 transition-all ${
-                    selectedColor === color
-                      ? "border-black ring-2 ring-offset-2 ring-black"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                  style={{
-                    backgroundColor:
-                      color === "Blue"
-                        ? "#3B82F6"
-                        : color === "Green"
-                        ? "#10B981"
-                        : "#000000",
-                  }}
-                  aria-label={color}
-                />
-              ))}
+          {/* Seller Info */}
+          {productData.seller && (
+            <div className="border-t border-gray-200 pt-6">
+              <h3 className="font-semibold mb-2">Seller Information</h3>
+              <div className="text-sm text-gray-600 flex items-center gap-2">
+                <span>{productData.seller.firstName} {productData.seller.lastName}</span>
+                {productData.seller.cnicVerified && (
+                  <Badge className="bg-green-500">Verified</Badge>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Size Selection */}
-          <div>
-            <p className="text-sm font-semibold mb-3">Sizes:</p>
-            <div className="flex gap-3">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`px-6 py-3 border-2 rounded-lg font-medium transition-all ${
-                    selectedSize === size
-                      ? "border-black bg-black text-white"
-                      : "border-gray-300 text-gray-700 hover:border-gray-400"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+          {/* Specifications */}
+          {productData.specifications && typeof productData.specifications === 'object' && (
+            <div className="border-t border-gray-200 pt-6">
+              <h3 className="font-semibold mb-3">Specifications</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                {Object.entries(productData.specifications).map(([key, value]) => (
+                  <div key={key}>
+                    <span className="font-medium text-gray-600">{key}:</span>{" "}
+                    <span className="text-gray-900">{String(value)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Quantity Selector */}
           <div>
@@ -192,11 +272,25 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-4">
-            <Button className="flex-1 h-12 text-lg font-semibold rounded-lg bg-black text-white hover:bg-gray-800" asChild>
-              <Link href="/cart">
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Add to Cart
-              </Link>
+            <Button
+              className="flex-1 h-12 text-lg font-semibold rounded-lg bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084]"
+              onClick={() => {
+                addItem({
+                  id: productData.id,
+                  title: productData.title,
+                  price: productData.price,
+                  quantity,
+                  image: productData.images[0],
+                  location: productData.city,
+                  color: selectedColor,
+                  size: selectedSize,
+                });
+                setAdded(true);
+                setTimeout(() => router.push("/cart"), 400);
+              }}
+            >
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {added ? "Added!" : "Add to Cart"}
             </Button>
             <Button variant="outline" size="icon" className="h-12 w-12 border-2 rounded-lg">
               <Heart className="h-5 w-5" />
@@ -204,39 +298,52 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
           </div>
 
           {/* Reviews Section */}
-          <div className="pt-8 border-t border-gray-200">
-            <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
-            <div className="space-y-4">
-              <div className="border-b border-gray-100 pb-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold">
-                    M
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold">M. Ahmed</span>
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < 5 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                            }`}
-                          />
-                        ))}
+          {productData.reviews.length > 0 && (
+            <div className="pt-8 border-t border-gray-200">
+              <h3 className="text-xl font-bold mb-4">Customer Reviews ({productData.reviews.length})</h3>
+              <div className="space-y-4">
+                {productData.reviews.map((review: any) => (
+                  <div key={review.id} className="border-b border-gray-100 pb-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold">
+                        {review.user?.firstName?.[0] || review.user?.emailAddress?.[0] || "U"}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-semibold">
+                            {review.user?.firstName} {review.user?.lastName}
+                          </span>
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {review.title && (
+                          <h4 className="font-medium mb-1">{review.title}</h4>
+                        )}
+                        <p className="text-gray-700 mb-2">{review.content}</p>
+                        {review.aiSummary && (
+                          <p className="text-sm text-gray-500 italic mb-2">AI Summary: {review.aiSummary}</p>
+                        )}
+                        <p className="text-sm text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
-                    <p className="text-gray-700 mb-2">
-                      This product exceeded my expectations! The quality is excellent and the delivery was fast.
-                    </p>
-                    <p className="text-sm text-gray-500">on August 15, 2023</p>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
+      <AIChatBubble productId={productData.id} productName={productData.title} />
     </div>
   );
 }

@@ -4,18 +4,20 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { CategoryDetailContent } from "@/components/categories/category-detail-content";
 import { Toaster } from "@/components/ui/toaster";
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex pt-20">
         <Sidebar />
         <main className="flex-1 pb-20 lg:pb-4">
-          <CategoryDetailContent slug={params.slug} />
+          <CategoryDetailContent slug={slug} />
         </main>
       </div>
       <MobileNav />
@@ -23,4 +25,3 @@ export default function CategoryPage({
     </>
   );
 }
-

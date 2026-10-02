@@ -3,6 +3,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TokenRateLimit } from '../common/token-rate-limit/token-rate-limit.decorator';
+import { TokenRateLimitGuard } from '../common/token-rate-limit/token-rate-limit.guard';
 
 @ApiTags('messages')
 @Controller('messages')
@@ -12,6 +14,8 @@ export class MessagesController {
   constructor(private messagesService: MessagesService) {}
 
   @Post()
+  @UseGuards(TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-message-translate', limit: 25, ttlSec: 60 })
   @ApiOperation({ summary: 'Send a message' })
   create(@Request() req, @Body() dto: CreateMessageDto) {
     return this.messagesService.create(req.user.id, dto);

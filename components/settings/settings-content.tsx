@@ -1,20 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSimpleMode } from "@/lib/store/simple-mode-store";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShieldCheck as Shield, Bell, Globe, Eye, Database } from "lucide-react";
+import { ShieldCheck as Shield, Bell, Globe, Eye } from "lucide-react";
 import { IconKeycap } from "@/components/ui/icon-keycap";
+import { VideoVerification } from "@/components/features/video-verification";
+import { CNICUpload } from "@/components/features/cnic-upload";
+
+const LANGUAGE_KEY = "trustwala-language";
 
 export function SettingsContent() {
   const { isSimpleMode, toggleSimpleMode, fontSize, setFontSize, highContrast, toggleHighContrast } = useSimpleMode();
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguageState] = useState("en");
+  const [savedHint, setSavedHint] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(LANGUAGE_KEY);
+      if (stored === "en" || stored === "ur") setLanguageState(stored);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const setLanguage = (value: string) => {
+    setLanguageState(value);
+    try {
+      localStorage.setItem(LANGUAGE_KEY, value);
+      document.documentElement.lang = value === "ur" ? "ur" : "en";
+      document.documentElement.dir = value === "ur" ? "rtl" : "ltr";
+    } catch {
+      /* ignore */
+    }
+    setSavedHint(true);
+    setTimeout(() => setSavedHint(false), 2000);
+  };
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
@@ -41,23 +67,32 @@ export function SettingsContent() {
                 Verify your identity to increase trust and safety
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">CNIC Verification</p>
-                  <p className="text-sm text-muted-foreground">Upload your CNIC for verification</p>
-                </div>
-                <Button variant="outline">Upload CNIC</Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Video Verification</p>
-                  <p className="text-sm text-muted-foreground">Record a short video</p>
-                </div>
-                <Button variant="outline">Record Video</Button>
-              </div>
+            <CardContent>
+              <CNICUpload
+                onVerified={() => {
+                  console.log("CNIC verified successfully");
+                }}
+              />
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Video Verification</CardTitle>
+              <CardDescription>
+                Complete video verification to verify your identity with face recognition
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <VideoVerification
+                onVerified={() => {
+                  // Refresh user data or show success message
+                  console.log("Video verified successfully");
+                }}
+              />
+            </CardContent>
+          </Card>
+
         </TabsContent>
 
         <TabsContent value="preferences" className="space-y-4">
@@ -82,6 +117,9 @@ export function SettingsContent() {
                     <SelectItem value="ur">Urdu</SelectItem>
                   </SelectContent>
                 </Select>
+                {savedHint && (
+                  <p className="text-xs text-[#c8d96f] mt-2">Language preference saved</p>
+                )}
               </div>
             </CardContent>
           </Card>

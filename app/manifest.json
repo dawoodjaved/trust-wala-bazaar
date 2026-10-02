@@ -4,8 +4,8 @@
   "description": "Pakistan's Most Trusted AI-Enriched Marketplace",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#00A651",
+  "background_color": "#0a0f0d",
+  "theme_color": "#0a0f0d",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -22,4 +22,3 @@
     }
   ]
 }
-

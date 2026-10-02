@@ -1,157 +1,93 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { X, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
+import { Plus, Minus, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
-interface CartItem {
-  id: string;
-  title: string;
-  size: string;
-  color: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { EmptyCartSVG } from "@/components/ui/marketplace-illustrations";
+import { useCartStore } from "@/lib/store/cart-store";
 
 export function CartContent() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      title: "iPhone 15 Pro Max 256GB",
-      size: "Large",
-      color: "Deep Purple",
-      price: 350000,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop",
-    },
-    {
-      id: "2",
-      title: "MacBook Pro M3 14-inch",
-      size: "Medium",
-      color: "Space Gray",
-      price: 450000,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
-    },
-    {
-      id: "3",
-      title: "Samsung Galaxy S24 Ultra",
-      size: "Large",
-      color: "Titanium Black",
-      price: 280000,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop",
-    },
-  ]);
-
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
+  const cartItems = useCartStore((s) => s.items);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const discount = subtotal * 0.2; // 20% discount
-  const deliveryFee = 15000;
-  const total = subtotal - discount + deliveryFee;
+  const deliveryFee = cartItems.length > 0 ? 500 : 0;
+  const total = subtotal + deliveryFee;
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-16 max-w-3xl text-center">
+        <AnimatedSVG className="w-48 h-48 mx-auto mb-6 opacity-80">
+          <EmptyCartSVG />
+        </AnimatedSVG>
+        <h1 className="text-3xl font-bold mb-3">Your cart is empty</h1>
+        <p className="text-[#9ca3af] mb-6">Browse listings and add products to buy with escrow protection.</p>
+        <Button asChild className="bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084]">
+          <Link href="/home">Continue Shopping</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Breadcrumbs */}
-      <div className="mb-6 text-sm text-gray-600">
-        <Link href="/home" className="hover:text-black">Home</Link>
+      <div className="mb-6 text-sm text-[var(--text-muted)]">
+        <Link href="/home" className="hover:text-[var(--text-primary)]">
+          Home
+        </Link>
         <span className="mx-2">/</span>
-        <span className="text-black font-medium">Cart</span>
+        <span className="text-[var(--text-primary)] font-medium">Cart</span>
       </div>
 
-      {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold mb-12">YOUR CART</h1>
+      <h1 className="text-4xl font-bold mb-8 tracking-wide">YOUR CART</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {cartItems.map((item, idx) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
+              transition={{ delay: idx * 0.05 }}
             >
-              <Card className="border-2 border-gray-100 hover:border-gray-200 transition-colors">
-                <CardContent className="p-6">
-                  <div className="flex gap-6">
-                    {/* Product Image */}
-                    <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>Size: <span className="font-medium text-black">{item.size}</span></span>
-                            <span>Color: <span className="font-medium text-black">{item.color}</span></span>
-                          </div>
-                        </div>
+              <Card>
+                <CardContent className="p-4 flex gap-4 items-center">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-[#111614] flex-shrink-0">
+                    <Image src={item.image} alt={item.title} fill className="object-cover" unoptimized />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/products/${item.id}`} className="font-semibold text-lg hover:text-[#c8d96f] line-clamp-2">
+                      {item.title}
+                    </Link>
+                    <p className="text-[#c8d96f] font-bold mt-1">PKR {item.price.toLocaleString()}</p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <div className="flex items-center border border-white/10 rounded-lg">
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeItem(item.id)}
-                          className="text-gray-400 hover:text-red-500"
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         >
-                          <Trash2 className="h-5 w-5" />
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="w-8 text-center text-sm">{item.quantity}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium">Quantity:</span>
-                          <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 rounded-none"
-                              onClick={() => updateQuantity(item.id, -1)}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-12 text-center font-semibold">{item.quantity}</span>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 rounded-none"
-                              onClick={() => updateQuantity(item.id, 1)}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold">PKR {item.price.toLocaleString()}</p>
-                        </div>
-                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
+                        <Trash2 className="h-4 w-4 text-red-400" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -160,36 +96,29 @@ export function CartContent() {
           ))}
         </div>
 
-        {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <Card className="sticky top-24 border-2 border-gray-100">
-            <CardContent className="p-6">
-              <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-gray-600">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-black">PKR {subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-green-600">
-                  <span>Discount (-20%)</span>
-                  <span className="font-semibold">-PKR {discount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Delivery Fee</span>
-                  <span className="font-semibold text-black">PKR {deliveryFee.toLocaleString()}</span>
-                </div>
-                <div className="border-t-2 border-gray-200 pt-4 flex justify-between">
-                  <span className="text-xl font-bold">Total</span>
-                  <span className="text-2xl font-bold">PKR {total.toLocaleString()}</span>
-                </div>
+        <div>
+          <Card className="sticky top-24">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-xl font-bold">Order Summary</h2>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#9ca3af]">Subtotal</span>
+                <span>PKR {subtotal.toLocaleString()}</span>
               </div>
-              <Button className="w-full h-12 text-lg font-semibold rounded-lg mb-4" asChild>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#9ca3af]">Delivery</span>
+                <span>PKR {deliveryFee.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-lg font-bold border-t border-white/10 pt-4">
+                <span>Total</span>
+                <span className="text-[#c8d96f]">PKR {total.toLocaleString()}</span>
+              </div>
+              <Button asChild className="w-full bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084]">
                 <Link href="/checkout">
                   Proceed to Checkout
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" className="w-full h-12 text-lg rounded-lg" asChild>
+              <Button asChild variant="outline" className="w-full">
                 <Link href="/home">Continue Shopping</Link>
               </Button>
             </CardContent>
@@ -199,4 +128,3 @@ export function CartContent() {
     </div>
   );
 }
-

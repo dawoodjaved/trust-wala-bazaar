@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getApiBase } from "@/lib/api-base";
 
 export function AIChatBubble({ productId, productName }: { productId?: string; productName?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,17 +21,90 @@ export function AIChatBubble({ productId, productName }: { productId?: string; p
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
-    // TODO: Integrate with AI API
-    // Simulated response
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: `I can help you with information about ${productName || "this product"}. This is a placeholder response. AI integration coming soon!`,
+    // Add loading message
+    const loadingMessageId = Date.now();
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", content: "Thinking..." },
+    ]);
+
+    try {
+      const apiUrl = getApiBase();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(`${apiUrl}/api/ai/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      ]);
-    }, 1000);
+        signal: controller.signal,
+        body: JSON.stringify({
+          message: userMessage,
+          context: {
+            productId,
+            productName,
+          },
+        }),
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessages((prev) => {
+          const filtered = prev.filter((_, idx) => idx !== prev.length - 1); // Remove loading message
+          return [
+            ...filtered,
+            {
+              role: "assistant",
+              content: data.response || "I apologize, I couldn't generate a response. Please ensure your AI API keys are configured.",
+            },
+          ];
+        });
+      } else if (response.status === 429) {
+        const errorData = await response.json().catch(() => ({ message: 'Too many requests' }));
+        const retry = errorData.retryAfterSec ? ` Try again in ${errorData.retryAfterSec}s.` : '';
+        setMessages((prev) => {
+          const filtered = prev.filter((_, idx) => idx !== prev.length - 1);
+          return [
+            ...filtered,
+            {
+              role: "assistant",
+              content: `${errorData.message || 'Too many AI requests.'}${retry}`,
+            },
+          ];
+        });
+      } else {
+        const errorData = await response.json().catch(() => ({ message: 'API request failed' }));
+        throw new Error(errorData.message || 'API request failed');
+      }
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        setMessages((prev) => {
+          const filtered = prev.filter((_, idx) => idx !== prev.length - 1);
+          return [
+            ...filtered,
+            {
+              role: "assistant",
+              content: "Request timed out. The AI service may be slow or unavailable. Please try again.",
+            },
+          ];
+        });
+      } else {
+        console.warn('AI chat error (handled gracefully):', error);
+        setMessages((prev) => {
+          const filtered = prev.filter((_, idx) => idx !== prev.length - 1);
+          return [
+            ...filtered,
+            {
+              role: "assistant",
+              content: "I'm having trouble connecting to the AI service. This feature requires OpenAI or Groq API keys to be configured. You can still browse products and contact sellers directly.",
+            },
+          ];
+        });
+      }
+    }
   };
 
   return (

@@ -1,455 +1,530 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { Star, FileText, Layers, Maximize2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SpringAnimated } from "@/components/ui/spring-animated";
+import { AnimatedSVG } from "@/components/ui/animated-svg";
 import {
-  ShieldCheck as Shield,
-  Mic,
-  Camera,
-  TrendingUp,
-  Users,
-  ArrowRight,
-  Sparkles,
-  Star,
-  ShoppingBag,
-  Smartphone,
-  Laptop,
-  Car,
-  Tv,
-  Camera as CameraIcon,
-  Gamepad2,
-} from "lucide-react";
-import { ProductCard } from "@/components/product/product-card";
-import { IconKeycap } from "@/components/ui/icon-keycap";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
-
-const featuredProducts = [
-  {
-    id: "1",
-    title: "iPhone 15 Pro Max 256GB",
-    price: 350000,
-    originalPrice: 380000,
-    image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-    discount: 8,
-    rating: 4.8,
-    reviews: 127,
-    trustScore: 95,
-  },
-  {
-    id: "2",
-    title: "MacBook Pro M3 14-inch",
-    price: 450000,
-    originalPrice: 480000,
-    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-    discount: 6,
-    rating: 4.9,
-    reviews: 89,
-    trustScore: 92,
-  },
-  {
-    id: "3",
-    title: "Samsung Galaxy S24 Ultra",
-    price: 280000,
-    originalPrice: 300000,
-    image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop",
-    discount: 7,
-    rating: 4.7,
-    reviews: 203,
-    trustScore: 88,
-  },
-];
-
-const categories = [
-  { name: "Mobiles", icon: Smartphone, href: "/categories/mobiles", image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop", count: 1234 },
-  { name: "Laptops", icon: Laptop, href: "/categories/laptops", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop", count: 567 },
-  { name: "Electronics", icon: Tv, href: "/categories/electronics", image: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&h=400&fit=crop", count: 890 },
-  { name: "Cars", icon: Car, href: "/categories/cars", image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=400&fit=crop", count: 234 },
-  { name: "Cameras", icon: CameraIcon, href: "/categories/cameras", image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=400&fit=crop", count: 345 },
-  { name: "Gaming", icon: Gamepad2, href: "/categories/gaming", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop", count: 456 },
-];
-
-const testimonials = [
-  {
-    name: "Ahmed Ali",
-    location: "Lahore",
-    rating: 5,
-    text: "Best marketplace in Pakistan! The AI recommendations helped me find exactly what I needed.",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-  },
-  {
-    name: "Fatima Khan",
-    location: "Karachi",
-    rating: 5,
-    text: "The verification process gave me so much confidence. I felt safe buying my first iPhone here.",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-  },
-  {
-    name: "Hassan Raza",
-    location: "Islamabad",
-    rating: 5,
-    text: "Sold my laptop in 2 days! The platform is so easy to use and the AI pricing was spot on.",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-  },
-];
+  ShoppingAppSVG,
+  OnlineShoppingSVG,
+  AIIllustrationSVG,
+  SecuritySVG,
+  VoiceSearchSVG,
+  AnalyticsSVG,
+  BusinessDealSVG,
+  MobileAppsSVG,
+  TranslatorSVG,
+} from "@/components/ui/marketplace-illustrations";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#0a0f0d] text-white overflow-x-hidden">
+      {/* Navigation Bar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-16 flex items-center justify-between">
+        <div className="text-2xl font-bold text-white">TrustWala Bazaar</div>
+        <div className="flex items-center gap-8">
+          <Link href="#about" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+            About
+          </Link>
+          <Link href="#features" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+            Features
+          </Link>
+          <Link href="#why-trustwala" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+            Why TrustWala
+          </Link>
+          <Link href="/home" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+            Get Started
+          </Link>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-b border-slate-900/80">
-        <div className="container mx-auto px-4 py-20 lg:py-32">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight bg-gradient-to-r from-primary via-primary-dark to-accent bg-clip-text text-transparent"
+      <section className="relative h-screen flex items-center justify-center overflow-hidden" style={{
+        background: "radial-gradient(ellipse 800px 600px at center top, #1a221e 0%, #0a0f0d 60%)"
+      }}>
+        {/* Spotlight Effect */}
+        <div 
+          className="absolute top-[-100px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[800px] pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(200, 217, 111, 0.15) 0%, transparent 70%)"
+          }}
+        />
+        
+        <div className="relative z-10 max-w-[1440px] mx-auto px-16 text-center">
+          {/* Hero Illustration - Floating above with Spring Animation */}
+          <SpringAnimated
+            from={{ opacity: 0, y: -50, scale: 0.8 }}
+            to={{ opacity: 0.2, y: 0, scale: 1 }}
+            delay={300}
+            className="absolute top-[-100px] left-1/2 transform -translate-x-1/2 w-96 h-96 pointer-events-none"
+          >
+            <AnimatedSVG
+              duration={3000}
+              delay={500}
+              className="w-full h-full"
             >
-              TrustWala Bazaar
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-xl md:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed"
-            >
-              Pakistan&apos;s Most Trusted AI-Enriched Marketplace
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Button size="lg" className="text-lg px-8 py-6" asChild>
-                <Link href="/home">
-                  Start Buying
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6"
-                asChild
+              <ShoppingAppSVG />
+            </AnimatedSVG>
+          </SpringAnimated>
+          
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em]"
+          >
+            Pakistan&apos;s Most Trusted
+          </motion.h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.8 }}
+            className="text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em] mt-2"
+          >
+            AI-Enriched Marketplace
+          </motion.h1>
+          
+          {/* Subheading */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-[18px] text-[#9ca3af] mt-6 max-w-[600px] mx-auto leading-[1.6]"
+          >
+            Buy and sell with confidence. Trust scores, seller verification, and safer transactions for mobiles, laptops, electronics, cars, and more.
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="flex gap-4 justify-center mt-10"
+          >
+            <Link href="/home">
+              <button
+                className="px-9 py-[14px] bg-[#c8d96f] text-[#0a0f0d] text-base font-semibold rounded-[30px] transition-all duration-300 hover:scale-105"
+                style={{
+                  boxShadow: "0 0 30px rgba(200, 217, 111, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 0 40px rgba(200, 217, 111, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 0 30px rgba(200, 217, 111, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)";
+                }}
               >
-                <Link href="/listings/create">
-                  Start Selling
-                </Link>
-              </Button>
-            </motion.div>
-
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
-            >
-              {[
-                { value: "10K+", label: "Verified Sellers", icon: Shield },
-                { value: "50K+", label: "Active Listings", icon: TrendingUp },
-                { value: "AI-Powered", label: "Safety & Trust", icon: Sparkles },
-              ].map((stat, idx) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={idx} className="text-center text-slate-200">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-900/80 mb-4 shadow-[0_14px_40px_rgba(15,23,42,0.9)]">
-                      <Icon className="h-8 w-8 text-amber-300" />
-                    </div>
-                    <div className="text-3xl font-bold text-amber-300 mb-2">
-                      {stat.value}
-                    </div>
-                    <div className="text-slate-300 font-medium">
-                      {stat.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-20 border-t border-slate-900/80">
-        <div className="container mx-auto px-4">
+                Start Buying
+              </button>
+            </Link>
+            <Link href="/listings/create">
+              <button
+                className="px-9 py-[14px] bg-transparent border-2 border-[rgba(200,217,111,0.3)] text-[#c8d96f] text-base font-semibold rounded-[30px] transition-all duration-300 hover:scale-105 hover:border-[#c8d96f]"
+              >
+                Start Selling
+              </button>
+            </Link>
+          </motion.div>
+          
+          {/* 5-Star Rating Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="mt-[60px] flex flex-col items-center"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Why Choose TrustWala?
-            </h2>
-            <p className="text-lg text-slate-300">
-              Experience the future of online marketplace
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {[
-              {
-                icon: Sparkles,
-                title: "AI-Powered Recommendations",
-                description: "Get personalized product suggestions based on your preferences and browsing history.",
-                gradient: "from-fuchsia-500 via-violet-500 to-sky-400",
-              },
-              {
-                icon: Shield,
-                title: "Fraud Detection",
-                description: "CNIC verification, video verification, and AI-powered fraud detection for maximum safety.",
-                gradient: "from-emerald-500 via-emerald-400 to-lime-300",
-              },
-              {
-                icon: Mic,
-                title: "Voice Search",
-                description: "Search and navigate using your voice in Urdu or English - accessibility first!",
-                gradient: "from-sky-500 via-blue-500 to-cyan-400",
-              },
-              {
-                icon: Camera,
-                title: "Visual Search",
-                description: "Upload a photo to find similar products using advanced AI image recognition.",
-                gradient: "from-orange-500 via-amber-400 to-rose-400",
-              },
-              {
-                icon: TrendingUp,
-                title: "AI Price Analyzer",
-                description: "Get fair price suggestions and market comparisons powered by machine learning.",
-                gradient: "from-amber-400 via-orange-500 to-rose-500",
-              },
-              {
-                icon: Users,
-                title: "Community Forums",
-                description: "Join groups, share reviews, and connect with trusted buyers and sellers.",
-                gradient: "from-indigo-500 via-violet-500 to-fuchsia-500",
-              },
-            ].map((feature, idx) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div key={idx} variants={itemVariants}>
-                    <Card
-                      className={[
-                        "h-full border border-slate-800/80 hover:border-amber-300/40 shadow-[0_20px_60px_rgba(15,23,42,0.9)] transition-all duration-300",
-                        idx === 0 ? "ring-2 ring-amber-300/40" : "",
-                      ].join(" ")}
-                    >
-                    <CardHeader className="pb-4 flex flex-row items-start gap-4">
-                      <IconKeycap icon={Icon} size="lg" className="mx-0" />
-                      <div className="flex-1 text-left">
-                        <CardTitle className="text-xl font-semibold text-slate-50">
-                          {feature.title}
-                        </CardTitle>
-                        <CardDescription className="mt-2 text-base leading-relaxed text-slate-300">
-                          {feature.description}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-20 border-t border-slate-900/80">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-between mb-12"
-          >
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-2 text-slate-50">
-                Featured Products
-              </h2>
-              <p className="text-lg text-slate-300">Handpicked for you</p>
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 fill-[#fbbf24] text-[#fbbf24]" />
+              ))}
             </div>
-            <Button variant="outline" className="rounded-xl border-2" asChild>
-              <Link href="/search">View All</Link>
-            </Button>
+            <p className="text-sm text-[#e5e7eb] mt-3">Built for safer buying and selling in Pakistan</p>
+            
+            {/* Stats */}
+            <div className="mt-12 flex items-center gap-12">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-[#c8d96f]">5★</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Trust Scoring</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-[#c8d96f]">CNIC</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Seller Checks</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-[#c8d96f]">Escrow</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Ready Flow</div>
+              </div>
+            </div>
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product, idx) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1, duration: 0.5 }}
-                whileHover={{ y: -8 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-20 border-t border-slate-900/80">
-        <div className="container mx-auto px-4">
+      {/* About Section - Left Overlay */}
+      <section id="about" className="relative py-[120px] px-16 max-w-[1440px] mx-auto">
+        <div className="grid grid-cols-2 gap-16 items-start">
+          {/* Left Card */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="w-[420px] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px] border border-[rgba(200,217,111,0.15)] rounded-2xl p-12"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-slate-50">
-              Shop by Category
+            <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
+              ABOUT TRUSTWALA
+            </div>
+            <h2 className="text-[32px] font-bold text-white leading-[1.3] mb-6">
+              Revolutionizing Pakistan&apos;s marketplace with AI-powered trust and security.
             </h2>
-            <p className="text-lg text-slate-300">
-              Explore our wide range of products
+            <p className="text-[15px] text-[#9ca3af] leading-[1.8]">
+              TrustWala Bazaar is an AI-assisted marketplace built for Pakistan — combining seller verification (CNIC + video), transparent trust scores, listing fraud checks, and escrow-ready checkout so buyers and sellers can trade with clearer signals and less risk.
             </p>
           </motion.div>
+          
+          {/* Right Side - 3D Marketplace Illustration with Animation */}
+          <SpringAnimated
+            from={{ opacity: 0, x: 50, scale: 0.9 }}
+            to={{ opacity: 1, x: 0, scale: 1 }}
+            delay={200}
+            className="flex items-center justify-center"
+          >
+            <div className="relative w-full h-[500px]">
+              <AnimatedSVG
+                duration={2500}
+                delay={400}
+                className="w-full h-full rounded-2xl"
+                style={{ filter: 'brightness(0.9) saturate(1.2)' }}
+              >
+                <OnlineShoppingSVG />
+              </AnimatedSVG>
+              {/* Decorative elements */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(200,217,111,0.1)] to-transparent rounded-2xl pointer-events-none" />
+            </div>
+          </SpringAnimated>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((category, idx) => {
-              const Icon = category.icon;
-              return (
-                <motion.div
-                  key={category.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1, duration: 0.5 }}
-                  whileHover={{ scale: 1.05, y: -8 }}
+      {/* Features Section */}
+      <section id="features" className="py-[120px] px-16 bg-[#0a0f0d]">
+        <div className="max-w-[1440px] mx-auto w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
+        >
+          <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
+            FEATURES
+          </div>
+          <h2 className="text-[36px] font-bold text-white">
+            Why Choose TrustWala Bazaar
+          </h2>
+        </motion.div>
+        
+        <div className="grid grid-cols-2 gap-8 w-full">
+          {/* Card 1: AI-Powered Recommendations */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="w-20 h-20 mb-6 flex items-center justify-center">
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={100}
+                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
+              >
+                <AnimatedSVG
+                  alt="AI Technology"
+                  duration={2000}
+                  delay={300}
+                  className="w-16 h-16"
                 >
-                  <Link href={category.href}>
-                    <Card className="card-hover border-2 border-transparent hover:border-amber-300/40 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 h-full cursor-pointer">
-                      <div className="relative aspect-square overflow-hidden">
-                        <Image
-                          src={category.image}
-                          alt={category.name}
-                          fill
-                          className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                          unoptimized
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-16 h-16 rounded-2xl bg-slate-950/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                            <Icon className="h-8 w-8 text-amber-300" />
-                          </div>
-                        </div>
-                      </div>
-                      <CardContent className="p-4 text-center">
-                        <h3 className="font-bold text-sm mb-1 text-slate-50">
-                          {category.name}
-                        </h3>
-                        <p className="text-xs text-slate-300">
-                          {category.count.toLocaleString()} items
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
+                  <AIIllustrationSVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">AI-Powered Recommendations</h3>
+            <p className="text-sm text-[#9ca3af]">Get personalized product suggestions based on your preferences and browsing history.</p>
+          </motion.div>
+          
+          {/* Card 2: Fraud Detection */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="w-20 h-20 mb-6 flex items-center justify-center">
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={200}
+                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
+              >
+                <AnimatedSVG
+                  alt="Security Shield"
+                  duration={2000}
+                  delay={400}
+                  className="w-16 h-16"
+                >
+                  <SecuritySVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">Fraud Detection</h3>
+            <p className="text-sm text-[#9ca3af]">CNIC upload, video verification workflows, and AI-assisted listing risk checks.</p>
+          </motion.div>
+          
+          {/* Card 3: Voice & Visual Search */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="w-20 h-20 mb-6 flex items-center justify-center">
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={300}
+                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
+              >
+                <AnimatedSVG
+                  alt="Voice Search"
+                  duration={2000}
+                  delay={500}
+                  className="w-16 h-16"
+                >
+                  <VoiceSearchSVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">Voice & Visual Search</h3>
+            <p className="text-sm text-[#9ca3af]">Search using voice (Urdu/English) or upload images to find similar products.</p>
+          </motion.div>
+
+          {/* Card 4: Trust Score System */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="w-20 h-20 mb-6 flex items-center justify-center">
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={400}
+                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
+              >
+                <AnimatedSVG
+                  alt="Analytics"
+                  duration={2000}
+                  delay={600}
+                  className="w-16 h-16"
+                >
+                  <AnalyticsSVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">Trust Score System</h3>
+            <p className="text-sm text-[#9ca3af]">AI-calculated trust scores for sellers and products with transparent explanations.</p>
+          </motion.div>
+        </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 border-t border-slate-900/80">
-        <div className="container mx-auto px-4">
+      {/* Solutions Section */}
+      <section id="why-trustwala" className="py-[120px] px-16 bg-[#0a0f0d]">
+        <div className="max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="mb-12"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-slate-50">
-              What Our Customers Say
+            <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
+              SOLUTIONS
+            </div>
+            <h2 className="text-[48px] font-bold text-white">
+              TrustWala for your marketplace needs
             </h2>
-            <p className="text-lg text-slate-300">
-              Hear from our happy buyers and sellers
-            </p>
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1, duration: 0.5 }}
-                whileHover={{ y: -8 }}
+          
+          <div className="grid grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
+            >
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={100}
+                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
               >
-                <Card className="card-hover border-2 border-transparent hover:border-amber-300/40 h-full">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 fill-accent text-accent" />
-                      ))}
-                    </div>
-                    <p className="text-slate-200 mb-6 leading-relaxed">
-                      &quot;{testimonial.text}&quot;
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800">
-                        <Image
-                          src={testimonial.avatar}
-                          alt={testimonial.name}
-                          width={48}
-                          height={48}
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-50">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-sm text-slate-300">
-                          {testimonial.location}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                <AnimatedSVG
+                  duration={2000}
+                  delay={300}
+                  className="w-20 h-20"
+                >
+                  <OnlineShoppingSVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+              <h3 className="text-xl font-semibold text-white mb-2">Buyers</h3>
+              <p className="text-sm text-[#9ca3af]">Find verified products with AI recommendations and secure transactions</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
+            >
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={200}
+                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
+              >
+                <AnimatedSVG
+                  duration={2000}
+                  delay={400}
+                  className="w-20 h-20"
+                >
+                  <BusinessDealSVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+              <h3 className="text-xl font-semibold text-white mb-2">Sellers</h3>
+              <p className="text-sm text-[#9ca3af]">Build trust scores, get verified, and reach more customers</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
+            >
+              <SpringAnimated
+                from={{ opacity: 0, scale: 0, rotate: -180 }}
+                to={{ opacity: 1, scale: 1, rotate: 0 }}
+                delay={300}
+                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
+              >
+                <AnimatedSVG
+                  duration={2000}
+                  delay={500}
+                  className="w-20 h-20"
+                >
+                  <SecuritySVG />
+                </AnimatedSVG>
+              </SpringAnimated>
+              <h3 className="text-xl font-semibold text-white mb-2">Security</h3>
+              <p className="text-sm text-[#9ca3af]">Listing fraud checks and escrow-ready checkout</p>
+            </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Bottom Feature Cards */}
+      <section className="py-[120px] px-16 max-w-[1440px] mx-auto">
+        <div className="grid grid-cols-3 gap-8">
+          {/* Card A: AI-Powered */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
+          >
+            <SpringAnimated
+              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
+              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
+              delay={100}
+              className="absolute top-0 right-0 w-32 h-32"
+            >
+              <AnimatedSVG
+                duration={2000}
+                delay={200}
+                className="w-full h-full"
+              >
+                <AIIllustrationSVG />
+              </AnimatedSVG>
+            </SpringAnimated>
+            <Sparkles className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
+            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">AI-Powered Platform</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">AI helpers for listing checks, recommendations, and transparent trust scoring</p>
+          </motion.div>
+          
+          {/* Card B: Offline Support */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
+          >
+            <SpringAnimated
+              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
+              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
+              delay={200}
+              className="absolute top-0 right-0 w-32 h-32"
+            >
+              <AnimatedSVG
+                duration={2000}
+                delay={300}
+                className="w-full h-full"
+              >
+                <MobileAppsSVG />
+              </AnimatedSVG>
+            </SpringAnimated>
+            <Layers className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
+            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">Offline-First PWA</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Installable PWA with offline caching so browsing stays fast on flaky connections</p>
+          </motion.div>
+          
+          {/* Card C: Multilingual */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
+          >
+            <SpringAnimated
+              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
+              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
+              delay={300}
+              className="absolute top-0 right-0 w-32 h-32"
+            >
+              <AnimatedSVG
+                duration={2000}
+                delay={400}
+                className="w-full h-full"
+              >
+                <TranslatorSVG />
+              </AnimatedSVG>
+            </SpringAnimated>
+            <Maximize2 className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
+            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">Multilingual Support</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Urdu/English voice search, RTL layout, and accessibility features</p>
+          </motion.div>
         </div>
       </section>
     </div>

@@ -12,13 +12,17 @@ export class ProductsService {
 
   async create(userId: string, dto: CreateProductDto) {
     // Generate slug
-    const slug = dto.title
+    const slugBase = dto.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+    const slug = `${slugBase}-${Date.now().toString(36)}`;
 
     // Get AI price suggestion
     const aiPrice = await this.aiService.suggestPrice(dto);
+
+    const seller = await this.prisma.user.findUnique({ where: { id: userId } });
+    const fraud = await this.aiService.detectFraud(dto, seller || {});
 
     const product = await this.prisma.product.create({
       data: {
@@ -31,10 +35,21 @@ export class ProductsService {
       include: {
         seller: true,
         category: true,
+        reviews: true,
       },
     });
 
-    return product;
+    const { score } = this.computeTrustScore(product);
+    await this.prisma.product.update({
+      where: { id: product.id },
+      data: { trustScore: score },
+    });
+
+    return {
+      ...product,
+      trustScore: score,
+      fraudSignals: fraud,
+    };
   }
 
   async findAll(filters: any) {
@@ -42,14 +57,24 @@ export class ProductsService {
       isActive: true,
     };
 
-    if (filters.categoryId) {
-      where.categoryId = filters.categoryId;
+    if (filters.categoryId || filters.category || filters.slug) {
+      const key = filters.categoryId || filters.category || filters.slug;
+      const category = await this.prisma.category.findFirst({
+        where: {
+          OR: [{ id: key }, { slug: key }],
+        },
+      });
+      if (category) {
+        where.categoryId = category.id;
+      } else {
+        where.categoryId = key; // fall through (will return empty)
+      }
     }
 
     if (filters.minPrice || filters.maxPrice) {
       where.price = {};
-      if (filters.minPrice) where.price.gte = filters.minPrice;
-      if (filters.maxPrice) where.price.lte = filters.maxPrice;
+      if (filters.minPrice) where.price.gte = Number(filters.minPrice);
+      if (filters.maxPrice) where.price.lte = Number(filters.maxPrice);
     }
 
     if (filters.search) {
@@ -69,9 +94,9 @@ export class ProductsService {
           orderBy: { createdAt: 'desc' },
         },
       },
-      orderBy: filters.sortBy || { createdAt: 'desc' },
-      take: filters.limit || 20,
-      skip: filters.skip || 0,
+      orderBy: [{ trustScore: 'desc' }, { createdAt: 'desc' }],
+      take: Number(filters.limit) || 20,
+      skip: Number(filters.skip) || 0,
     });
   }
 
@@ -118,11 +143,13 @@ export class ProductsService {
       data: { views: { increment: 1 } },
     });
 
-    // Calculate trust score
-    const trustScore = await this.calculateTrustScore(product);
-    product.trustScore = trustScore;
+    const { score, breakdown } = this.computeTrustScore(product);
+    product.trustScore = score;
 
-    return product;
+    return {
+      ...product,
+      trustBreakdown: breakdown,
+    };
   }
 
   async update(id: string, userId: string, dto: UpdateProductDto) {
@@ -134,10 +161,25 @@ export class ProductsService {
       throw new NotFoundException('Product not found or unauthorized');
     }
 
-    return this.prisma.product.update({
+    const updated = await this.prisma.product.update({
       where: { id },
       data: dto,
+      include: {
+        seller: {
+          select: {
+            id: true,
+            cnicVerified: true,
+            videoVerified: true,
+          },
+        },
+        reviews: true,
+      },
     });
+
+    // Recalculate trust score after update
+    await this.recalculateTrustScore(id);
+
+    return updated;
   }
 
   async delete(id: string, userId: string) {
@@ -155,35 +197,88 @@ export class ProductsService {
     });
   }
 
-  private async calculateTrustScore(product: any): Promise<number> {
-    let score = 0;
-    let factors = 0;
+  async recalculateTrustScore(productId: string): Promise<number> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        seller: {
+          select: {
+            id: true,
+            cnicVerified: true,
+            videoVerified: true,
+          },
+        },
+        reviews: true,
+      },
+    });
 
-    // Seller verification (40%)
-    if (product.seller.cnicVerified) score += 20;
-    if (product.seller.videoVerified) score += 20;
-    factors += 40;
-
-    // Product authenticity (30%)
-    if (product.ptaVerified) score += 15;
-    if (product.specifications) score += 15;
-    factors += 30;
-
-    // Reviews (20%)
-    if (product.reviews.length > 0) {
-      const avgRating = product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / product.reviews.length;
-      score += (avgRating / 5) * 20;
+    if (!product) {
+      return 0;
     }
-    factors += 20;
 
-    // Price fairness (10%)
+    const trustScore = this.computeTrustScore(product).score;
+    
+    // Update trust score in database
+    await this.prisma.product.update({
+      where: { id: productId },
+      data: { trustScore },
+    });
+
+    return trustScore;
+  }
+
+  private computeTrustScore(product: any): {
+    score: number;
+    breakdown: {
+      sellerVerification: number;
+      productAuthenticity: number;
+      reviews: number;
+      priceFairness: number;
+    };
+  } {
+    let sellerVerification = 0;
+    if (product.seller?.cnicVerified) sellerVerification += 50;
+    if (product.seller?.videoVerified) sellerVerification += 50;
+
+    let productAuthenticity = 0;
+    if (product.ptaVerified) productAuthenticity += 50;
+    if (product.specifications) productAuthenticity += 50;
+
+    let reviews = 0;
+    if (product.reviews?.length > 0) {
+      const avgRating =
+        product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
+        product.reviews.length;
+      reviews = Math.round((avgRating / 5) * 100);
+    }
+
+    let priceFairness = 50;
     if (product.aiPriceSuggestion) {
-      const priceDiff = Math.abs(product.price - product.aiPriceSuggestion) / product.aiPriceSuggestion;
-      score += Math.max(0, (1 - priceDiff) * 10);
+      const priceDiff =
+        Math.abs(product.price - product.aiPriceSuggestion) / product.aiPriceSuggestion;
+      priceFairness = Math.round(Math.max(0, (1 - priceDiff) * 100));
     }
-    factors += 10;
 
-    return Math.round((score / factors) * 100);
+    const score = Math.round(
+      sellerVerification * 0.4 +
+        productAuthenticity * 0.3 +
+        reviews * 0.2 +
+        priceFairness * 0.1,
+    );
+
+    return {
+      score,
+      breakdown: {
+        sellerVerification,
+        productAuthenticity,
+        reviews,
+        priceFairness,
+      },
+    };
+  }
+
+  private async calculateTrustScore(product: any): Promise<number> {
+    return this.computeTrustScore(product).score;
   }
 }
 

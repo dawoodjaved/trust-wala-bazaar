@@ -24,7 +24,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background lg:hidden shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[rgba(255,255,255,0.08)] bg-[#0a0f0d] backdrop-blur-[12px] lg:hidden shadow-[0_-8px_24px_rgba(0,0,0,0.4)]">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -35,11 +35,11 @@ export function MobileNav() {
                 variant="ghost"
                 className={cn(
                   "w-full flex flex-col items-center justify-center h-full rounded-none",
-                  isActive && "text-primary bg-primary/10"
+                  isActive && "text-[#c8d96f] bg-[rgba(200,217,111,0.1)]"
                 )}
               >
-                <Icon className={cn("h-5 w-5", isActive && "text-primary")} />
-                <span className={cn("text-xs mt-1", isActive && "text-primary font-medium")}>
+                <Icon className={cn("h-5 w-5", isActive && "text-[#c8d96f]")} />
+                <span className={cn("text-xs mt-1", isActive && "text-[#c8d96f] font-medium")}>
                   {item.name}
                 </span>
               </Button>

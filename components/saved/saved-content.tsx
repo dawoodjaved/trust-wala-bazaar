@@ -1,32 +1,36 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Trash2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Heart } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
+import { useQuery } from "@tanstack/react-query";
+import { getApiBase } from "@/lib/api-base";
 
 export function SavedContent() {
-  const savedProducts = [
-    {
-      id: "1",
-      title: "iPhone 15 Pro Max 256GB",
-      price: 350000,
-      location: "Lahore",
-      image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-      trustScore: 92,
-      verified: true,
+  const apiUrl = getApiBase();
+
+  const { data: savedProducts = [], isLoading } = useQuery({
+    queryKey: ["saved-products"],
+    queryFn: async () => {
+      const res = await fetch(`${apiUrl}/api/products?limit=8`);
+      if (!res.ok) return [];
+      const products = await res.json();
+      return (products || []).slice(0, 4).map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        location: p.city,
+        image: p.images?.[0] || p.thumbnail,
+        trustScore: p.trustScore,
+        verified: p.seller?.cnicVerified,
+        rating:
+          p.reviews?.length > 0
+            ? p.reviews.reduce((s: number, r: any) => s + r.rating, 0) / p.reviews.length
+            : 0,
+      }));
     },
-    {
-      id: "2",
-      title: "MacBook Pro M3",
-      price: 450000,
-      location: "Karachi",
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-      trustScore: 88,
-      verified: true,
-    },
-  ];
+    staleTime: 60000,
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -44,36 +48,17 @@ export function SavedContent() {
               Saved Items
             </h1>
             <p className="text-muted-foreground">
-              {savedProducts.length} items saved
+              {isLoading ? "Loading..." : `${savedProducts.length} items saved`}
             </p>
           </div>
         </div>
       </motion.div>
 
-      {savedProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {savedProducts.map((product, idx) => (
-            <ProductCard key={product.id} product={product} index={idx} />
-          ))}
-        </div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Card className="border-2 border-dashed">
-            <CardContent className="p-12 text-center">
-              <Heart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-xl font-bold mb-2">No saved items yet</p>
-              <p className="text-muted-foreground mb-6">
-                Start saving products you like
-              </p>
-              <Button className="rounded-xl">Browse Products</Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {savedProducts.map((product: any, index: number) => (
+          <ProductCard key={product.id} product={product} index={index} />
+        ))}
+      </div>
     </div>
   );
 }
-

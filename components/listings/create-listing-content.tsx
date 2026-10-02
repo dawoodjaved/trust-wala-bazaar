@@ -13,6 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/auth-hook";
+import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { CreateListingSVG } from "@/components/ui/marketplace-illustrations";
+import { getApiBase } from "@/lib/api-base";
 
 const steps = [
   "Basic Info",
@@ -26,6 +30,9 @@ export function CreateListingContent() {
   const router = useRouter();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedImageFiles, setUploadedImageFiles] = useState<File[]>([]);
+  const apiUrl = getApiBase();
   const [formData, setFormData] = useState({
     category: "",
     title: "",
@@ -49,25 +56,135 @@ export function CreateListingContent() {
     }
   };
 
-  const handleSubmit = () => {
-    toast({
-      title: "Listing Created!",
-      description: "Your listing has been published successfully.",
-    });
-    router.push("/home");
+  const uploadImage = async (file: File): Promise<string> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiUrl}/api/upload/image`, {
+        method: 'POST',
+        headers: token ? {
+          'Authorization': `Bearer ${token}`,
+        } : {},
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.url || data.imageUrl || URL.createObjectURL(file);
+      }
+      // Fallback to object URL if upload fails
+      return URL.createObjectURL(file);
+    } catch (error) {
+      console.warn('Image upload failed, using local URL:', error);
+      return URL.createObjectURL(file);
+    }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async () => {
+    // Validate required fields
+    if (!formData.category || !formData.title || !formData.description || !formData.condition || !formData.price || !formData.location) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.images.length === 0) {
+      toast({
+        title: "Images Required",
+        description: "Please upload at least one image.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Upload images first
+      const imageUrls: string[] = [];
+      for (const file of uploadedImageFiles) {
+        const url = await uploadImage(file);
+        imageUrls.push(url);
+      }
+      // Also include any existing image URLs
+      const allImageUrls = [...imageUrls, ...formData.images.filter(img => !img.startsWith('blob:'))];
+
+      // Prepare product data
+      const productData = {
+        title: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        categoryId: formData.category,
+        condition: formData.condition.toUpperCase(),
+        city: formData.location.split(',')[0]?.trim() || formData.location,
+        province: formData.location.split(',')[1]?.trim() || "Punjab",
+        images: allImageUrls,
+        specifications: formData.specifications,
+      };
+
+      // Get auth token
+      const token = localStorage.getItem('token');
+      
+      // Create product
+      const response = await fetch(`${apiUrl}/api/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (response.ok) {
+        const product = await response.json();
+        toast({
+          title: "Listing Created!",
+          description: "Your listing has been published successfully.",
+        });
+        router.push(`/products/${product.id}`);
+      } else {
+        const error = await response.json().catch(() => ({ message: 'Failed to create listing' }));
+        throw new Error(error.message || 'Failed to create listing');
+      }
+    } catch (error: any) {
+      console.error('Error creating listing:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create listing. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      // TODO: Upload to storage and get URLs
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
+      const fileArray = Array.from(files);
+      setUploadedImageFiles(prev => [...prev, ...fileArray]);
+      // Create preview URLs
+      const newImages = fileArray.map((file) => URL.createObjectURL(file));
       setFormData({ ...formData, images: [...formData.images, ...newImages] });
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
+      {/* Header with Illustration */}
+      <div className="mb-8 text-center">
+        <AnimatedSVG duration={2000} delay={0} className="w-24 h-24 mx-auto mb-4 opacity-20">
+          <CreateListingSVG />
+        </AnimatedSVG>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Create New Listing</h1>
+        <p className="text-[var(--text-secondary)]">Fill in the details to list your product</p>
+      </div>
+      
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -252,7 +369,57 @@ export function CreateListingContent() {
               <p className="text-sm text-muted-foreground">
                 Add specifications based on your product category. AI can help auto-fill these.
               </p>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={async () => {
+                  if (!formData.title || !formData.description) {
+                    toast({
+                      title: "Missing Information",
+                      description: "Please fill in title and description first.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  
+                  try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${apiUrl}/api/ai/specifications`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                      },
+                      body: JSON.stringify({
+                        title: formData.title,
+                        description: formData.description,
+                        category: formData.category,
+                      }),
+                    });
+
+                    if (response.ok) {
+                      const data = await response.json();
+                      setFormData({
+                        ...formData,
+                        specifications: data.specifications || {},
+                      });
+                      toast({
+                        title: "Specifications Generated",
+                        description: "AI has auto-filled the specifications.",
+                      });
+                    } else {
+                      throw new Error('AI service unavailable');
+                    }
+                  } catch (error) {
+                    console.warn('AI auto-fill error:', error);
+                    toast({
+                      title: "AI Service Unavailable",
+                      description: "Please fill in specifications manually. AI feature requires API keys to be configured.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
                 <Sparkles className="mr-2 h-4 w-4" />
                 Auto-fill with AI
               </Button>
@@ -374,8 +541,8 @@ export function CreateListingContent() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit}>
-                Publish Listing
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? "Publishing..." : "Publish Listing"}
               </Button>
             )}
           </div>

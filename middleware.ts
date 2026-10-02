@@ -1,51 +1,56 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Only use Clerk middleware if Clerk is configured
 const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const hasClerk = publishableKey && publishableKey !== "pk_test_placeholder";
+const hasClerk = !!(publishableKey && publishableKey !== "pk_test_placeholder");
 
-// Public routes that don't require authentication
-const publicRoutes = [
+const publicMatchers = [
   "/",
-  "/search",
-  "/products",
-  "/categories",
-  "/auth",
+  "/home",
+  "/search(.*)",
+  "/products(.*)",
+  "/categories(.*)",
+  "/shops(.*)",
+  "/auth(.*)",
 ];
 
-function isPublicRoute(pathname: string): boolean {
-  return publicRoutes.some((route) => pathname.startsWith(route));
+function createPassthroughMiddleware() {
+  return function middleware() {
+    return NextResponse.next();
+  };
 }
 
-export async function middleware(request: NextRequest) {
-  // If Clerk is not configured, allow all routes (for development)
-  if (!hasClerk) {
-    return NextResponse.next();
-  }
+function createClerkAuthMiddleware() {
+  // Clerk v5: `auth` is a function — call auth().protect(), not auth.protect()
+  const { clerkMiddleware, createRouteMatcher } = require("@clerk/nextjs/server") as typeof import("@clerk/nextjs/server");
+  const isPublic = createRouteMatcher(publicMatchers);
 
-  // Dynamic import only if Clerk is configured
-  try {
-    const { clerkMiddleware, createRouteMatcher } = await import("@clerk/nextjs/server");
-    
-    const isPublic = createRouteMatcher([
-      "/",
-      "/search",
-      "/products/(.*)",
-      "/categories/(.*)",
-      "/auth/(.*)",
-    ]);
-
-    return clerkMiddleware(async (auth, req) => {
+  return clerkMiddleware(
+    (auth, req) => {
       if (!isPublic(req)) {
-        await auth.protect();
+        const { userId, redirectToSignIn } = auth();
+        if (!userId) {
+          return redirectToSignIn({ returnBackUrl: req.url });
+        }
       }
-    })(request);
-  } catch (error) {
-    // If Clerk fails, allow the request
-    console.warn("Clerk middleware error:", error);
+    },
+    {
+      signInUrl: "/auth/login",
+    },
+  );
+}
+
+const middlewareImpl = hasClerk ? createClerkAuthMiddleware() : createPassthroughMiddleware();
+
+export default function middleware(request: NextRequest, event: unknown) {
+  const { pathname } = request.nextUrl;
+
+  // Next.js API + static uploads handle their own auth / are public assets
+  if (pathname.startsWith('/api') || pathname.startsWith('/uploads')) {
     return NextResponse.next();
   }
+
+  return (middlewareImpl as (req: NextRequest, evt: unknown) => unknown)(request, event);
 }
 
 export const config = {

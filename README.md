@@ -1,215 +1,117 @@
 # TrustWala Bazaar
 
-Pakistan's Most Trusted AI-Enriched Marketplace - A complete buy/sell platform for mobiles, laptops, electronics, cars, tractors, and more.
+A marketplace built for Pakistan with trust at the center — AI fraud checks, seller verification, real-time chat, and search that works the way people actually shop (photo, voice, or text in Urdu or English).
 
-## 🚀 Features
+Most local marketplaces leave buyers guessing who’s legitimate. TrustWala Bazaar makes that visible: CNIC and video verification, transparent trust scores, escrow-minded checkout, and offline-friendly PWA behavior for spotty connections.
 
-### Core Features
-- **AI-Powered Recommendations**: Personalized product suggestions
-- **Fraud Detection & Verification**: CNIC, video verification, AI-powered safety
-- **Voice & Visual Search**: Search using voice (Urdu/English) or upload images
-- **Trust Score System**: AI-calculated trust scores for sellers and products
-- **Video Reviews & Comparisons**: Embedded YouTube/TikTok/Instagram videos
-- **AI Aggregated Reviews**: Summarized pros/cons with text-to-speech
-- **PTA Compliance Check**: Mobile device verification
-- **Real-time Chat**: Live negotiation with AI assistant
-- **Escrow Protection**: Secure payment handling
-- **Accessibility**: Simple mode, voice navigation, Urdu support
+## What’s in the box
 
-### Technical Stack
-- **Frontend**: Next.js 15 (App Router), React 19, TypeScript
-- **UI**: Tailwind CSS + shadcn/ui components
-- **State Management**: Zustand
-- **Backend**: NestJS (TypeScript) - separate API server
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: Clerk
-- **AI Integration**: Vercel AI SDK + Groq/OpenAI
-- **Real-time**: Socket.io
-- **Maps**: Google Maps API
-- **Storage**: Supabase Storage / AWS S3
-- **PWA**: Service Workers + IndexedDB
+### Buyers
+- Personalized recommendations and an AI chat assistant on product pages
+- Visual search (upload or snap a photo) and voice search (Urdu / English)
+- Trust scores before you buy, plus nearby shops on Leaflet + OpenStreetMap
+- Real-time messaging with sellers
 
-## 📦 Installation
+### Sellers
+- Multi-step listing flow with AI-assisted specs and price hints
+- CNIC extraction and video / liveness verification to raise trust
+- PTA-oriented checks for mobile device listings
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd trust_wala_bazaar
-   ```
+### Platform
+- Multi-layer fraud signals (pricing, verification, duplicates)
+- Clerk auth with a demo-login fallback when keys aren’t set
+- NestJS API + Socket.io for chat; Next.js App Router UI with `/api` routes for several AI and data flows
+- Optional Supabase (or local) uploads; works without most API keys for demos
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Tech stack
 
-3. **Set up environment variables**
-   Create a `.env.local` file:
-   ```env
-   # Clerk Authentication
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-   CLERK_SECRET_KEY=your_clerk_secret_key
-   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
-   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
-   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/home
-   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/home
+| Layer | Choices |
+|--------|---------|
+| Frontend | Next.js 15 (App Router), React 19, TypeScript, Tailwind, shadcn/ui, Framer Motion, React Query, Zustand |
+| Backend | NestJS, Prisma, PostgreSQL, Socket.io, JWT |
+| Auth | Clerk (optional) + demo mode |
+| AI | Groq / Gemini / OpenAI (any one is enough for most flows) |
+| Maps | Leaflet + OpenStreetMap (no paid maps key) |
+| Deploy | Vercel (frontend) + Nest host (e.g. Render) + Neon Postgres |
 
-   # Database
-   DATABASE_URL=postgresql://user:password@localhost:5432/trustwala_bazaar
+## Getting started
 
-   # AI Services
-   OPENAI_API_KEY=your_openai_key
-   GROQ_API_KEY=your_groq_key
+**Prerequisites:** Node.js 18+, npm, PostgreSQL (Neon free tier works fine).
 
-   # Storage
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_ANON_KEY=your_supabase_anon_key
-
-   # Google Maps
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
-
-   # App URL
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   ```
-
-4. **Set up the database**
-   ```bash
-   # Run Prisma migrations (when backend is set up)
-   npx prisma migrate dev
-   ```
-
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📁 Project Structure
-
-```
-trust_wala_bazaar/
-├── app/                    # Next.js App Router pages
-│   ├── auth/              # Authentication pages
-│   ├── home/              # Dashboard/home page
-│   ├── search/            # Search page
-│   ├── products/          # Product detail pages
-│   ├── listings/          # Create listing pages
-│   └── ...
-├── components/            # React components
-│   ├── ui/                # shadcn/ui components
-│   ├── layout/            # Layout components (Header, Sidebar, etc.)
-│   ├── features/          # Feature components (Voice search, AI chat, etc.)
-│   ├── product/           # Product-related components
-│   └── ...
-├── lib/                   # Utilities and helpers
-│   ├── store/             # Zustand stores
-│   └── utils.ts           # Utility functions
-├── public/                # Static assets
-└── backend/               # NestJS backend (separate)
+```bash
+git clone https://github.com/dawoodjaved/trust-wala-bazaar.git
+cd trust-wala-bazaar
+npm install
+cp .env.example .env.local   # fill in what you need
 ```
 
-## 🎨 Design System
+### Backend
 
-### Colors
-- **Primary Green**: `#00A651` - Trust, growth
-- **Accent Orange**: `#FF6B00` - Energy, deals
-- **Success**: `#10B981`
-- **Warning**: `#F59E0B`
-- **Error**: `#EF4444`
+```bash
+cd backend
+npm install
+cp .env.example .env         # or point at the same DATABASE_URL / JWT_SECRET as root
+npx prisma migrate deploy
+npx prisma db seed           # optional demo catalog
+npm run start:dev            # default API port from env (often 3001)
+```
 
-### Typography
-- **Headings**: Inter/Poppins
-- **Body**: Inter/System
-- **Urdu**: Noto Nastaliq Urdu
+### Frontend
 
-## 🔐 Authentication
+```bash
+# from repo root
+npm run dev
+```
 
-This project uses Clerk for authentication. Set up your Clerk account at [clerk.com](https://clerk.com) and add your keys to `.env.local`.
+Open the URL Next prints (commonly `http://localhost:3000`). Point `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_SOCKET_URL` at the Nest server.
 
-## 🤖 AI Features
+## Environment variables
 
-### AI Chat Assistant
-- Context-aware product assistance
-- Urdu and English support
-- Voice input/output
+Use `.env.example` as the template. Real values belong only in `.env.local` / host dashboards — those files are gitignored.
 
-### AI Recommendations
-- Personalized product suggestions
-- Based on browsing history and preferences
+| Variable | Notes |
+|----------|--------|
+| `DATABASE_URL` | Postgres connection string |
+| `JWT_SECRET` | Long random string |
+| `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_SOCKET_URL` / `PUBLIC_API_URL` | Public Nest base URL |
+| `FRONTEND_URL` | CORS / redirects |
+| `GROQ_API_KEY` or `GEMINI_API_KEY` / `OPENAI_API_KEY` | AI; optional |
+| `NEXT_PUBLIC_CLERK_*` / `CLERK_SECRET_KEY` | Auth; optional (demo login without them) |
+| `SUPABASE_URL` / `SUPABASE_ANON_KEY` | Uploads on ephemeral hosts |
 
-### AI Price Analyzer
-- Market price comparisons
-- Fair price suggestions
-- Confidence scores
+Nearby shops do **not** need a Google Maps key.
 
-### Fraud Detection
-- AI-powered risk assessment
-- Pattern recognition
-- Automated flagging
+## Deploy (free-tier friendly)
 
-## 📱 PWA Support
+1. **Database** — Neon: create a project, set `DATABASE_URL`, run `prisma migrate deploy` (and seed if you want).
+2. **API** — Deploy the `backend/` folder on Render or another Node host (`npm install && npx prisma generate && npm run build`, start with migrate + `start:prod`). Set `FRONTEND_URL`, `PUBLIC_API_URL`, `JWT_SECRET`, and AI keys.
+3. **Frontend** — Vercel, root of this repo. Set `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_SOCKET_URL` to the API URL; add Clerk keys if you use them.
+4. Prefer **Supabase** storage on free PaaS — local disk uploads won’t survive restarts.
 
-The app is a Progressive Web App (PWA) with:
-- Offline support via Service Workers
-- Installable on mobile devices
-- IndexedDB for offline data storage
+Cold starts on free Nest hosts are normal; keep the laptop + tunnel approach only for demos.
 
-## 🌐 Internationalization
+## Project layout
 
-Supports:
-- English (default)
-- Urdu (RTL layout)
-- Regional languages (future)
+```
+trust-wala-bazaar/
+├── app/                 # Next.js pages + Route Handlers under app/api/
+├── components/          # UI, features (AI chat, CNIC, visual/voice search, …)
+├── lib/                 # auth helpers, catalog, server utilities, stores
+├── prisma/              # shared schema / migrations (also under backend/)
+├── public/              # static assets, PWA icons (uploads ignored)
+└── backend/             # NestJS API, Prisma, Socket.io
+```
 
-## 🚢 Deployment
+## Notes
 
-### Vercel (Recommended)
+- Without AI keys the UI still runs; chat and verification features degrade gracefully.
+- Real-time chat needs the Nest Socket.io process.
+- Don’t commit `.env`, `.env.local`, or upload binaries — only placeholders in `.env.example`.
 
-1. Push your code to GitHub
-2. Import project in Vercel
-3. Add environment variables
-4. Deploy!
+## License
 
-### Manual Deployment
-
-1. Build the project:
-   ```bash
-   npm run build
-   ```
-
-2. Start production server:
-   ```bash
-   npm start
-   ```
-
-## 📝 Backend Setup
-
-The backend is a separate NestJS application. See `backend/README.md` for setup instructions.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-
-- Design inspiration from Daraz.pk and modern e-commerce platforms
-- shadcn/ui for beautiful, accessible components
-- Clerk for authentication
-- Vercel for hosting and AI SDK
-
-## 📞 Support
-
-For support, email support@trustwalabazaar.com or open an issue on GitHub.
+MIT
 
 ---
 
-Built with ❤️ for Pakistan 🇵🇰
-
+Built for Pakistan — safer buying and selling, without the usual leap of faith.
