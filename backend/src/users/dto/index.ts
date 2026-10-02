@@ -102,5 +102,30 @@ export class UpdateUserDto {
   @IsOptional()
   @IsNumber()
   fontSize?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  cnicNumber?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  cnicImage?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  cnicVerified?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  videoUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  videoVerified?: boolean;
 }
 

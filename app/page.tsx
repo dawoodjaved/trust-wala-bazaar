@@ -94,7 +94,7 @@ export default function LandingPage() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-[18px] text-[#9ca3af] mt-6 max-w-[600px] mx-auto leading-[1.6]"
           >
-            Buy and sell with confidence. AI-powered fraud detection, trust scores, and secure transactions for mobiles, laptops, electronics, cars, and more.
+            Buy and sell with confidence. Trust scores, seller verification, and safer transactions for mobiles, laptops, electronics, cars, and more.
           </motion.p>
           
           {/* CTA Buttons */}
@@ -141,21 +141,21 @@ export default function LandingPage() {
                 <Star key={i} className="w-5 h-5 fill-[#fbbf24] text-[#fbbf24]" />
               ))}
             </div>
-            <p className="text-sm text-[#e5e7eb] mt-3">Trusted by thousands of buyers and sellers</p>
+            <p className="text-sm text-[#e5e7eb] mt-3">Built for safer buying and selling in Pakistan</p>
             
             {/* Stats */}
             <div className="mt-12 flex items-center gap-12">
               <div className="text-center">
-                <div className="text-3xl font-bold text-[#c8d96f]">10K+</div>
-                <div className="text-sm text-[#9ca3af] mt-1">Verified Sellers</div>
+                <div className="text-3xl font-bold text-[#c8d96f]">5★</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Trust Scoring</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[#c8d96f]">50K+</div>
-                <div className="text-sm text-[#9ca3af] mt-1">Active Listings</div>
+                <div className="text-3xl font-bold text-[#c8d96f]">CNIC</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Seller Checks</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[#c8d96f]">92%</div>
-                <div className="text-sm text-[#9ca3af] mt-1">Fraud Detection</div>
+                <div className="text-3xl font-bold text-[#c8d96f]">Escrow</div>
+                <div className="text-sm text-[#9ca3af] mt-1">Ready Flow</div>
               </div>
             </div>
           </motion.div>
@@ -180,7 +180,7 @@ export default function LandingPage() {
               Revolutionizing Pakistan&apos;s marketplace with AI-powered trust and security.
             </h2>
             <p className="text-[15px] text-[#9ca3af] leading-[1.8]">
-              TrustWala Bazaar is Pakistan&apos;s most trusted AI-enriched marketplace platform, solving critical trust and fraud challenges that plague online marketplaces. Built with advanced machine learning and multi-layer verification, we achieve 92% fraud detection accuracy through CNIC verification, video face recognition, and AI pattern analysis. Our transparent trust score algorithm enables users to understand scoring decisions, building unprecedented marketplace confidence.
+              TrustWala Bazaar is an AI-assisted marketplace built for Pakistan — combining seller verification (CNIC + video), transparent trust scores, listing fraud checks, and escrow-ready checkout so buyers and sellers can trade with clearer signals and less risk.
             </p>
           </motion.div>
           
@@ -281,7 +281,7 @@ export default function LandingPage() {
               </SpringAnimated>
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">Fraud Detection</h3>
-            <p className="text-sm text-[#9ca3af]">CNIC verification, video verification, and AI-powered fraud detection for maximum safety.</p>
+            <p className="text-sm text-[#9ca3af]">CNIC upload, video verification workflows, and AI-assisted listing risk checks.</p>
           </motion.div>
           
           {/* Card 3: Voice & Visual Search */}
@@ -436,7 +436,7 @@ export default function LandingPage() {
                 </AnimatedSVG>
               </SpringAnimated>
               <h3 className="text-xl font-semibold text-white mb-2">Security</h3>
-              <p className="text-sm text-[#9ca3af]">Multi-layer fraud detection and escrow protection</p>
+              <p className="text-sm text-[#9ca3af]">Listing fraud checks and escrow-ready checkout</p>
             </motion.div>
           </div>
         </div>
@@ -469,7 +469,7 @@ export default function LandingPage() {
             </SpringAnimated>
             <Sparkles className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
             <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">AI-Powered Platform</h3>
-            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Advanced machine learning for recommendations, fraud detection, and trust scoring</p>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">AI helpers for listing checks, recommendations, and transparent trust scoring</p>
           </motion.div>
           
           {/* Card B: Offline Support */}
@@ -496,7 +496,7 @@ export default function LandingPage() {
             </SpringAnimated>
             <Layers className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
             <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">Offline-First PWA</h3>
-            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Full functionality without internet connectivity - perfect for Pakistan&apos;s connectivity challenges</p>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Installable PWA with offline caching so browsing stays fast on flaky connections</p>
           </motion.div>
           
           {/* Card C: Multilingual */}

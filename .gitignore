@@ -157,9 +157,8 @@ jspm_packages/
 .nuxt
 dist
 
-# Gatsby files
+# Cache
 .cache/
-public
 
 # Storybook build outputs
 .out
@@ -187,3 +186,10 @@ temp/
 **/public/sw.js.map
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
+
+# Local uploads
+backend/uploads/
+public/uploads/**
+!public/uploads/.gitkeep
+!public/uploads/images/.gitkeep
+!public/uploads/videos/.gitkeep

@@ -11,12 +11,15 @@ import { MessagesModule } from './messages/messages.module';
 import { AiModule } from './ai/ai.module';
 import { SearchModule } from './search/search.module';
 import { UploadModule } from './upload/upload.module';
+import { TokenRateLimitModule } from './common/token-rate-limit/token-rate-limit.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env', '../.env.local'],
     }),
+    TokenRateLimitModule,
     PrismaModule,
     AuthModule,
     UsersModule,

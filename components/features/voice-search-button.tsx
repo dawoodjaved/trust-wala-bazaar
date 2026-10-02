@@ -17,8 +17,7 @@ export function VoiceSearchButton() {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      // Support both English and Urdu
-      recognition.lang = "en-US,ur-PK";
+      recognition.lang = "en-US";
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = event.results[0][0].transcript;

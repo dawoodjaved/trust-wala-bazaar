@@ -3,6 +3,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
+import { TokenRateLimit } from '../common/token-rate-limit/token-rate-limit.decorator';
+import { TokenRateLimitGuard } from '../common/token-rate-limit/token-rate-limit.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -23,22 +25,42 @@ export class UsersController {
     return this.usersService.update(req.user.id, dto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get user by ID' })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  @Post('me/verify/video')
+  @UseGuards(TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-vision', limit: 5, ttlSec: 60 })
+  @ApiOperation({ summary: 'Verify user identity with video (frontend path)' })
+  async verifyVideoMe(@Request() req, @Body() body: { videoUrl: string }) {
+    return this.usersService.verifyVideo(req.user.id, body.videoUrl);
+  }
+
+  @Post('me/verify/liveness')
+  @UseGuards(TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-vision', limit: 5, ttlSec: 60 })
+  @ApiOperation({ summary: 'Check liveness detection (frontend path)' })
+  async checkLivenessMe(@Request() req, @Body() body: { videoUrl: string }) {
+    return this.usersService.checkLiveness(req.user.id, body.videoUrl);
   }
 
   @Post('verify/video')
+  @UseGuards(TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-vision', limit: 5, ttlSec: 60 })
   @ApiOperation({ summary: 'Verify user identity with video and face recognition' })
   async verifyVideo(@Request() req, @Body() body: { videoUrl: string }) {
     return this.usersService.verifyVideo(req.user.id, body.videoUrl);
   }
 
   @Post('verify/liveness')
+  @UseGuards(TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-vision', limit: 5, ttlSec: 60 })
   @ApiOperation({ summary: 'Check liveness detection in video' })
   async checkLiveness(@Request() req, @Body() body: { videoUrl: string }) {
     return this.usersService.checkLiveness(req.user.id, body.videoUrl);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get user by ID' })
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 }
 

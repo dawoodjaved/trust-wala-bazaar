@@ -4,20 +4,21 @@
   "description": "Pakistan's Most Trusted AI-Enriched Marketplace",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#00A651",
+  "background_color": "#0a0f0d",
+  "theme_color": "#0a0f0d",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/placeholder-product.jpg",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/placeholder-product.jpg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
-

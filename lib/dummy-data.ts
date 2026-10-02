@@ -1,4 +1,4 @@
-// Comprehensive dummy data for showcasing product listings
+import catalog from "./pakistan-catalog.snapshot.json";
 
 export interface DummyProduct {
   id: string;
@@ -34,156 +34,114 @@ export interface DummyProduct {
   isActive: boolean;
 }
 
-const cities = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Quetta"];
-const provinces = ["Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan", "Islamabad Capital Territory"];
+const CITY_META: Record<string, { province: string; lat: number; lng: number }> = {
+  Lahore: { province: "Punjab", lat: 31.5204, lng: 74.3587 },
+  Karachi: { province: "Sindh", lat: 24.8607, lng: 67.0011 },
+  Islamabad: { province: "Islamabad Capital Territory", lat: 33.6844, lng: 73.0479 },
+  Rawalpindi: { province: "Punjab", lat: 33.5651, lng: 73.0169 },
+  Faisalabad: { province: "Punjab", lat: 31.4504, lng: 73.135 },
+  Multan: { province: "Punjab", lat: 30.1575, lng: 71.5249 },
+  Peshawar: { province: "Khyber Pakhtunkhwa", lat: 34.0151, lng: 71.5249 },
+  Quetta: { province: "Balochistan", lat: 30.1798, lng: 66.975 },
+};
 
-const categories = [
-  { id: "mobiles", name: "Mobiles" },
-  { id: "laptops", name: "Laptops" },
-  { id: "electronics", name: "Electronics" },
-  { id: "cars", name: "Cars" },
-  { id: "cameras", name: "Cameras" },
-  { id: "gaming", name: "Gaming" },
-  { id: "wearables", name: "Wearables" },
-  { id: "audio", name: "Audio" },
+const categoryNames: Record<string, string> = {
+  mobiles: "Mobiles",
+  laptops: "Laptops",
+  electronics: "Electronics",
+  cars: "Cars",
+  cameras: "Cameras",
+  gaming: "Gaming",
+  wearables: "Wearables",
+  audio: "Audio",
+};
+
+const sellerNames = [
+  "Ahmed Khan Mobiles",
+  "Fatima Electronics",
+  "Bilal Autos",
+  "Tech Bazaar Lahore",
+  "Karachi Gadget Hub",
+  "Islamabad Digital Mart",
 ];
 
-const productTemplates = [
-  // Mobiles
-  { title: "iPhone 15 Pro Max 256GB", price: 350000, category: "mobiles", image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop" },
-  { title: "Samsung Galaxy S24 Ultra 512GB", price: 280000, category: "mobiles", image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop" },
-  { title: "OnePlus 12 256GB", price: 195000, category: "mobiles", image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&h=800&fit=crop" },
-  { title: "Xiaomi 14 Pro 512GB", price: 175000, category: "mobiles", image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=800&fit=crop" },
-  { title: "Google Pixel 8 Pro 256GB", price: 220000, category: "mobiles", image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=800&fit=crop" },
-  
-  // Laptops
-  { title: "MacBook Pro M3 14-inch 512GB", price: 450000, category: "laptops", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop" },
-  { title: "Dell XPS 15 OLED 1TB", price: 380000, category: "laptops", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=800&fit=crop" },
-  { title: "HP Spectre x360 13.5", price: 320000, category: "laptops", image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&h=800&fit=crop" },
-  { title: "Lenovo ThinkPad X1 Carbon", price: 295000, category: "laptops", image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&h=800&fit=crop" },
-  { title: "ASUS ROG Zephyrus G16", price: 420000, category: "laptops", image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&h=800&fit=crop" },
-  
-  // Electronics
-  { title: "Sony WH-1000XM5 Headphones", price: 55000, category: "electronics", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop" },
-  { title: "Samsung 55\" QLED 4K TV", price: 180000, category: "electronics", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&h=800&fit=crop" },
-  { title: "Apple AirPods Pro 2", price: 65000, category: "electronics", image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=800&h=800&fit=crop" },
-  { title: "iPad Pro 12.9\" M2 256GB", price: 320000, category: "electronics", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&h=800&fit=crop" },
-  { title: "Samsung Galaxy Watch 6 Classic", price: 85000, category: "electronics", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=800&fit=crop" },
-  
-  // Cameras
-  { title: "Canon EOS R6 Mark II", price: 650000, category: "cameras", image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=800&fit=crop" },
-  { title: "Sony A7 IV Full Frame", price: 720000, category: "cameras", image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=800&fit=crop" },
-  { title: "Nikon Z6 III", price: 680000, category: "cameras", image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=800&fit=crop" },
-  { title: "Fujifilm X-T5", price: 450000, category: "cameras", image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=800&fit=crop" },
-  
-  // Gaming
-  { title: "PlayStation 5 Console", price: 125000, category: "gaming", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=800&fit=crop" },
-  { title: "Xbox Series X", price: 115000, category: "gaming", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=800&fit=crop" },
-  { title: "Nintendo Switch OLED", price: 75000, category: "gaming", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=800&fit=crop" },
-  { title: "Steam Deck 512GB", price: 145000, category: "gaming", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=800&fit=crop" },
-  
-  // Audio
-  { title: "Bose QuietComfort 45", price: 48000, category: "audio", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop" },
-  { title: "JBL Flip 6 Bluetooth Speaker", price: 18000, category: "audio", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&h=800&fit=crop" },
-  { title: "Sennheiser HD 660S", price: 95000, category: "audio", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop" },
-];
+type SnapshotItem = (typeof catalog)[number];
 
-function getRandomElement<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
-}
+function toDummyProduct(item: SnapshotItem, index: number): DummyProduct {
+  const cityMeta = CITY_META[item.city] || CITY_META.Lahore;
+  const conditionMap = {
+    NEW: "NEW",
+    USED: "GOOD",
+    REFURBISHED: "EXCELLENT",
+  } as const;
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateDummyProduct(template: typeof productTemplates[0], index: number): DummyProduct {
-  const city = getRandomElement(cities);
-  const province = getRandomElement(provinces);
-  const category = categories.find(c => c.id === template.category) || categories[0];
-  const condition = getRandomElement<DummyProduct["condition"]>(["NEW", "LIKE_NEW", "EXCELLENT", "GOOD", "FAIR"]);
-  const trustScore = getRandomInt(75, 98);
-  const rating = Number((Math.random() * 1.5 + 3.5).toFixed(1));
-  const reviewCount = getRandomInt(5, 150);
-  const hasOriginalPrice = Math.random() > 0.5;
-  const originalPrice = hasOriginalPrice ? Math.round(template.price * 1.15) : undefined;
-  
   return {
     id: `prod-${index + 1}`,
-    title: template.title,
-    description: `Premium ${template.title} in ${condition.toLowerCase()} condition. Original packaging included. ${hasOriginalPrice ? 'Great deal!' : 'Best price in market!'}`,
-    price: template.price,
-    originalPrice,
-    condition,
-    categoryId: category.id,
-    category: category.name,
-    city,
-    province,
-    latitude: 31.5204 + (Math.random() - 0.5) * 0.1,
-    longitude: 74.3587 + (Math.random() - 0.5) * 0.1,
-    images: [template.image, template.image, template.image],
-    videos: Math.random() > 0.7 ? [template.image] : undefined,
+    title: item.title,
+    description: item.description,
+    price: item.price,
+    originalPrice: item.originalPrice,
+    condition: conditionMap[item.condition as keyof typeof conditionMap] || "GOOD",
+    categoryId: item.category,
+    category: categoryNames[item.category] || item.category,
+    city: item.city,
+    province: cityMeta.province,
+    latitude: cityMeta.lat,
+    longitude: cityMeta.lng,
+    images: item.images,
     specifications: {
-      brand: template.title.split(" ")[0],
-      model: template.title,
-      color: getRandomElement(["Black", "White", "Silver", "Blue", "Green"]),
-      storage: template.title.includes("256GB") ? "256GB" : template.title.includes("512GB") ? "512GB" : "128GB",
+      brand: item.brand,
+      model: item.title,
+      color: item.color,
+      storage: item.storage || "N/A",
+      source: "dummyjson",
     },
-    ptaVerified: Math.random() > 0.4,
-    ptaStatus: Math.random() > 0.4 ? "APPROVED" : undefined,
-    trustScore,
-    verified: Math.random() > 0.3,
-    rating,
-    reviewCount,
+    ptaVerified: !!item.pta,
+    ptaStatus: item.pta ? "APPROVED" : undefined,
+    trustScore: 75 + (index % 24),
+    verified: index % 4 !== 0,
+    rating: item.rating,
+    reviewCount: item.reviewCount,
     seller: {
-      id: `seller-${index + 1}`,
-      name: getRandomElement(["Tech Store", "Electronics Hub", "Gadget Zone", "Mobile World", "Digital Mart", "Smart Solutions"]),
-      cnicVerified: Math.random() > 0.2,
-      videoVerified: Math.random() > 0.4,
-      trustScore: getRandomInt(80, 95),
+      id: `seller-${(index % sellerNames.length) + 1}`,
+      name: sellerNames[index % sellerNames.length],
+      cnicVerified: index % 5 !== 0,
+      videoVerified: index % 3 === 0,
+      trustScore: 80 + (index % 16),
     },
-    createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - index * 86400000).toISOString(),
     updatedAt: new Date().toISOString(),
     isActive: true,
   };
 }
 
+const ALL_PRODUCTS: DummyProduct[] = catalog.map((item, index) => toDummyProduct(item, index));
+
 export function getDummyProducts(limit?: number): DummyProduct[] {
-  const products = productTemplates.map((template, index) => generateDummyProduct(template, index));
-  
-  // Duplicate and vary some products to get more listings
-  const extendedProducts = [...products];
-  for (let i = 0; i < 15; i++) {
-    const template = getRandomElement(productTemplates);
-    extendedProducts.push(generateDummyProduct(template, products.length + i));
-  }
-  
-  // Shuffle
-  for (let i = extendedProducts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [extendedProducts[i], extendedProducts[j]] = [extendedProducts[j], extendedProducts[i]];
-  }
-  
-  return limit ? extendedProducts.slice(0, limit) : extendedProducts;
+  return limit ? ALL_PRODUCTS.slice(0, limit) : [...ALL_PRODUCTS];
+}
+
+export function getDeterministicDummyProducts(limit = 20): DummyProduct[] {
+  return ALL_PRODUCTS.slice(0, Math.min(limit, ALL_PRODUCTS.length));
 }
 
 export function getDummyProductById(id: string): DummyProduct | null {
-  const products = getDummyProducts();
-  return products.find(p => p.id === id) || null;
+  return ALL_PRODUCTS.find((p) => p.id === id) || null;
 }
 
 export function getDummyProductsByCategory(categoryId: string, limit?: number): DummyProduct[] {
-  const allProducts = getDummyProducts();
-  const filtered = allProducts.filter(p => p.categoryId === categoryId);
+  const filtered = ALL_PRODUCTS.filter((p) => p.categoryId === categoryId);
   return limit ? filtered.slice(0, limit) : filtered;
 }
 
 export function searchDummyProducts(query: string, limit?: number): DummyProduct[] {
-  const allProducts = getDummyProducts();
   const lowerQuery = query.toLowerCase();
-  const filtered = allProducts.filter(p => 
-    p.title.toLowerCase().includes(lowerQuery) ||
-    p.description.toLowerCase().includes(lowerQuery) ||
-    p.category.toLowerCase().includes(lowerQuery)
+  const filtered = ALL_PRODUCTS.filter(
+    (p) =>
+      p.title.toLowerCase().includes(lowerQuery) ||
+      p.description.toLowerCase().includes(lowerQuery) ||
+      p.category.toLowerCase().includes(lowerQuery) ||
+      p.specifications?.brand?.toLowerCase?.().includes(lowerQuery),
   );
   return limit ? filtered.slice(0, limit) : filtered;
 }

@@ -4,18 +4,20 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { ChatContent } from "@/components/chat/chat-content";
 import { Toaster } from "@/components/ui/toaster";
 
-export default function ChatPage({
+export default async function ChatPage({
   params,
 }: {
-  params: { conversationId: string };
+  params: Promise<{ conversationId: string }>;
 }) {
+  const { conversationId } = await params;
+
   return (
     <>
       <Header />
       <div className="flex pt-20">
         <Sidebar />
         <main className="flex-1 pb-20 lg:pb-4">
-          <ChatContent conversationId={params.conversationId} />
+          <ChatContent conversationId={conversationId} />
         </main>
       </div>
       <MobileNav />
@@ -23,4 +25,3 @@ export default function ChatPage({
     </>
   );
 }
-

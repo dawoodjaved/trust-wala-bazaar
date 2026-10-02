@@ -17,16 +17,28 @@ export class CategoriesService {
     });
   }
 
-  async findOne(id: string) {
-    return this.prisma.category.findUnique({
-      where: { id },
+  async findOne(idOrSlug: string) {
+    const category = await this.prisma.category.findFirst({
+      where: {
+        OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+      },
       include: {
         children: true,
         products: {
-          take: 20,
+          where: { isActive: true },
+          take: 50,
+          include: {
+            seller: true,
+            category: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+        _count: {
+          select: { products: true },
         },
       },
     });
+    return category;
   }
 }
 

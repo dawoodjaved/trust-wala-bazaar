@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { getApiBase } from "@/lib/api-base";
 
 interface VideoVerificationProps {
   userId?: string;
@@ -130,7 +131,7 @@ export function VideoVerification({ userId, onVerified }: VideoVerificationProps
       const formData = new FormData();
       formData.append("file", file);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+      const apiUrl = getApiBase();
       
       // Get auth token
       let authHeader = "";

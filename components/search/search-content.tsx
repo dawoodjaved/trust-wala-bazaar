@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { getApiBase } from "@/lib/api-base";
 
 export function SearchContent() {
   const searchParams = useSearchParams();
@@ -44,7 +45,7 @@ export function SearchContent() {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+  const apiUrl = getApiBase();
 
   // Fetch search results from backend with dummy data fallback
   const { data: searchResults = [], isLoading } = useQuery({

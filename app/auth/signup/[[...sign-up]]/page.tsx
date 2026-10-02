@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { SignUp } from "@clerk/nextjs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createDemoUser } from "@/lib/auth-hook";
 import { setAuthToken } from "@/lib/auth-utils";
+import { getApiBase } from "@/lib/api-base";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -18,29 +20,16 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const hasClerk = publishableKey && publishableKey !== "pk_test_placeholder";
-
-  // Try to use Clerk if available
-  let SignUpComponent: any = null;
-  if (hasClerk) {
-    try {
-      const { SignUp } = require("@clerk/nextjs");
-      SignUpComponent = SignUp;
-    } catch (error) {
-      console.warn("Clerk not available:", error);
-    }
-  }
+  const hasClerk = !!(publishableKey && publishableKey !== "pk_test_placeholder");
 
   const handleDemoSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Create demo user (for development)
     const demoUser = createDemoUser(email || "demo@example.com", name || "Demo User");
-    
-    // Sync with backend to get JWT token
+
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+      const apiUrl = getApiBase();
       const response = await fetch(`${apiUrl}/api/auth/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,7 +40,7 @@ export default function SignUpPage() {
           lastName: demoUser.lastName,
         }),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.access_token) {
@@ -66,12 +55,14 @@ export default function SignUpPage() {
     router.push("/home");
   };
 
-  // If Clerk is available, use it
-  if (hasClerk && SignUpComponent) {
+  if (hasClerk) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4" style={{
-        background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)"
-      }}>
+      <div
+        className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4"
+        style={{
+          background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)",
+        }}
+      >
         <Card className="w-full max-w-md border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-[var(--text-primary)]">Create Account</CardTitle>
@@ -80,10 +71,12 @@ export default function SignUpPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignUpComponent
+            <SignUp
               routing="path"
               path="/auth/signup"
               signInUrl="/auth/login"
+              fallbackRedirectUrl="/home"
+              forceRedirectUrl="/home"
               appearance={{
                 elements: {
                   rootBox: "mx-auto",
@@ -105,11 +98,13 @@ export default function SignUpPage() {
     );
   }
 
-  // Fallback: Demo signup form
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4" style={{
-      background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)"
-    }}>
+    <div
+      className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4"
+      style={{
+        background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)",
+      }}
+    >
       <Card className="w-full max-w-md border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl text-[var(--text-primary)]">Create Account</CardTitle>
@@ -156,7 +151,7 @@ export default function SignUpPage() {
               {isLoading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
-          
+
           <div className="p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-subtle)]">
             <p className="text-xs text-[var(--text-muted)] mb-2">
               <strong>Demo Mode:</strong> Clerk authentication is not configured. This is a development signup.
@@ -175,39 +170,4 @@ export default function SignUpPage() {
       </Card>
     </div>
   );
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl">Create Account</CardTitle>
-          <CardDescription>
-            Join TrustWala Bazaar - Pakistan&apos;s trusted marketplace
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SignUp
-            routing="path"
-            path="/auth/signup"
-            signInUrl="/auth/login"
-            appearance={{
-              elements: {
-                rootBox: "mx-auto",
-                card: "shadow-none",
-              },
-            }}
-          />
-          <div className="mt-4 text-center text-sm">
-            <p className="text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/auth/login" className="text-primary hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
 }
-

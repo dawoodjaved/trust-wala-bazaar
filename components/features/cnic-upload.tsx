@@ -5,6 +5,7 @@ import { Upload, CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { getApiBase } from "@/lib/api-base";
 
 interface CNICUploadProps {
   onVerified?: () => void;
@@ -56,7 +57,7 @@ export function CNICUpload({ onVerified }: CNICUploadProps) {
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+      const apiUrl = getApiBase();
       
       // Get auth token
       let authHeader = "";

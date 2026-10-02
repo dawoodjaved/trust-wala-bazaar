@@ -16,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/auth-hook";
 import { AnimatedSVG } from "@/components/ui/animated-svg";
 import { CreateListingSVG } from "@/components/ui/marketplace-illustrations";
+import { getApiBase } from "@/lib/api-base";
 
 const steps = [
   "Basic Info",
@@ -31,7 +32,7 @@ export function CreateListingContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedImageFiles, setUploadedImageFiles] = useState<File[]>([]);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+  const apiUrl = getApiBase();
   const [formData, setFormData] = useState({
     category: "",
     title: "",

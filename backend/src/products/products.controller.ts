@@ -14,6 +14,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TokenRateLimit } from '../common/token-rate-limit/token-rate-limit.decorator';
+import { TokenRateLimitGuard } from '../common/token-rate-limit/token-rate-limit.guard';
 
 @ApiTags('products')
 @Controller('products')
@@ -33,7 +35,8 @@ export class ProductsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, TokenRateLimitGuard)
+  @TokenRateLimit({ bucket: 'ai-listing', limit: 6, ttlSec: 60 })
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new product' })
   create(@Request() req, @Body() dto: CreateProductDto) {

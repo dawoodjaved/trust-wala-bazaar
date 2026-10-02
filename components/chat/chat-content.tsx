@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input as PriceInput } from "@/components/ui/input";
+import { getApiBase } from "@/lib/api-base";
 
 interface Message {
   id: string;
@@ -48,86 +49,58 @@ export function ChatContent({ conversationId }: ChatContentProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [socket, setSocket] = useState<any>(null);
 
-  // Real-time chat with polling fallback
+  // HTTP polling by default (Nest Socket.io deprecated on pure Next.js)
   useEffect(() => {
-    // Try to connect to Socket.io if available
     let socketInstance: any = null;
     let pollInterval: NodeJS.Timeout | null = null;
 
-    const initializeChat = async () => {
+    const pollMessages = async () => {
       try {
-        // Try to load socket.io-client dynamically
-        const io = (await import('socket.io-client')).default;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
-        socketInstance = io(apiUrl, {
-          transports: ['websocket', 'polling'],
+        const apiUrl = getApiBase();
+        const response = await fetch(`${apiUrl}/api/messages/conversation/${conversationId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
         });
-
-        socketInstance.on('connect', () => {
-          console.log('Connected to chat server');
-          socketInstance.emit('join-room', { conversationId });
-        });
-
-        socketInstance.on('message', (message: Message) => {
-          setMessages(prev => [...prev, message]);
-        });
-
-        socketInstance.on('disconnect', () => {
-          console.log('Disconnected from chat server');
-        });
-
-        setSocket(socketInstance);
-      } catch (error) {
-        console.warn('Socket.io not available, using polling fallback');
-        // Fallback to polling
-        pollInterval = setInterval(async () => {
-          try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
-            const response = await fetch(`${apiUrl}/api/messages/${conversationId}`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-              },
-            });
-            if (response.ok) {
-              const data = await response.json();
-              if (Array.isArray(data)) {
-                setMessages(data);
-              }
-            }
-          } catch (err) {
-            // Silently fail - using mock data
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setMessages(data);
           }
-        }, 3000); // Poll every 3 seconds
+        }
+      } catch {
+        // keep existing messages on poll failure
       }
     };
 
-    // Initialize with mock data first
-    setMessages([
-      {
-        id: "1",
-        senderId: "other",
-        content: "Hello! Is this product still available?", 
-        type: "TEXT",
-        createdAt: new Date().toISOString(),
-        sender: {
-          id: "other",
-          firstName: "John",
-          lastName: "Doe",
-          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-        },
-      },
-    ]);
+    const initializeChat = async () => {
+      const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+      if (socketUrl) {
+        try {
+          const io = (await import("socket.io-client")).default;
+          socketInstance = io(socketUrl, { transports: ["websocket", "polling"] });
+          socketInstance.on("connect", () => {
+            socketInstance.emit("join-room", { conversationId });
+          });
+          socketInstance.on("message", (message: Message) => {
+            setMessages((prev) => [...prev, message]);
+          });
+          setSocket(socketInstance);
+          return;
+        } catch {
+          console.warn("Socket.io failed, using polling");
+        }
+      }
+
+      await pollMessages();
+      pollInterval = setInterval(pollMessages, 3000);
+    };
 
     initializeChat();
 
-    // Cleanup
     return () => {
-      if (socketInstance) {
-        socketInstance.disconnect();
-      }
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
+      if (socketInstance) socketInstance.disconnect();
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, [conversationId]);
 
@@ -138,10 +111,11 @@ export function ChatContent({ conversationId }: ChatContentProps) {
   const handleSend = () => {
     if (!input.trim()) return;
 
+    const content = input.trim();
     const newMessage: Message = {
       id: Date.now().toString(),
       senderId: user?.id || "",
-      content: input,
+      content,
       type: "TEXT",
       createdAt: new Date().toISOString(),
       sender: {
@@ -160,11 +134,12 @@ export function ChatContent({ conversationId }: ChatContentProps) {
       socket.emit('send-message', {
         conversationId,
         type: 'TEXT',
-        content: input,
+        content,
+        senderId: user?.id,
       });
     } else {
       // Fallback to API call
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = getApiBase();
       fetch(`${apiUrl}/api/messages`, {
         method: 'POST',
         headers: {
@@ -173,7 +148,7 @@ export function ChatContent({ conversationId }: ChatContentProps) {
         },
         body: JSON.stringify({
           conversationId,
-          content: input,
+          content,
           type: 'TEXT',
         }),
       }).catch(() => {
