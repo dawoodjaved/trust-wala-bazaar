@@ -1,58 +1,75 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Star, Phone, ExternalLink } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MapPin, Star } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 
-// Google Maps type declarations
-declare global {
-  interface Window {
-    google?: {
-      maps: {
-        Map: new (element: HTMLElement, options: any) => any;
-        Marker: new (options: any) => any;
-        InfoWindow: new (options: any) => any;
-        Size: new (width: number, height: number) => any;
-      };
-    };
-  }
-}
+type Shop = {
+  id: string;
+  name: string;
+  distance: number;
+  rating: number;
+  address: string;
+  verified: boolean;
+  products: number;
+  lat: number;
+  lng: number;
+  avatar: string;
+};
+
+const shops: Shop[] = [
+  {
+    id: "1",
+    name: "Ahmed Khan Mobiles",
+    distance: 1.2,
+    rating: 4.8,
+    address: "MM Alam Road, Gulberg, Lahore",
+    verified: true,
+    products: 8,
+    lat: 31.5204,
+    lng: 74.3587,
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+  },
+  {
+    id: "2",
+    name: "Fatima Electronics Hub",
+    distance: 2.5,
+    rating: 4.6,
+    address: "Tariq Road, PECHS, Karachi",
+    verified: true,
+    products: 7,
+    lat: 24.8607,
+    lng: 67.0011,
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+  },
+  {
+    id: "3",
+    name: "Bilal Hassan Autos",
+    distance: 3.1,
+    rating: 4.4,
+    address: "Blue Area, Islamabad",
+    verified: true,
+    products: 3,
+    lat: 33.6844,
+    lng: 73.0479,
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+  },
+];
 
 export function NearbyShopsContent() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-
-  const shops = [
-    {
-      id: "1",
-      name: "Tech Store Lahore",
-      distance: 1.2,
-      rating: 4.8,
-      address: "Main Boulevard, Lahore",
-      verified: true,
-      products: 45,
-      lat: 31.5204,
-      lng: 74.3587,
-    },
-    {
-      id: "2",
-      name: "Mobile Hub",
-      distance: 2.5,
-      rating: 4.6,
-      address: "Gulberg, Lahore",
-      verified: true,
-      products: 32,
-      lat: 31.5497,
-      lng: 74.3436,
-    },
-  ];
+  const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<Record<string, LeafletMarker>>({});
 
   useEffect(() => {
-    // Get user location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -62,31 +79,108 @@ export function NearbyShopsContent() {
           });
         },
         () => {
-          // Default to Lahore if geolocation fails
           setUserLocation({ lat: 31.5204, lng: 74.3587 });
         }
       );
     } else {
       setUserLocation({ lat: 31.5204, lng: 74.3587 });
     }
+  }, []);
 
-    // Load Google Maps
-    const loadGoogleMaps = () => {
-      if (window.google && window.google.maps) {
-        setMapLoaded(true);
-        return;
+  useEffect(() => {
+    if (!userLocation || !mapContainerRef.current || mapRef.current) return;
+
+    let cancelled = false;
+
+    const initMap = async () => {
+      try {
+        const L = (await import("leaflet")).default;
+
+        if (cancelled || !mapContainerRef.current || mapRef.current) return;
+
+        const map = L.map(mapContainerRef.current, {
+          center: [userLocation.lat, userLocation.lng],
+          zoom: 6,
+          scrollWheelZoom: true,
+        });
+
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          referrerPolicy: "origin",
+        }).addTo(map);
+
+        const shopIcon = L.divIcon({
+          className: "twb-shop-marker",
+          html: `<div style="width:28px;height:28px;border-radius:9999px;background:#c8d96f;border:2px solid #0a0f0d;box-shadow:0 2px 8px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;">
+            <div style="width:10px;height:10px;border-radius:9999px;background:#0a0f0d;"></div>
+          </div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14],
+          popupAnchor: [0, -14],
+        });
+
+        const userIcon = L.divIcon({
+          className: "twb-user-marker",
+          html: `<div style="width:18px;height:18px;border-radius:9999px;background:#38bdf8;border:3px solid #fff;box-shadow:0 0 0 4px rgba(56,189,248,.35);"></div>`,
+          iconSize: [18, 18],
+          iconAnchor: [9, 9],
+        });
+
+        L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
+          .addTo(map)
+          .bindPopup("You are here");
+
+        const bounds = L.latLngBounds([[userLocation.lat, userLocation.lng]]);
+
+        shops.forEach((shop) => {
+          const marker = L.marker([shop.lat, shop.lng], { icon: shopIcon })
+            .addTo(map)
+            .bindPopup(
+              `<div style="color:#0a0f0d;min-width:140px;">
+                <strong style="display:block;margin-bottom:2px;">${shop.name}</strong>
+                <span style="font-size:12px;">${shop.address}</span><br/>
+                <span style="font-size:12px;">★ ${shop.rating} · ${shop.distance} km</span>
+              </div>`
+            );
+          markersRef.current[shop.id] = marker;
+          bounds.extend([shop.lat, shop.lng]);
+        });
+
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+        mapRef.current = map;
+        setMapReady(true);
+        setMapError(null);
+
+        // Fix tiles that sometimes render blank until resize
+        setTimeout(() => map.invalidateSize(), 100);
+      } catch (error) {
+        console.error("Leaflet map init error:", error);
+        setMapError("Failed to load the map. Please refresh and try again.");
       }
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDummyKey'}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setMapLoaded(true);
-      document.head.appendChild(script);
     };
 
-    loadGoogleMaps();
-  }, []);
+    initMap();
+
+    return () => {
+      cancelled = true;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+        markersRef.current = {};
+        setMapReady(false);
+      }
+    };
+  }, [userLocation]);
+
+  const focusShop = (shop: Shop) => {
+    const map = mapRef.current;
+    const marker = markersRef.current[shop.id];
+    if (!map || !marker) return;
+    map.setView([shop.lat, shop.lng], 14, { animate: true });
+    marker.openPopup();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -104,7 +198,6 @@ export function NearbyShopsContent() {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Map */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -112,72 +205,24 @@ export function NearbyShopsContent() {
         >
           <Card className="h-[600px] border-2 border-slate-800/80 overflow-hidden">
             <CardContent className="p-0 h-full relative">
-              {mapLoaded && userLocation ? (
-                <div
-                  id="map"
-                  className="w-full h-full"
-                  ref={(node) => {
-                    if (node && window.google && !node.dataset.initialized) {
-                      node.dataset.initialized = 'true';
-                      const map = new window.google.maps.Map(node, {
-                        center: userLocation,
-                        zoom: 13,
-                        styles: [
-                          {
-                            featureType: "all",
-                            elementType: "geometry",
-                            stylers: [{ color: "#1e293b" }],
-                          },
-                          {
-                            featureType: "all",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#cbd5e1" }],
-                          },
-                        ],
-                      });
+              <div ref={mapContainerRef} id="map" className="w-full h-full z-0" />
 
-                      // Add markers for shops
-                      shops.forEach((shop) => {
-                        const marker = new window.google.maps.Marker({
-                          position: { lat: shop.lat, lng: shop.lng },
-                          map,
-                          title: shop.name,
-                          icon: {
-                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                              <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="16" cy="16" r="14" fill="#c8d96f" stroke="#0a0f0d" stroke-width="2"/>
-                                <circle cx="16" cy="16" r="6" fill="#0a0f0d"/>
-                              </svg>
-                            `),
-                            scaledSize: new window.google.maps.Size(32, 32),
-                          },
-                        });
-
-                        const infoWindow = new window.google.maps.InfoWindow({
-                          content: `
-                            <div style="color: #0a0f0d; padding: 8px;">
-                              <h3 style="margin: 0 0 4px 0; font-weight: bold;">${shop.name}</h3>
-                              <p style="margin: 0; font-size: 12px;">${shop.address}</p>
-                              <p style="margin: 4px 0 0 0; font-size: 12px;">⭐ ${shop.rating} • ${shop.distance} km</p>
-                            </div>
-                          `,
-                        });
-
-                        marker.addListener('click', () => {
-                          infoWindow.open(map, marker);
-                        });
-                      });
-                    }
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-slate-900/50 to-slate-950/50 flex items-center justify-center">
+              {!userLocation && !mapError && (
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 to-slate-950/90 flex items-center justify-center z-[400]">
                   <div className="text-center">
                     <MapPin className="h-16 w-16 text-[#c8d96f] mx-auto mb-4 animate-pulse" />
                     <p className="text-slate-300">Loading map...</p>
-                    <p className="text-sm text-slate-500 mt-2">
-                      {!userLocation ? "Getting your location..." : "Initializing Google Maps..."}
-                    </p>
+                    <p className="text-sm text-slate-500 mt-2">Getting your location...</p>
+                  </div>
+                </div>
+              )}
+
+              {mapError && (
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 to-slate-950/95 flex items-center justify-center z-[400] p-8">
+                  <div className="text-center max-w-md">
+                    <MapPin className="h-16 w-16 text-amber-500/80 mx-auto mb-4" />
+                    <p className="text-slate-200 font-medium mb-2">Map unavailable</p>
+                    <p className="text-sm text-slate-400">{mapError}</p>
                   </div>
                 </div>
               )}
@@ -185,7 +230,6 @@ export function NearbyShopsContent() {
           </Card>
         </motion.div>
 
-        {/* Shops List */}
         <div className="space-y-4">
           {shops.map((shop, idx) => (
             <motion.div
@@ -199,6 +243,7 @@ export function NearbyShopsContent() {
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
                     <Avatar className="h-16 w-16 ring-2 ring-[#c8d96f]/30 flex-shrink-0">
+                      <AvatarImage src={shop.avatar} />
                       <AvatarFallback className="bg-gradient-to-br from-[#c8d96f] to-[#a8b85a] text-[#0a0f0d] text-xl font-bold">
                         {shop.name[0]}
                       </AvatarFallback>
@@ -219,29 +264,17 @@ export function NearbyShopsContent() {
                         <MapPin className="h-4 w-4 text-slate-400" />
                         <span className="text-slate-300">{shop.distance} km</span>
                       </div>
-                      <p className="text-sm text-slate-400 mb-3">
-                        {shop.address}
-                      </p>
+                      <p className="text-sm text-slate-400 mb-3">{shop.address}</p>
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <span className="text-sm font-medium text-slate-300">
                           {shop.products} products
                         </span>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="rounded-lg border-slate-700 text-slate-200 hover:bg-[#c8d96f] hover:text-[#0a0f0d] hover:border-[#c8d96f]"
-                          onClick={() => {
-                            // Navigate to shop page or scroll to shop on map
-                            if (mapLoaded && shop.lat && shop.lng) {
-                              const mapElement = document.getElementById('map');
-                              if (mapElement && window.google) {
-                                const map = new window.google.maps.Map(mapElement, {
-                                  center: { lat: shop.lat, lng: shop.lng },
-                                  zoom: 15,
-                                });
-                              }
-                            }
-                          }}
+                          disabled={!mapReady}
+                          onClick={() => focusShop(shop)}
                         >
                           View Shop
                         </Button>
@@ -257,4 +290,3 @@ export function NearbyShopsContent() {
     </div>
   );
 }
-

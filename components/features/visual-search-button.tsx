@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { Camera, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { getApiBase } from "@/lib/api-base";
 
 export function VisualSearchButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ export function VisualSearchButton() {
     setIsOpen(false);
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = getApiBase();
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
@@ -49,10 +50,15 @@ export function VisualSearchButton() {
 
       if (response.ok) {
         const products = await response.json();
-        // Navigate to search results page with products
         const searchParams = new URLSearchParams();
         searchParams.set('visual', 'true');
-        searchParams.set('q', 'visual search');
+        if (Array.isArray(products) && products.length > 0) {
+          const titles = products.slice(0, 3).map((p: any) => p.title).filter(Boolean);
+          searchParams.set('q', titles[0]?.split(' ').slice(0, 2).join(' ') || 'products');
+          searchParams.set('ids', products.map((p: any) => p.id).join(','));
+        } else {
+          searchParams.set('q', 'electronics');
+        }
         window.location.href = `/search?${searchParams.toString()}`;
       } else {
         // Fallback: Use dummy data for visual search

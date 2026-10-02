@@ -23,7 +23,8 @@ import { useQuery } from "@tanstack/react-query";
 import { SpringAnimated } from "@/components/ui/spring-animated";
 import { AnimatedSVG } from "@/components/ui/animated-svg";
 import { ShoppingAppSVG } from "@/components/ui/marketplace-illustrations";
-import { getDummyProducts } from "@/lib/dummy-data";
+import { getDeterministicDummyProducts } from "@/lib/dummy-data";
+import { getApiBase } from "@/lib/api-base";
 
 const quickActions = [
   { name: "Create Listing", icon: Plus, href: "/listings/create", color: "bg-accent" },
@@ -33,167 +34,95 @@ const quickActions = [
   { name: "Nearby Shops", icon: MapPin, href: "/shops/nearby", color: "bg-green-500" },
 ];
 
-const categories = [
-  { name: "Mobiles", count: 1234, href: "/categories/mobiles" },
-  { name: "Laptops", count: 567, href: "/categories/laptops" },
-  { name: "Electronics", count: 890, href: "/categories/electronics" },
-  { name: "Cars", count: 234, href: "/categories/cars" },
-  { name: "Cameras", count: 345, href: "/categories/cameras" },
-  { name: "Gaming", count: 456, href: "/categories/gaming" },
-];
-
-const recommendedProducts = [
-  {
-    id: "1",
-    title: "iPhone 15 Pro Max 256GB",
-    price: 350000,
-    location: "Lahore",
-    image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=800&fit=crop",
-    trustScore: 92,
-    verified: true,
-    rating: 4.5,
-  },
-  {
-    id: "2",
-    title: "MacBook Pro M3 14-inch",
-    price: 450000,
-    location: "Karachi",
-    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-    trustScore: 88,
-    verified: true,
-    rating: 4.8,
-  },
-  {
-    id: "3",
-    title: "Samsung Galaxy S24 Ultra",
-    price: 280000,
-    location: "Islamabad",
-    image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&h=800&fit=crop",
-    trustScore: 85,
-    verified: true,
-    rating: 4.3,
-  },
-];
-
-const trendingProducts = [
-  {
-    id: "4",
-    title: "Sony WH-1000XM5 Headphones",
-    price: 55000,
-    location: "Lahore",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-    trustScore: 90,
-    verified: true,
-    rating: 4.6,
-  },
-  {
-    id: "5",
-    title: "Canon EOS R6 Mark II",
-    price: 650000,
-    location: "Karachi",
-    image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=800&fit=crop",
-    trustScore: 87,
-    verified: true,
-    rating: 4.7,
-  },
-];
-
 export function HomeContent() {
   const [mounted, setMounted] = useState(false);
-  const [initialProducts] = useState(() => {
-    // Generate consistent initial products on first render to avoid hydration mismatch
-    // This ensures server and client render the same products initially
-    const products = getDummyProducts(20);
-    // Sort by ID to ensure consistent order
-    return products.sort((a, b) => a.id.localeCompare(b.id));
-  });
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+  const apiUrl = getApiBase();
 
-  // Ensure component only renders on client to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Fetch products from backend with dummy data fallback
-  const { data: products = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products", "recommended"],
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", "home"],
     queryFn: async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-        
-        const response = await fetch(`${apiUrl}/api/products?limit=20`, {
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            // Sort by ID for consistency
-            return data.sort((a: any, b: any) => (a.id || '').localeCompare(b.id || ''));
-          }
-        }
-        // Return consistent initial products if API fails
-        return initialProducts;
-      } catch (error: any) {
-        // Silently fallback to consistent initial products
-        return initialProducts;
-      }
+      const res = await fetch(`${apiUrl}/api/categories`);
+      if (!res.ok) return [];
+      return res.json();
     },
-    staleTime: 60000, // 1 minute
-    retry: false, // Don't retry failed requests
-    refetchOnWindowFocus: false, // Don't refetch on window focus
-    enabled: mounted, // Only run query after component is mounted
-    // Use initial products as placeholder data to avoid hydration mismatch
-    placeholderData: initialProducts,
+    enabled: mounted,
+    staleTime: 60000,
   });
 
-  // Use consistent products - initial products until API data is available
-  const allProducts = mounted && products.length > 0 ? products : initialProducts;
+  const { data: products = [], isLoading: productsLoading, isError, isFetching } = useQuery({
+    queryKey: ["products", "recommended"],
+    queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-  // Transform products to frontend format
-  const recommendedProducts = allProducts.slice(0, 8).map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    price: p.price,
-    originalPrice: p.originalPrice,
-    location: p.city || p.location,
-    image: p.images?.[0] || p.image || p.thumbnail || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-    trustScore: p.trustScore || 0,
-    verified: p.seller?.cnicVerified || p.verified || false,
-    rating: p.rating || (p.reviews?.length > 0 ? p.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / p.reviews.length : 0),
-  }));
+      const response = await fetch(`${apiUrl}/api/products?limit=50`, {
+        signal: controller.signal,
+        headers: { "Content-Type": "application/json" },
+      });
 
-  const trendingProducts = allProducts.slice(8, 16).map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    price: p.price,
-    originalPrice: p.originalPrice,
-    location: p.city || p.location,
-    image: p.images?.[0] || p.image || p.thumbnail || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-    trustScore: p.trustScore || 0,
-    verified: p.seller?.cnicVerified || p.verified || false,
-    rating: p.rating || (p.reviews?.length > 0 ? p.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / p.reviews.length : 0),
-  }));
+      clearTimeout(timeoutId);
 
-  const displayRecommended = recommendedProducts;
-  const displayTrending = trendingProducts.length > 0 ? trendingProducts : [
-    {
-      id: "4",
-      title: "Sony WH-1000XM5 Headphones",
-      price: 55000,
-      location: "Lahore",
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-      trustScore: 90,
-      verified: true,
-      rating: 4.6,
+      if (!response.ok) throw new Error("Failed to load products");
+      const data = await response.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("Empty product list");
+      }
+      return data;
     },
-  ];
+    staleTime: 60000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    enabled: mounted,
+  });
+
+  // Only fall back to dummy data after a real API failure — never flash it first
+  const allProducts =
+    products.length > 0
+      ? products
+      : isError
+        ? getDeterministicDummyProducts(20)
+        : [];
+
+  const mapProduct = (p: any) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    location: p.city || p.location,
+    image:
+      p.images?.[0] ||
+      p.thumbnail ||
+      p.image ||
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+    trustScore: p.trustScore || 0,
+    verified: p.seller?.cnicVerified || p.verified || false,
+    rating:
+      p.rating ||
+      (p.reviews?.length > 0
+        ? p.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / p.reviews.length
+        : 0),
+  });
+
+  const displayRecommended = allProducts.slice(0, 8).map(mapProduct);
+  const displayTrending = allProducts.slice(8, 16).map(mapProduct);
+  const displayCategories = categories.length
+    ? categories.map((c: any) => ({
+        name: c.name,
+        count: c._count?.products ?? 0,
+        href: `/categories/${c.slug}`,
+      }))
+    : [
+        { name: "Mobiles", count: 0, href: "/categories/mobiles" },
+        { name: "Laptops", count: 0, href: "/categories/laptops" },
+        { name: "Electronics", count: 0, href: "/categories/electronics" },
+        { name: "Cars", count: 0, href: "/categories/cars" },
+        { name: "Cameras", count: 0, href: "/categories/cameras" },
+        { name: "Gaming", count: 0, href: "/categories/gaming" },
+      ];
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-14">
@@ -262,7 +191,7 @@ export function HomeContent() {
             Platform Features
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Discover the powerful features that make TrustWala Bazaar Pakistan's most trusted marketplace
+            Discover verification, trust scores, search, and escrow-ready checkout built for Pakistan
           </p>
         </div>
 
@@ -282,7 +211,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">AI Fraud Detection</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Multi-layer ML-powered fraud detection with 92% accuracy, CNIC OCR validation, and video face recognition
+                  Rule-based + optional LLM listing checks, CNIC upload validation, and video verification workflows
                 </p>
               </div>
             </div>
@@ -303,7 +232,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Trust Score Algorithm</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Transparent trust scoring with explainable AI, weighted factors, and real-time updates
+                  Weighted trust scores from verification, reviews, and activity — with a clear breakdown on each listing
                 </p>
               </div>
             </div>
@@ -324,7 +253,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">AI Chat Assistant</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Real-time messaging with AI-powered negotiations, translations, and automated responses
+                  Messaging with optional AI helpers for translations, offer suggestions, and listing tips
                 </p>
               </div>
             </div>
@@ -345,7 +274,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Visual & Voice Search</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Search by image or voice in Urdu/English with semantic search and vector embeddings
+                  Search by text, image, or voice — with AI-assisted visual matching when an API key is configured
                 </p>
               </div>
             </div>
@@ -366,7 +295,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Offline PWA</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Progressive Web App with full offline functionality, background sync, and 45% increased engagement
+                  Installable Progressive Web App with offline caching for faster return visits
                 </p>
               </div>
             </div>
@@ -387,7 +316,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Escrow Protection</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Secure transactions with escrow payment protection and automated dispute resolution
+                  Checkout records escrow-enabled orders so funds can be held until delivery is confirmed
                 </p>
               </div>
             </div>
@@ -408,7 +337,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Identity Verification</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  CNIC OCR validation and video verification with face recognition and liveness detection
+                  CNIC upload checks and video verification workflows to strengthen seller identity signals
                 </p>
               </div>
             </div>
@@ -429,7 +358,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">PTA Compliance</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Automatic PTA verification for mobile devices with status checking and compliance tracking
+                  PTA approval status fields on mobile listings so buyers can check device compliance
                 </p>
               </div>
             </div>
@@ -450,7 +379,7 @@ export function HomeContent() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-2">Location Search</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Google Maps integration for nearby shops, location-based filtering, and distance calculation
+                  Nearby shops map and city filters powered by Leaflet + OpenStreetMap (no API key needed)
                 </p>
               </div>
             </div>
@@ -478,7 +407,7 @@ export function HomeContent() {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {productsLoading ? (
+          {(!mounted || productsLoading || isFetching) && displayRecommended.length === 0 ? (
             <div className="col-span-full text-center py-8 text-[#9ca3af]">
               Loading products...
             </div>
@@ -503,7 +432,7 @@ export function HomeContent() {
       >
         <h2 className="text-3xl font-bold mb-6 text-white">Shop by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((category, idx) => (
+          {displayCategories.map((category: { name: string; count: number; href: string }, idx: number) => (
             <motion.div
               key={category.href}
               initial={{ opacity: 0, scale: 0.8 }}

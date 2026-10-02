@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SearchService {
@@ -9,80 +10,108 @@ export class SearchService {
     private aiService: AiService,
   ) {}
 
-  async textSearch(query: string, filters: any) {
-    // Hybrid search: text + semantic (if embeddings available)
-    const textResults = await this.prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } },
-        ],
-        ...filters,
-      },
+  async textSearch(query: string, filters: any = {}) {
+    const { q, query: _q, minPrice, maxPrice, categoryId, category, slug, city, ...rest } = filters || {};
+    void rest;
+    void q;
+    void _q;
+
+    const where: Prisma.ProductWhereInput = {
+      isActive: true,
+    };
+
+    const cleaned = (query || '').trim();
+    if (cleaned) {
+      where.OR = [
+        { title: { contains: cleaned, mode: Prisma.QueryMode.insensitive } },
+        { description: { contains: cleaned, mode: Prisma.QueryMode.insensitive } },
+      ];
+    }
+
+    if (minPrice !== undefined && minPrice !== '') {
+      where.price = { ...(where.price as object), gte: Number(minPrice) };
+    }
+    if (maxPrice !== undefined && maxPrice !== '') {
+      where.price = { ...(where.price as any), lte: Number(maxPrice) };
+    }
+    if (city) {
+      where.city = { contains: String(city), mode: 'insensitive' };
+    }
+
+    const catKey = categoryId || category || slug;
+    if (catKey) {
+      const cat = await this.prisma.category.findFirst({
+        where: { OR: [{ id: String(catKey) }, { slug: String(catKey) }] },
+      });
+      if (cat) where.categoryId = cat.id;
+    }
+
+    return this.prisma.product.findMany({
+      where,
       include: {
         seller: true,
         category: true,
+        reviews: { take: 5 },
       },
+      orderBy: { createdAt: 'desc' },
       take: 50,
     });
-
-    // Try semantic search if AI service is available
-    try {
-      const queryEmbedding = await this.aiService.generateEmbedding(query);
-      if (queryEmbedding.length > 0) {
-        // Note: This requires pgvector extension in PostgreSQL
-        // For now, we'll use text search and enhance with AI understanding
-        // In production, you'd query vector database here
-      }
-    } catch (error) {
-      console.error('Semantic search error:', error);
-    }
-
-    return textResults;
   }
 
   async visualSearch(imageUrl: string) {
     try {
-      // Analyze image to get labels and description
       const analysis = await this.aiService.analyzeImageForVisualSearch(imageUrl);
-      
-      if (analysis.labels.length === 0 && !analysis.description) {
-        return [];
+      const searchTerms = [...(analysis.labels || []), analysis.description]
+        .filter(Boolean)
+        .map((t) => String(t).trim())
+        .filter((t) => t.length > 2);
+
+      if (searchTerms.length === 0) {
+        // No AI labels — return a sensible sample of active products
+        return this.prisma.product.findMany({
+          where: { isActive: true },
+          include: { seller: true, category: true, reviews: { take: 5 } },
+          take: 12,
+          orderBy: { trustScore: 'desc' },
+        });
       }
 
-      // Search products by labels and description
-      const searchTerms = [...analysis.labels, analysis.description].filter(Boolean);
-      
       const results = await this.prisma.product.findMany({
         where: {
           isActive: true,
-          OR: [
-            ...searchTerms.map(term => ({
-              title: { contains: term, mode: 'insensitive' },
-            })),
-            ...searchTerms.map(term => ({
-              description: { contains: term, mode: 'insensitive' },
-            })),
-          ],
+          OR: searchTerms.flatMap((term) => [
+            { title: { contains: term, mode: Prisma.QueryMode.insensitive } },
+            { description: { contains: term, mode: Prisma.QueryMode.insensitive } },
+          ]),
         },
         include: {
           seller: true,
           category: true,
+          reviews: { take: 5 },
         },
         take: 20,
       });
 
-      return results;
+      if (results.length > 0) return results;
+
+      return this.prisma.product.findMany({
+        where: { isActive: true },
+        include: { seller: true, category: true, reviews: { take: 5 } },
+        take: 12,
+        orderBy: { trustScore: 'desc' },
+      });
     } catch (error) {
       console.error('Visual search error:', error);
-      return [];
+      return this.prisma.product.findMany({
+        where: { isActive: true },
+        include: { seller: true, category: true, reviews: { take: 5 } },
+        take: 12,
+        orderBy: { trustScore: 'desc' },
+      });
     }
   }
 
   async voiceSearch(transcript: string) {
-    // Process voice search transcript with better handling
-    // Clean up transcript (remove filler words, etc.)
     const cleanedTranscript = transcript
       .toLowerCase()
       .replace(/\b(um|uh|ah|like|you know)\b/gi, '')
@@ -93,21 +122,10 @@ export class SearchService {
 
   async semanticSearch(query: string, filters: any) {
     try {
-      // Generate embedding for query
       const queryEmbedding = await this.aiService.generateEmbedding(query);
-      
       if (queryEmbedding.length === 0) {
-        // Fallback to text search
         return this.textSearch(query, filters);
       }
-
-      // For now, use text search enhanced with AI understanding
-      // In production with pgvector, you'd do:
-      // SELECT * FROM products 
-      // ORDER BY embedding <=> $1::vector 
-      // LIMIT 50
-
-      // Enhanced text search with AI-expanded terms
       const expandedQuery = await this.expandQueryWithAI(query);
       return this.textSearch(expandedQuery, filters);
     } catch (error) {
@@ -133,4 +151,3 @@ Provide 3-5 related search terms separated by spaces. Only return the terms, not
     return query;
   }
 }
-

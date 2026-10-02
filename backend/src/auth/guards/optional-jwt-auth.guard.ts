@@ -1,15 +1,27 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
   // Override to make authentication optional
-  canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     // Call parent canActivate but don't throw if unauthorized
-    return super.canActivate(context).catch(() => {
-      // If auth fails, allow request but without user
-      return true;
-    });
+    const result = super.canActivate(context);
+    if (result instanceof Promise) {
+      return result.catch(() => {
+        // If auth fails, allow request but without user
+        return true;
+      });
+    }
+    if (result instanceof Observable) {
+      return result.pipe(
+        catchError(() => of(true)) // If auth fails, allow request but without user
+      );
+    }
+    return result;
   }
 
   handleRequest(err: any, user: any) {

@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/lib/auth-hook";
 import {
   Search,
-  Mic,
-  Camera,
-  Bell,
   Menu,
   ShoppingBag,
 } from "lucide-react";
@@ -18,16 +16,30 @@ import { Badge } from "@/components/ui/badge";
 import { VoiceSearchButton } from "@/components/features/voice-search-button";
 import { VisualSearchButton } from "@/components/features/visual-search-button";
 import { NotificationsDropdown } from "@/components/features/notifications-dropdown";
+import { useCartStore } from "@/lib/store/cart-store";
 
 export function Header() {
   const { user, isSignedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const cartCount = useCartStore((s) =>
+    s.items.reduce((n, i) => n + i.quantity, 0),
+  );
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-16 flex items-center justify-between">
       {/* Logo */}
-      <Link href="/" className="text-2xl font-bold text-white">
-        TrustWala Bazaar
+      <Link href="/" className="flex items-center gap-2.5 shrink-0">
+        <Image
+          src="/brand/logo.png"
+          alt="TrustWala Bazaar"
+          width={40}
+          height={40}
+          className="rounded-lg"
+          priority
+        />
+        <span className="text-2xl font-bold text-white hidden sm:inline">
+          TrustWala Bazaar
+        </span>
       </Link>
 
       {/* Navigation Items */}
@@ -81,14 +93,17 @@ export function Header() {
         {/* Notifications */}
         {isSignedIn && <NotificationsDropdown />}
 
-        {/* Cart/Saved */}
-        {isSignedIn && (
-          <Button variant="ghost" size="icon" className="text-white" asChild>
-            <Link href="/cart">
-              <ShoppingBag className="h-5 w-5" />
-            </Link>
-          </Button>
-        )}
+        {/* Cart */}
+        <Button variant="ghost" size="icon" className="text-white relative" asChild>
+          <Link href="/cart">
+            <ShoppingBag className="h-5 w-5" />
+            {cartCount > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-5 min-w-5 px-1 flex items-center justify-center rounded-full bg-[#c8d96f] text-[#0a0f0d] text-[10px]">
+                {cartCount > 99 ? "99+" : cartCount}
+              </Badge>
+            )}
+          </Link>
+        </Button>
 
         {/* User Menu */}
         {isSignedIn ? (
@@ -96,7 +111,7 @@ export function Header() {
             <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-[rgba(200,217,111,0.4)] hover:ring-[rgba(200,217,111,0.6)] transition-all">
               <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
               <AvatarFallback className="bg-[#c8d96f] text-[#0a0f0d] font-bold">
-                {user?.firstName?.[0] || user?.emailAddresses[0]?.emailAddress[0] || "U"}
+                {user?.firstName?.[0] || user?.emailAddresses?.[0]?.emailAddress?.[0] || "U"}
               </AvatarFallback>
             </Avatar>
           </Link>

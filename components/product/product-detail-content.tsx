@@ -3,11 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Star, Plus, Minus, ShoppingCart, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TrustScoreIndicator } from "@/components/features/trust-score-indicator";
+import { AIChatBubble } from "@/components/features/ai-chat-bubble";
+import { useCartStore } from "@/lib/store/cart-store";
+import { getApiBase } from "@/lib/api-base";
 
 interface ProductDetailContentProps {
   productId: string;
@@ -18,53 +22,37 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
   const [selectedColor, setSelectedColor] = useState("Green");
   const [selectedSize, setSelectedSize] = useState("Large");
   const [quantity, setQuantity] = useState(1);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+  const [added, setAdded] = useState(false);
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+  const apiUrl = getApiBase();
 
-  // Fetch product from backend with dummy data fallback
+  // Fetch product from backend (dummy fallback only if API unavailable)
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-        
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         const response = await fetch(`${apiUrl}/api/products/${productId}`, {
           signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { "Content-Type": "application/json" },
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (response.ok) {
           return response.json();
         }
-        // Fallback to dummy data
-        const { getDummyProductById } = await import("@/lib/dummy-data");
-        const dummyProduct = getDummyProductById(productId);
-        if (dummyProduct) {
-          return dummyProduct;
-        }
-        // If product not found in dummy data, return first product as fallback
-        const { getDummyProducts } = await import("@/lib/dummy-data");
-        const allProducts = getDummyProducts();
-        return allProducts[0] || null;
-      } catch (error: any) {
-        // Silently fallback to dummy data
-        const { getDummyProductById, getDummyProducts } = await import("@/lib/dummy-data");
-        const dummyProduct = getDummyProductById(productId);
-        if (dummyProduct) {
-          return dummyProduct;
-        }
-        // Return first product as fallback
-        const allProducts = getDummyProducts();
-        return allProducts[0] || null;
+        return null;
+      } catch {
+        return null;
       }
     },
-    staleTime: 60000, // 1 minute
-    retry: false, // Don't retry failed requests
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    staleTime: 60000,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
@@ -86,44 +74,62 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
     );
   }
 
+  const categorySlug = product.category?.slug || product.categoryId || "all";
+  const categoryName = product.category?.name || "Shop";
+
   // Transform product data
   const productData = {
     id: product.id,
     title: product.title,
     price: product.price,
     originalPrice: product.originalPrice,
-    rating: product.reviews?.length > 0
-      ? product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / product.reviews.length
-      : 0,
+    rating:
+      product.reviews?.length > 0
+        ? product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
+          product.reviews.length
+        : 0,
     description: product.description,
-    images: product.images?.length > 0
-      ? product.images
-      : product.thumbnail
-      ? [product.thumbnail]
-      : ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop"],
+    images:
+      product.images?.length > 0
+        ? product.images
+        : product.thumbnail
+          ? [product.thumbnail]
+          : [
+              "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+            ],
     trustScore: product.trustScore || 0,
+    trustBreakdown: product.trustBreakdown,
     seller: product.seller,
     reviews: product.reviews || [],
     specifications: product.specifications,
+    city: product.city,
   };
 
   const discount = productData.originalPrice
-    ? Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100)
+    ? Math.round(
+        ((productData.originalPrice - productData.price) /
+          productData.originalPrice) *
+          100,
+      )
     : 0;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Breadcrumbs */}
-      <div className="mb-6 text-sm text-gray-600">
-        <Link href="/home" className="hover:text-black">Home</Link>
+      <div className="mb-6 text-sm text-[#9ca3af]">
+        <Link href="/home" className="hover:text-white">
+          Home
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Shop</Link>
+        <Link href="/categories" className="hover:text-white">
+          Categories
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Mobiles</Link>
+        <Link href={`/categories/${categorySlug}`} className="hover:text-white">
+          {categoryName}
+        </Link>
         <span className="mx-2">/</span>
-        <Link href="/categories/mobiles" className="hover:text-black">Smartphones</Link>
-        <span className="mx-2">/</span>
-        <span className="text-black font-medium">{productData.title}</span>
+        <span className="text-white font-medium">{productData.title}</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -170,7 +176,10 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
             {/* Trust Score */}
             {productData.trustScore > 0 && (
               <div className="mb-4">
-                <TrustScoreIndicator score={productData.trustScore} />
+                <TrustScoreIndicator
+                  score={productData.trustScore}
+                  breakdown={productData.trustBreakdown}
+                />
               </div>
             )}
 
@@ -263,11 +272,25 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-4">
-            <Button className="flex-1 h-12 text-lg font-semibold rounded-lg bg-black text-white hover:bg-gray-800" asChild>
-              <Link href="/cart">
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Add to Cart
-              </Link>
+            <Button
+              className="flex-1 h-12 text-lg font-semibold rounded-lg bg-[#c8d96f] text-[#0a0f0d] hover:bg-[#d4e084]"
+              onClick={() => {
+                addItem({
+                  id: productData.id,
+                  title: productData.title,
+                  price: productData.price,
+                  quantity,
+                  image: productData.images[0],
+                  location: productData.city,
+                  color: selectedColor,
+                  size: selectedSize,
+                });
+                setAdded(true);
+                setTimeout(() => router.push("/cart"), 400);
+              }}
+            >
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {added ? "Added!" : "Add to Cart"}
             </Button>
             <Button variant="outline" size="icon" className="h-12 w-12 border-2 rounded-lg">
               <Heart className="h-5 w-5" />
@@ -320,6 +343,7 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
           )}
         </div>
       </div>
+      <AIChatBubble productId={productData.id} productName={productData.title} />
     </div>
   );
 }

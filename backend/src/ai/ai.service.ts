@@ -7,18 +7,38 @@ import Groq from 'groq-sdk';
 export class AiService {
   private openai: OpenAI;
   private groq: Groq;
+  private usingGeminiFallback = false;
 
   constructor(private config: ConfigService) {
     const openaiKey = this.config.get('OPENAI_API_KEY');
     const groqKey = this.config.get('GROQ_API_KEY');
+    const geminiKey = this.config.get('GEMINI_API_KEY') || this.config.get('GOOGLE_API_KEY');
 
     if (openaiKey) {
       this.openai = new OpenAI({ apiKey: openaiKey });
+    } else if (geminiKey) {
+      this.openai = new OpenAI({
+        apiKey: geminiKey,
+        baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+      });
+      this.usingGeminiFallback = true;
     }
 
-    if (groqKey) {
+    if (groqKey && !this.usingGeminiFallback) {
       this.groq = new Groq({ apiKey: groqKey });
     }
+  }
+
+  private getTextModel(): string {
+    return this.usingGeminiFallback ? 'gemini-3-flash-preview' : 'gpt-3.5-turbo';
+  }
+
+  private getVisionModel(): string {
+    return this.usingGeminiFallback ? 'gemini-3-flash-preview' : 'gpt-4-vision-preview';
+  }
+
+  private getEmbeddingModel(): string {
+    return this.usingGeminiFallback ? 'text-embedding-004' : 'text-embedding-3-small';
   }
 
   async suggestPrice(productData: any): Promise<{ suggestedPrice: number; confidence: number }> {
@@ -60,7 +80,7 @@ Respond in JSON format: {"suggestedPrice": number, "confidence": number}`;
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-3.5-turbo',
+          model: this.getTextModel(),
           temperature: 0.3,
         });
         
@@ -141,7 +161,7 @@ Respond in JSON format:
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-3.5-turbo',
+          model: this.getTextModel(),
           temperature: 0.3,
         });
         
@@ -236,7 +256,7 @@ Respond in JSON: {"riskScore": number, "concerns": ["concern1", "concern2"]}`;
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-3.5-turbo',
+          model: this.getTextModel(),
           temperature: 0.2,
         });
         
@@ -285,7 +305,7 @@ Be friendly, helpful, and provide accurate information. Support both English and
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: messages as any,
-          model: 'gpt-3.5-turbo',
+          model: this.getTextModel(),
           temperature: 0.7,
         });
         return completion.choices[0]?.message?.content || 'I apologize, I could not generate a response.';
@@ -344,7 +364,7 @@ Text to translate: "${text}"`;
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-3.5-turbo',
+          model: this.getTextModel(),
           temperature: 0.3,
         });
         return completion.choices[0]?.message?.content?.trim() || text;
@@ -367,7 +387,7 @@ Text to translate: "${text}"`;
     try {
       if (this.openai) {
         const response = await this.openai.embeddings.create({
-          model: 'text-embedding-3-small',
+          model: this.getEmbeddingModel(),
           input: text,
         });
         return response.data[0].embedding;
@@ -408,7 +428,7 @@ Respond in JSON: {"labels": ["label1", "label2"], "description": "description te
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-4-vision-preview',
+          model: this.getVisionModel(),
           temperature: 0.3,
         });
         
@@ -483,7 +503,7 @@ Respond in JSON: {"faceDetected": true/false, "livenessScore": 0-1, "confidence"
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-4-vision-preview',
+          model: this.getVisionModel(),
           temperature: 0.1,
         });
 
@@ -578,7 +598,7 @@ Respond in JSON: {"match": true/false, "confidence": 0-1}`;
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-4-vision-preview',
+          model: this.getVisionModel(),
           temperature: 0.1,
         });
 
@@ -636,7 +656,7 @@ Respond in JSON: {"isLive": true/false, "score": 0-1, "indicators": ["indicator1
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-4-vision-preview',
+          model: this.getVisionModel(),
           temperature: 0.1,
         });
 
@@ -692,10 +712,10 @@ Respond in JSON: {"cnicNumber": "12345-1234567-1", "name": "John Doe", "dob": "0
       } else if (this.openai) {
         const completion = await this.openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'gpt-4-vision-preview',
+          model: this.getVisionModel(),
           temperature: 0.1,
         });
-        
+
         const response = completion.choices[0]?.message?.content || '';
         try {
           const parsed = JSON.parse(response);

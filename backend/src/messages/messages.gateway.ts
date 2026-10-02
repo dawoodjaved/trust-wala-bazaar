@@ -11,7 +11,12 @@ import { CreateMessageDto } from './dto';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+      process.env.FRONTEND_URL || 'http://localhost:3010',
+      'http://localhost:3000',
+      'http://localhost:3010',
+      /^http:\/\/localhost:\d+$/,
+    ],
     credentials: true,
   },
 })
@@ -29,7 +34,9 @@ export class MessagesGateway {
   @SubscribeMessage('send-message')
   async handleMessage(@MessageBody() dto: CreateMessageDto & { senderId: string }) {
     const message = await this.messagesService.create(dto.senderId, dto);
+    // Emit both event names for frontend compatibility
     this.server.to(dto.conversationId).emit('new-message', message);
+    this.server.to(dto.conversationId).emit('message', message);
     return message;
   }
 
@@ -41,4 +48,3 @@ export class MessagesGateway {
     });
   }
 }
-

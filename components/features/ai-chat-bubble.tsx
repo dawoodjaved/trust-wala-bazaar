@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getApiBase } from "@/lib/api-base";
 
 export function AIChatBubble({ productId, productName }: { productId?: string; productName?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ export function AIChatBubble({ productId, productName }: { productId?: string; p
     ]);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = getApiBase();
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
@@ -58,6 +59,19 @@ export function AIChatBubble({ productId, productName }: { productId?: string; p
             {
               role: "assistant",
               content: data.response || "I apologize, I couldn't generate a response. Please ensure your AI API keys are configured.",
+            },
+          ];
+        });
+      } else if (response.status === 429) {
+        const errorData = await response.json().catch(() => ({ message: 'Too many requests' }));
+        const retry = errorData.retryAfterSec ? ` Try again in ${errorData.retryAfterSec}s.` : '';
+        setMessages((prev) => {
+          const filtered = prev.filter((_, idx) => idx !== prev.length - 1);
+          return [
+            ...filtered,
+            {
+              role: "assistant",
+              content: `${errorData.message || 'Too many AI requests.'}${retry}`,
             },
           ];
         });

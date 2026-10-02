@@ -1,0 +1,1006 @@
+[
+  {
+    "title": "iPhone 5s",
+    "description": "The iPhone 5s is a classic smartphone known for its compact design and advanced features during its release. While it's an older model, it still provides a reliable user experience. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 56000,
+    "originalPrice": 64500,
+    "category": "mobiles",
+    "city": "Lahore",
+    "brand": "Apple",
+    "color": "Black",
+    "storage": "64GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-5s/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-5s/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-5s/3.webp"
+    ],
+    "rating": 2.8,
+    "reviewCount": 13
+  },
+  {
+    "title": "iPhone 6",
+    "description": "The iPhone 6 is a stylish and capable smartphone with a larger display and improved performance. It introduced new features and design elements, making it a popular choice in its time. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 84000,
+    "originalPrice": 90000,
+    "category": "mobiles",
+    "city": "Karachi",
+    "brand": "Apple",
+    "color": "White",
+    "storage": "128GB",
+    "pta": true,
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-6/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-6/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-6/3.webp"
+    ],
+    "rating": 3.4,
+    "reviewCount": 31
+  },
+  {
+    "title": "iPhone 13 Pro",
+    "description": "The iPhone 13 Pro is a cutting-edge smartphone with a powerful camera system, high-performance chip, and stunning display. It offers advanced features for users who demand top-notch technology. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 308000,
+    "originalPrice": 340000,
+    "category": "mobiles",
+    "city": "Islamabad",
+    "brand": "Apple",
+    "color": "Silver",
+    "storage": "256GB",
+    "pta": true,
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-13-pro/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-13-pro/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-13-pro/3.webp"
+    ],
+    "rating": 4.1,
+    "reviewCount": 30
+  },
+  {
+    "title": "iPhone X",
+    "description": "The iPhone X is a flagship smartphone featuring a bezel-less OLED display, facial recognition technology (Face ID), and impressive performance. It represents a milestone in iPhone design and innovation. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 252000,
+    "originalPrice": 313500,
+    "category": "mobiles",
+    "city": "Rawalpindi",
+    "brand": "Apple",
+    "color": "Blue",
+    "storage": "512GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-x/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-x/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/iphone-x/3.webp"
+    ],
+    "rating": 2.5,
+    "reviewCount": 22
+  },
+  {
+    "title": "Oppo A57",
+    "description": "The Oppo A57 is a mid-range smartphone known for its sleek design and capable features. It offers a balance of performance and affordability, making it a popular choice. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 70000,
+    "category": "mobiles",
+    "city": "Faisalabad",
+    "brand": "Oppo",
+    "color": "Graphite",
+    "storage": "64GB",
+    "pta": true,
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-a57/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-a57/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-a57/3.webp"
+    ],
+    "rating": 3.9,
+    "reviewCount": 14
+  },
+  {
+    "title": "Oppo F19 Pro Plus",
+    "description": "The Oppo F19 Pro Plus is a feature-rich smartphone with a focus on camera capabilities. It boasts advanced photography features and a powerful performance for a premium user experience. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 112000,
+    "originalPrice": 137500,
+    "category": "mobiles",
+    "city": "Multan",
+    "brand": "Oppo",
+    "color": "Black",
+    "storage": "128GB",
+    "pta": true,
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-f19-pro-plus/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-f19-pro-plus/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-f19-pro-plus/3.webp"
+    ],
+    "rating": 3.5,
+    "reviewCount": 44
+  },
+  {
+    "title": "Oppo K1",
+    "description": "The Oppo K1 series offers a range of smartphones with various features and specifications. Known for their stylish design and reliable performance, the Oppo K1 series caters to diverse user preferences. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 84000,
+    "originalPrice": 103000,
+    "category": "mobiles",
+    "city": "Peshawar",
+    "brand": "Oppo",
+    "color": "White",
+    "storage": "256GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-k1/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-k1/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-k1/3.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/oppo-k1/4.webp"
+    ],
+    "rating": 4.3,
+    "reviewCount": 34
+  },
+  {
+    "title": "Realme C35",
+    "description": "The Realme C35 is a budget-friendly smartphone with a focus on providing essential features for everyday use. It offers a reliable performance and user-friendly experience. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 42000,
+    "originalPrice": 49500,
+    "category": "mobiles",
+    "city": "Quetta",
+    "brand": "Realme",
+    "color": "Silver",
+    "storage": "512GB",
+    "pta": true,
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-c35/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-c35/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-c35/3.webp"
+    ],
+    "rating": 4.2,
+    "reviewCount": 31
+  },
+  {
+    "title": "Realme X",
+    "description": "The Realme X is a mid-range smartphone known for its sleek design and impressive display. It offers a good balance of performance and camera capabilities for users seeking a quality device. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 84000,
+    "originalPrice": 90500,
+    "category": "mobiles",
+    "city": "Lahore",
+    "brand": "Realme",
+    "color": "Blue",
+    "storage": "64GB",
+    "pta": true,
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-x/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-x/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-x/3.webp"
+    ],
+    "rating": 3.7,
+    "reviewCount": 14
+  },
+  {
+    "title": "Realme XT",
+    "description": "The Realme XT is a feature-rich smartphone with a focus on camera technology. It comes equipped with advanced camera sensors, delivering high-quality photos and videos for photography enthusiasts. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 98000,
+    "originalPrice": 110500,
+    "category": "mobiles",
+    "city": "Karachi",
+    "brand": "Realme",
+    "color": "Graphite",
+    "storage": "128GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-xt/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-xt/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/realme-xt/3.webp"
+    ],
+    "rating": 4.6,
+    "reviewCount": 49
+  },
+  {
+    "title": "Samsung Galaxy S7",
+    "description": "The Samsung Galaxy S7 is a flagship smartphone known for its sleek design and advanced features. It features a high-resolution display, powerful camera, and robust performance. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 84000,
+    "originalPrice": 104500,
+    "category": "mobiles",
+    "city": "Islamabad",
+    "brand": "Samsung",
+    "color": "Black",
+    "storage": "256GB",
+    "pta": true,
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s7/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s7/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s7/3.webp"
+    ],
+    "rating": 3.3,
+    "reviewCount": 44
+  },
+  {
+    "title": "Samsung Galaxy S8",
+    "description": "The Samsung Galaxy S8 is a premium smartphone with an Infinity Display, offering a stunning visual experience. It boasts advanced camera capabilities and cutting-edge technology. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 140000,
+    "originalPrice": 174000,
+    "category": "mobiles",
+    "city": "Rawalpindi",
+    "brand": "Samsung",
+    "color": "White",
+    "storage": "512GB",
+    "pta": true,
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s8/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s8/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s8/3.webp"
+    ],
+    "rating": 4.4,
+    "reviewCount": 11
+  },
+  {
+    "title": "Samsung Galaxy S10",
+    "description": "The Samsung Galaxy S10 is a flagship device featuring a dynamic AMOLED display, versatile camera system, and powerful performance. It represents innovation and excellence in smartphone technology. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 196000,
+    "originalPrice": 207500,
+    "category": "mobiles",
+    "city": "Faisalabad",
+    "brand": "Samsung",
+    "color": "Silver",
+    "storage": "64GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s10/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s10/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/samsung-galaxy-s10/3.webp"
+    ],
+    "rating": 3.1,
+    "reviewCount": 10
+  },
+  {
+    "title": "Vivo S1",
+    "description": "The Vivo S1 is a stylish and mid-range smartphone offering a blend of design and performance. It features a vibrant display, capable camera system, and reliable functionality. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 70000,
+    "originalPrice": 78000,
+    "category": "mobiles",
+    "city": "Multan",
+    "brand": "Vivo",
+    "color": "Blue",
+    "storage": "128GB",
+    "pta": true,
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-s1/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-s1/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-s1/3.webp"
+    ],
+    "rating": 3.5,
+    "reviewCount": 26
+  },
+  {
+    "title": "Vivo V9",
+    "description": "The Vivo V9 is a smartphone known for its sleek design and emphasis on capturing high-quality selfies. It features a notch display, dual-camera setup, and a modern design. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 84000,
+    "originalPrice": 102000,
+    "category": "mobiles",
+    "city": "Peshawar",
+    "brand": "Vivo",
+    "color": "Graphite",
+    "storage": "256GB",
+    "pta": true,
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-v9/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-v9/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-v9/3.webp"
+    ],
+    "rating": 3.6,
+    "reviewCount": 43
+  },
+  {
+    "title": "Vivo X21",
+    "description": "The Vivo X21 is a premium smartphone with a focus on cutting-edge technology. It features an in-display fingerprint sensor, a high-resolution display, and advanced camera capabilities. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 140000,
+    "originalPrice": 169500,
+    "category": "mobiles",
+    "city": "Quetta",
+    "brand": "Vivo",
+    "color": "Black",
+    "storage": "512GB",
+    "pta": false,
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-x21/1.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-x21/2.webp",
+      "https://cdn.dummyjson.com/product-images/smartphones/vivo-x21/3.webp"
+    ],
+    "rating": 4.3,
+    "reviewCount": 7
+  },
+  {
+    "title": "Apple MacBook Pro 14 Inch Space Grey",
+    "description": "The MacBook Pro 14 Inch in Space Grey is a powerful and sleek laptop, featuring Apple's M1 Pro chip for exceptional performance and a stunning Retina display. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 560000,
+    "category": "laptops",
+    "city": "Lahore",
+    "brand": "Apple",
+    "color": "White",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/2.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/3.webp"
+    ],
+    "rating": 3.6,
+    "reviewCount": 16
+  },
+  {
+    "title": "Asus Zenbook Pro Dual Screen Laptop",
+    "description": "The Asus Zenbook Pro Dual Screen Laptop is a high-performance device with dual screens, providing productivity and versatility for creative professionals. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 504000,
+    "originalPrice": 567000,
+    "category": "laptops",
+    "city": "Karachi",
+    "brand": "Asus",
+    "color": "Silver",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/1.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/2.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/3.webp"
+    ],
+    "rating": 4,
+    "reviewCount": 28
+  },
+  {
+    "title": "Huawei Matebook X Pro",
+    "description": "The Huawei Matebook X Pro is a slim and stylish laptop with a high-resolution touchscreen display, offering a premium experience for users on the go. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 392000,
+    "originalPrice": 432500,
+    "category": "laptops",
+    "city": "Islamabad",
+    "brand": "Huawei",
+    "color": "Blue",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/laptops/huawei-matebook-x-pro/1.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/huawei-matebook-x-pro/2.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/huawei-matebook-x-pro/3.webp"
+    ],
+    "rating": 5,
+    "reviewCount": 44
+  },
+  {
+    "title": "Lenovo Yoga 920",
+    "description": "The Lenovo Yoga 920 is a 2-in-1 convertible laptop with a flexible hinge, allowing you to use it as a laptop or tablet, offering versatility and portability. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 308000,
+    "originalPrice": 329500,
+    "category": "laptops",
+    "city": "Rawalpindi",
+    "brand": "Lenovo",
+    "color": "Graphite",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/laptops/lenovo-yoga-920/1.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/lenovo-yoga-920/2.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/lenovo-yoga-920/3.webp"
+    ],
+    "rating": 2.9,
+    "reviewCount": 27
+  },
+  {
+    "title": "New DELL XPS 13 9300 Laptop",
+    "description": "The New DELL XPS 13 9300 Laptop is a compact and powerful device, featuring a virtually borderless InfinityEdge display and high-end performance for various tasks. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 420000,
+    "originalPrice": 476500,
+    "category": "laptops",
+    "city": "Faisalabad",
+    "brand": "Dell",
+    "color": "Black",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/laptops/new-dell-xps-13-9300-laptop/1.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/new-dell-xps-13-9300-laptop/2.webp",
+      "https://cdn.dummyjson.com/product-images/laptops/new-dell-xps-13-9300-laptop/3.webp"
+    ],
+    "rating": 2.7,
+    "reviewCount": 45
+  },
+  {
+    "title": "iPad Mini 2021 Starlight",
+    "description": "The iPad Mini 2021 in Starlight is a compact and powerful tablet from Apple. Featuring a stunning Retina display, powerful A-series chip, and a sleek design, it offers a premium tablet experience. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 140000,
+    "category": "electronics",
+    "city": "Multan",
+    "brand": "Apple",
+    "color": "White",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/tablets/ipad-mini-2021-starlight/1.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/ipad-mini-2021-starlight/2.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/ipad-mini-2021-starlight/3.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/ipad-mini-2021-starlight/4.webp"
+    ],
+    "rating": 3.2,
+    "reviewCount": 33
+  },
+  {
+    "title": "Samsung Galaxy Tab S8 Plus Grey",
+    "description": "The Samsung Galaxy Tab S8 Plus in Grey is a high-performance Android tablet by Samsung. With a large AMOLED display, powerful processor, and S Pen support, it's ideal for productivity and entertainment. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 168000,
+    "originalPrice": 194000,
+    "category": "electronics",
+    "city": "Peshawar",
+    "brand": "Samsung",
+    "color": "Silver",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-s8-plus-grey/1.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-s8-plus-grey/2.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-s8-plus-grey/3.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-s8-plus-grey/4.webp"
+    ],
+    "rating": 4.7,
+    "reviewCount": 41
+  },
+  {
+    "title": "Samsung Galaxy Tab White",
+    "description": "The Samsung Galaxy Tab in White is a sleek and versatile Android tablet. With a vibrant display, long-lasting battery, and a range of features, it offers a great user experience for various tasks. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 98000,
+    "originalPrice": 120000,
+    "category": "electronics",
+    "city": "Quetta",
+    "brand": "Samsung",
+    "color": "Blue",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-white/1.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-white/2.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-white/3.webp",
+      "https://cdn.dummyjson.com/product-images/tablets/samsung-galaxy-tab-white/4.webp"
+    ],
+    "rating": 3.7,
+    "reviewCount": 57
+  },
+  {
+    "title": "Amazon Echo Plus",
+    "description": "The Amazon Echo Plus is a smart speaker with built-in Alexa voice control. It features premium sound quality and serves as a hub for controlling smart home devices. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 28000,
+    "originalPrice": 32000,
+    "category": "audio",
+    "city": "Lahore",
+    "brand": "Amazon",
+    "color": "Graphite",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/amazon-echo-plus/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/amazon-echo-plus/2.webp"
+    ],
+    "rating": 5,
+    "reviewCount": 31
+  },
+  {
+    "title": "Apple Airpods",
+    "description": "The Apple Airpods offer a seamless wireless audio experience. With easy pairing, high-quality sound, and Siri integration, they are perfect for on-the-go listening. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 36500,
+    "originalPrice": 43000,
+    "category": "audio",
+    "city": "Karachi",
+    "brand": "Apple",
+    "color": "Black",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/2.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/3.webp"
+    ],
+    "rating": 4.2,
+    "reviewCount": 35
+  },
+  {
+    "title": "Apple AirPods Max Silver",
+    "description": "The Apple AirPods Max in Silver are premium over-ear headphones with high-fidelity audio, adaptive EQ, and active noise cancellation. Experience immersive sound in style. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 154000,
+    "originalPrice": 178500,
+    "category": "audio",
+    "city": "Islamabad",
+    "brand": "Apple",
+    "color": "White",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods-max-silver/1.webp"
+    ],
+    "rating": 3.5,
+    "reviewCount": 32
+  },
+  {
+    "title": "Apple Airpower Wireless Charger",
+    "description": "The Apple AirPower Wireless Charger provides a convenient way to charge your compatible Apple devices wirelessly. Simply place your devices on the charging mat for effortless charging. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 22500,
+    "category": "audio",
+    "city": "Rawalpindi",
+    "brand": "Apple",
+    "color": "Silver",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpower-wireless-charger/1.webp"
+    ],
+    "rating": 3.7,
+    "reviewCount": 4
+  },
+  {
+    "title": "Apple HomePod Mini Cosmic Grey",
+    "description": "The Apple HomePod Mini in Cosmic Grey is a compact smart speaker that delivers impressive audio and integrates seamlessly with the Apple ecosystem for a smart home experience. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 28000,
+    "originalPrice": 34000,
+    "category": "audio",
+    "city": "Faisalabad",
+    "brand": "Apple",
+    "color": "Blue",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-homepod-mini-cosmic-grey/1.webp"
+    ],
+    "rating": 4.6,
+    "reviewCount": 18
+  },
+  {
+    "title": "Apple iPhone Charger",
+    "description": "The Apple iPhone Charger is a high-quality charger designed for fast and efficient charging of your iPhone. Ensure your device stays powered up and ready to go. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 5500,
+    "originalPrice": 7000,
+    "category": "audio",
+    "city": "Multan",
+    "brand": "Apple",
+    "color": "Graphite",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-iphone-charger/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-iphone-charger/2.webp"
+    ],
+    "rating": 4.2,
+    "reviewCount": 21
+  },
+  {
+    "title": "Apple MagSafe Battery Pack",
+    "description": "The Apple MagSafe Battery Pack is a portable and convenient way to add extra battery life to your MagSafe-compatible iPhone. Attach it magnetically for a secure connection. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 28000,
+    "originalPrice": 34000,
+    "category": "audio",
+    "city": "Peshawar",
+    "brand": "Apple",
+    "color": "Black",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-magsafe-battery-pack/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-magsafe-battery-pack/2.webp"
+    ],
+    "rating": 3.6,
+    "reviewCount": 7
+  },
+  {
+    "title": "Apple Watch Series 4 Gold",
+    "description": "The Apple Watch Series 4 in Gold is a stylish and advanced smartwatch with features like heart rate monitoring, fitness tracking, and a beautiful Retina display. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 98000,
+    "originalPrice": 111500,
+    "category": "audio",
+    "city": "Quetta",
+    "brand": "Apple",
+    "color": "White",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-watch-series-4-gold/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-watch-series-4-gold/2.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-watch-series-4-gold/3.webp"
+    ],
+    "rating": 2.7,
+    "reviewCount": 24
+  },
+  {
+    "title": "Beats Flex Wireless Earphones",
+    "description": "The Beats Flex Wireless Earphones offer a comfortable and versatile audio experience. With magnetic earbuds and up to 12 hours of battery life, they are ideal for everyday use. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 14000,
+    "originalPrice": 15000,
+    "category": "audio",
+    "city": "Lahore",
+    "brand": "Beats",
+    "color": "Silver",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/beats-flex-wireless-earphones/1.webp"
+    ],
+    "rating": 4.2,
+    "reviewCount": 33
+  },
+  {
+    "title": "iPhone 12 Silicone Case with MagSafe Plum",
+    "description": "The iPhone 12 Silicone Case with MagSafe in Plum is a stylish and protective case designed for the iPhone 12. It features MagSafe technology for easy attachment of accessories. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 8500,
+    "originalPrice": 10000,
+    "category": "audio",
+    "city": "Karachi",
+    "brand": "Apple",
+    "color": "Blue",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/iphone-12-silicone-case-with-magsafe-plum/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/iphone-12-silicone-case-with-magsafe-plum/2.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/iphone-12-silicone-case-with-magsafe-plum/3.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/iphone-12-silicone-case-with-magsafe-plum/4.webp"
+    ],
+    "rating": 3.6,
+    "reviewCount": 44
+  },
+  {
+    "title": "Monopod",
+    "description": "The Monopod is a versatile camera accessory for stable and adjustable shooting. Perfect for capturing selfies, group photos, and videos with ease. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 5500,
+    "originalPrice": 6000,
+    "category": "audio",
+    "city": "Islamabad",
+    "brand": "TechGear",
+    "color": "Graphite",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/monopod/1.webp",
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/monopod/2.webp"
+    ],
+    "rating": 4.4,
+    "reviewCount": 34
+  },
+  {
+    "title": "Selfie Lamp with iPhone",
+    "description": "The Selfie Lamp with iPhone is a portable and adjustable LED light designed to enhance your selfies and video calls. Attach it to your iPhone for well-lit photos. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 4000,
+    "originalPrice": 5000,
+    "category": "audio",
+    "city": "Rawalpindi",
+    "brand": "GadgetMaster",
+    "color": "Black",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/selfie-lamp-with-iphone/1.webp"
+    ],
+    "rating": 3.5,
+    "reviewCount": 40
+  },
+  {
+    "title": "Selfie Stick Monopod",
+    "description": "The Selfie Stick Monopod is a extendable and foldable device for capturing the perfect selfie or group photo. Compatible with smartphones and cameras. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 3500,
+    "originalPrice": 4500,
+    "category": "audio",
+    "city": "Faisalabad",
+    "brand": "SnapTech",
+    "color": "White",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/selfie-stick-monopod/1.webp"
+    ],
+    "rating": 3.9,
+    "reviewCount": 6
+  },
+  {
+    "title": "TV Studio Camera Pedestal",
+    "description": "The TV Studio Camera Pedestal is a professional-grade camera support system for smooth and precise camera movements in a studio setting. Ideal for broadcast and production. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 140000,
+    "originalPrice": 152500,
+    "category": "audio",
+    "city": "Multan",
+    "brand": "ProVision",
+    "color": "Silver",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mobile-accessories/tv-studio-camera-pedestal/1.webp"
+    ],
+    "rating": 2.8,
+    "reviewCount": 9
+  },
+  {
+    "title": "Brown Leather Belt Watch",
+    "description": "The Brown Leather Belt Watch is a stylish timepiece with a classic design. Featuring a genuine leather strap and a sleek dial, it adds a touch of sophistication to your look. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 27000,
+    "originalPrice": 28500,
+    "category": "wearables",
+    "city": "Peshawar",
+    "brand": "Fashion Timepieces",
+    "color": "Blue",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/brown-leather-belt-watch/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/brown-leather-belt-watch/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/brown-leather-belt-watch/3.webp"
+    ],
+    "rating": 4.2,
+    "reviewCount": 18
+  },
+  {
+    "title": "Longines Master Collection",
+    "description": "The Longines Master Collection is an elegant and refined watch known for its precision and craftsmanship. With a timeless design, it's a symbol of luxury and sophistication. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 450000,
+    "originalPrice": 543500,
+    "category": "wearables",
+    "city": "Quetta",
+    "brand": "Longines",
+    "color": "Graphite",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/longines-master-collection/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/longines-master-collection/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/longines-master-collection/3.webp"
+    ],
+    "rating": 3.9,
+    "reviewCount": 53
+  },
+  {
+    "title": "Rolex Cellini Date Black Dial",
+    "description": "The Rolex Cellini Date with Black Dial is a classic and prestigious watch. With a black dial and date complication, it exudes sophistication and is a symbol of Rolex's heritage. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 2700000,
+    "originalPrice": 2963000,
+    "category": "wearables",
+    "city": "Lahore",
+    "brand": "Rolex",
+    "color": "Black",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-date-black-dial/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-date-black-dial/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-date-black-dial/3.webp"
+    ],
+    "rating": 5,
+    "reviewCount": 24
+  },
+  {
+    "title": "Rolex Cellini Moonphase",
+    "description": "The Rolex Cellini Moonphase is a masterpiece of horology, featuring a moon phase complication and exquisite design. It reflects Rolex's commitment to precision and elegance. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 3900000,
+    "originalPrice": 4728500,
+    "category": "wearables",
+    "city": "Karachi",
+    "brand": "Rolex",
+    "color": "White",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-moonphase/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-moonphase/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-cellini-moonphase/3.webp"
+    ],
+    "rating": 2.6,
+    "reviewCount": 23
+  },
+  {
+    "title": "Rolex Datejust",
+    "description": "The Rolex Datejust is an iconic and versatile timepiece with a date window. Known for its timeless design and reliability, it's a symbol of Rolex's watchmaking excellence. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 3300000,
+    "category": "wearables",
+    "city": "Islamabad",
+    "brand": "Rolex",
+    "color": "Silver",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/3.webp"
+    ],
+    "rating": 3.7,
+    "reviewCount": 49
+  },
+  {
+    "title": "Rolex Submariner Watch",
+    "description": "The Rolex Submariner is a legendary dive watch with a rich history. Known for its durability and water resistance, it's a symbol of adventure and exploration. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 4200000,
+    "originalPrice": 4423500,
+    "category": "wearables",
+    "city": "Rawalpindi",
+    "brand": "Rolex",
+    "color": "Blue",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-submariner-watch/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-submariner-watch/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-watches/rolex-submariner-watch/3.webp"
+    ],
+    "rating": 2.7,
+    "reviewCount": 35
+  },
+  {
+    "title": "300 Touring",
+    "description": "The 300 Touring is a stylish and comfortable sedan, known for its luxurious features and smooth performance. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 6380000,
+    "category": "cars",
+    "city": "Faisalabad",
+    "brand": "Chrysler",
+    "color": "Graphite",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/1.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/2.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/3.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/4.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/5.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/300-touring/6.webp"
+    ],
+    "rating": 4,
+    "reviewCount": 35
+  },
+  {
+    "title": "Charger SXT RWD",
+    "description": "The Charger SXT RWD is a powerful and sporty rear-wheel-drive sedan, offering a blend of performance and practicality. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 7260000,
+    "originalPrice": 7910000,
+    "category": "cars",
+    "city": "Multan",
+    "brand": "Dodge",
+    "color": "Black",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/1.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/2.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/3.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/4.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/5.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/6.webp"
+    ],
+    "rating": 2.6,
+    "reviewCount": 38
+  },
+  {
+    "title": "Dodge Hornet GT Plus",
+    "description": "The Dodge Hornet GT Plus is a compact and agile hatchback, perfect for urban driving with a touch of sportiness. Available in Peshawar, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 5500000,
+    "category": "cars",
+    "city": "Peshawar",
+    "brand": "Dodge",
+    "color": "White",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/1.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/2.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/3.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/4.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/5.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/6.webp"
+    ],
+    "rating": 2.6,
+    "reviewCount": 51
+  },
+  {
+    "title": "Durango SXT RWD",
+    "description": "The Durango SXT RWD is a spacious and versatile SUV, known for its strong performance and family-friendly features. Available in Quetta, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 8140000,
+    "originalPrice": 9740000,
+    "category": "cars",
+    "city": "Quetta",
+    "brand": "Dodge",
+    "color": "Silver",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/1.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/2.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/3.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/4.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/5.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/6.webp"
+    ],
+    "rating": 4.1,
+    "reviewCount": 59
+  },
+  {
+    "title": "Pacifica Touring",
+    "description": "The Pacifica Touring is a stylish and well-equipped minivan, offering comfort and convenience for family journeys. Available in Lahore, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 7040000,
+    "originalPrice": 8260000,
+    "category": "cars",
+    "city": "Lahore",
+    "brand": "Chrysler",
+    "color": "Blue",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/1.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/2.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/3.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/4.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/5.webp",
+      "https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/6.webp"
+    ],
+    "rating": 3.6,
+    "reviewCount": 27
+  },
+  {
+    "title": "Generic Motorcycle",
+    "description": "The Generic Motorcycle is a versatile and reliable bike suitable for various riding preferences. With a balanced design, it provides a comfortable and efficient riding experience. Available in Karachi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 880000,
+    "originalPrice": 1000000,
+    "category": "cars",
+    "city": "Karachi",
+    "brand": "Generic Motors",
+    "color": "Graphite",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/1.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/2.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/3.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/4.webp"
+    ],
+    "rating": 4.9,
+    "reviewCount": 18
+  },
+  {
+    "title": "Kawasaki Z800",
+    "description": "The Kawasaki Z800 is a powerful and agile sportbike known for its striking design and performance. It's equipped with advanced features, making it a favorite among motorcycle enthusiasts. Available in Islamabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 1980000,
+    "originalPrice": 2195000,
+    "category": "cars",
+    "city": "Islamabad",
+    "brand": "Kawasaki",
+    "color": "Black",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/1.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/2.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/3.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/4.webp"
+    ],
+    "rating": 4,
+    "reviewCount": 28
+  },
+  {
+    "title": "MotoGP CI.H1",
+    "description": "The MotoGP CI.H1 is a high-performance motorcycle inspired by MotoGP racing technology. It offers cutting-edge features and precision engineering for an exhilarating riding experience. Available in Rawalpindi, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 3300000,
+    "originalPrice": 3545000,
+    "category": "cars",
+    "city": "Rawalpindi",
+    "brand": "MotoGP",
+    "color": "White",
+    "condition": "NEW",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/1.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/2.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/3.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/4.webp"
+    ],
+    "rating": 3,
+    "reviewCount": 8
+  },
+  {
+    "title": "Scooter Motorcycle",
+    "description": "The Scooter Motorcycle is a practical and fuel-efficient bike ideal for urban commuting. It features a step-through design and user-friendly controls for easy maneuverability. Available in Faisalabad, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 660000,
+    "originalPrice": 705000,
+    "category": "cars",
+    "city": "Faisalabad",
+    "brand": "ScootMaster",
+    "color": "Silver",
+    "condition": "USED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/1.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/2.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/3.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/4.webp"
+    ],
+    "rating": 2.5,
+    "reviewCount": 46
+  },
+  {
+    "title": "Sportbike Motorcycle",
+    "description": "The Sportbike Motorcycle is designed for speed and agility, with a sleek and aerodynamic profile. It's suitable for riders looking for a dynamic and thrilling riding experience. Available in Multan, Pakistan. Meetup preferred in a public place. Cash / bank transfer accepted.",
+    "price": 1650000,
+    "originalPrice": 1865000,
+    "category": "cars",
+    "city": "Multan",
+    "brand": "SpeedMaster",
+    "color": "Blue",
+    "condition": "REFURBISHED",
+    "images": [
+      "https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/1.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/2.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/3.webp",
+      "https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/4.webp"
+    ],
+    "rating": 3.9,
+    "reviewCount": 5
+  }
+]

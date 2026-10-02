@@ -1,24 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS
+  app.set('trust proxy', 1);
+
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads/',
+  });
+
   app.enableCors({
     origin: [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      'http://localhost:4000',
-      'http://localhost:4001',
+      process.env.FRONTEND_URL || 'http://localhost:3010',
       'http://localhost:3000',
-      /^http:\/\/localhost:\d+$/, // Allow any localhost port in development
+      'http://localhost:3010',
+      /^http:\/\/localhost:\d+$/,
     ],
     credentials: true,
   });
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,13 +32,11 @@ async function bootstrap() {
     }),
   );
 
-  // API prefix
   app.setGlobalPrefix('api');
 
-  // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('TrustWala Bazaar API')
-    .setDescription('Pakistan\'s Most Trusted AI-Enriched Marketplace API')
+    .setDescription("Pakistan's Most Trusted AI-Enriched Marketplace API")
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -47,4 +50,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
