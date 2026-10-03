@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
 import Script from "next/script";
-import { ClerkProviderWrapper } from "@/components/auth/clerk-provider-wrapper";
+import { AppShell } from "@/components/layout/app-shell";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "TrustWala Bazaar - Trusted Marketplace for Pakistan",
@@ -53,13 +56,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#0a0f0d" />
       </head>
       <body className={inter.variable}>
-        <ClerkProviderWrapper>
-          <Providers>{children}</Providers>
-        </ClerkProviderWrapper>
-        <Script id="sw-register" strategy="afterInteractive">{`
+        <AppShell>{children}</AppShell>
+        <Script id="sw-register" strategy="lazyOnload">{`
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(regs) {
-              // In local/dev, drop stale SWs that cache old bundles
               if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
                 regs.forEach(function(r) { r.unregister(); });
                 if (window.caches) {
@@ -69,6 +69,8 @@ export default function RootLayout({
                 }
                 return;
               }
+              // Skip SW on the marketing landing page so first visit stays light
+              if (location.pathname === '/') return;
               navigator.serviceWorker.register('/sw.js').catch(function() {});
             });
           }

@@ -1,5 +1,3 @@
-@import "leaflet/dist/leaflet.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -321,7 +319,7 @@ body {
   color: inherit;
 }
 
-/* Leaflet map (Nearby Shops) */
+/* Leaflet map (Nearby Shops) — CSS imported in nearby-shops-content */
 .leaflet-container {
   width: 100%;
   height: 100%;
@@ -333,5 +331,21 @@ body {
 .twb-user-marker {
   background: transparent !important;
   border: none !important;
+}
+
+/* Landing page — tiny CSS fade instead of JS animation libs */
+@keyframes landing-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-fade {
+  animation: landing-fade-up 0.55s ease-out both;
 }
 

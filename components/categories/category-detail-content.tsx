@@ -49,7 +49,7 @@ export function CategoryDetailContent({ slug }: CategoryDetailContentProps) {
     queryKey: ["category", slug],
     queryFn: async () => {
       const response = await fetch(
-        `${apiUrl}/api/products?categoryId=${encodeURIComponent(slug)}&limit=50`,
+        `${apiUrl}/api/products?categoryId=${encodeURIComponent(slug)}&limit=24`,
         { headers: { "Content-Type": "application/json" } },
       );
       if (!response.ok) return [];

@@ -91,6 +91,8 @@ model User {
   reviews           Review[]
   savedProducts     SavedProduct[]
   notifications     Notification[]
+
+  @@index([city])
 }
 
 model Category {
@@ -158,6 +160,12 @@ model Product {
   orders            Order[]
   reviews           Review[]
   savedProducts     SavedProduct[]
+
+  @@index([isActive, trustScore])
+  @@index([isActive, createdAt])
+  @@index([categoryId, isActive])
+  @@index([sellerId, isActive])
+  @@index([city])
 }
 
 model Review {
@@ -180,6 +188,9 @@ model Review {
   
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  @@index([productId, createdAt])
+  @@index([userId])
 }
 
 model Order {
@@ -230,6 +241,10 @@ model Message {
   readAt            DateTime?
   
   createdAt         DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([senderId, receiverId])
+  @@index([receiverId, isRead])
 }
 
 model SavedProduct {

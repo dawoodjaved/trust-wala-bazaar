@@ -44,14 +44,14 @@ export function SettingsContent() {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">Settings</h1>
 
       <Tabs defaultValue="account" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
-          <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        <TabsList className="w-full h-auto flex flex-wrap justify-start gap-1">
+          <TabsTrigger value="account" className="flex-1 min-w-[7rem] sm:flex-none">Account</TabsTrigger>
+          <TabsTrigger value="preferences" className="flex-1 min-w-[7rem] sm:flex-none">Preferences</TabsTrigger>
+          <TabsTrigger value="accessibility" className="flex-1 min-w-[7rem] sm:flex-none">Accessibility</TabsTrigger>
+          <TabsTrigger value="notifications" className="flex-1 min-w-[7rem] sm:flex-none">Notifications</TabsTrigger>
         </TabsList>
 
         <TabsContent value="account" className="space-y-4">

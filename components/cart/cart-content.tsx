@@ -44,7 +44,7 @@ export function CartContent() {
         <span className="text-[var(--text-primary)] font-medium">Cart</span>
       </div>
 
-      <h1 className="text-4xl font-bold mb-8 tracking-wide">YOUR CART</h1>
+      <h1 className="text-2xl sm:text-4xl font-bold mb-6 sm:mb-8 tracking-wide">YOUR CART</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">

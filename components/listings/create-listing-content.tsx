@@ -274,7 +274,7 @@ export function CreateListingContent() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="condition">Condition *</Label>
                   <Select
@@ -333,7 +333,7 @@ export function CreateListingContent() {
               </div>
 
               {formData.images.length > 0 && (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                   {formData.images.map((img, idx) => (
                     <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border">
                       <img src={img} alt={`Upload ${idx + 1}`} className="w-full h-full object-cover" />

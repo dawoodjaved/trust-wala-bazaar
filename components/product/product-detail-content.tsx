@@ -116,23 +116,23 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Breadcrumbs */}
-      <div className="mb-6 text-sm text-[#9ca3af]">
-        <Link href="/home" className="hover:text-white">
+      <div className="mb-6 text-sm text-[#9ca3af] flex flex-wrap items-center gap-x-2 gap-y-1 break-words">
+        <Link href="/home" className="hover:text-white shrink-0">
           Home
         </Link>
-        <span className="mx-2">/</span>
-        <Link href="/categories" className="hover:text-white">
+        <span className="shrink-0">/</span>
+        <Link href="/categories" className="hover:text-white shrink-0">
           Categories
         </Link>
-        <span className="mx-2">/</span>
-        <Link href={`/categories/${categorySlug}`} className="hover:text-white">
+        <span className="shrink-0">/</span>
+        <Link href={`/categories/${categorySlug}`} className="hover:text-white shrink-0">
           {categoryName}
         </Link>
-        <span className="mx-2">/</span>
-        <span className="text-white font-medium">{productData.title}</span>
+        <span className="shrink-0">/</span>
+        <span className="text-white font-medium line-clamp-2">{productData.title}</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Left Column - Images */}
         <div className="space-y-4">
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
@@ -171,7 +171,7 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
         {/* Right Column - Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{productData.title}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 break-words">{productData.title}</h1>
             
             {/* Trust Score */}
             {productData.trustScore > 0 && (
@@ -202,7 +202,7 @@ export function ProductDetailContent({ productId }: ProductDetailContentProps) {
               )}
             </div>
             <div className="flex items-center gap-4 mb-6">
-              <span className="text-3xl font-bold">PKR {productData.price.toLocaleString()}</span>
+              <span className="text-2xl sm:text-3xl font-bold">PKR {productData.price.toLocaleString()}</span>
               {productData.originalPrice && (
                 <>
                   <span className="text-xl text-gray-500 line-through">PKR {productData.originalPrice.toLocaleString()}</span>

@@ -4,31 +4,32 @@ import { getAiService } from '@/lib/server/ai';
 import { requireUser } from '@/lib/server/jwt';
 import { enforceRateLimit } from '@/lib/server/rate-limit';
 import { json, error } from '@/lib/server/http';
-import { recalculateTrustScore } from '@/lib/server/trust-score';
+import { recalculateTrustScoresForSeller } from '@/lib/server/trust-score';
 
 async function updateVerification(
   userId: string,
   data: { cnicVerified?: boolean; videoVerified?: boolean },
 ) {
+  const current = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { cnicVerified: true, videoVerified: true },
+  });
+
+  const cnicVerified = data.cnicVerified ?? current?.cnicVerified ?? false;
+  const videoVerified = data.videoVerified ?? current?.videoVerified ?? false;
+
   const updated = await prisma.user.update({
     where: { id: userId },
     data: {
       ...data,
-      verificationStatus:
-        data.cnicVerified && data.videoVerified ? 'VERIFIED' : 'PENDING',
+      verificationStatus: cnicVerified && videoVerified ? 'VERIFIED' : 'PENDING',
     },
   });
 
   if (data.cnicVerified !== undefined || data.videoVerified !== undefined) {
-    const products = await prisma.product.findMany({
-      where: { sellerId: userId },
-      select: { id: true },
+    void recalculateTrustScoresForSeller(prisma, userId).catch((err) => {
+      console.error('Error recalculating trust scores after verification update:', err);
     });
-    for (const product of products) {
-      recalculateTrustScore(prisma, product.id).catch((err) => {
-        console.error('Error recalculating trust score after verification update:', err);
-      });
-    }
   }
 
   return updated;

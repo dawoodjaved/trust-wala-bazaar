@@ -46,7 +46,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-[rgba(255,255,255,0.08)] bg-[#0a0f0d] h-[calc(100vh-5rem)] sticky top-20 shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-[rgba(255,255,255,0.08)] bg-[#0a0f0d] h-[calc(100vh-5rem)] sticky top-20 shrink-0 shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         <Link href="/home">
           <Button

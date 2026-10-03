@@ -59,7 +59,7 @@ export function HomeContent() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const response = await fetch(`${apiUrl}/api/products?limit=50`, {
+      const response = await fetch(`${apiUrl}/api/products?limit=16`, {
         signal: controller.signal,
         headers: { "Content-Type": "application/json" },
       });
@@ -100,11 +100,8 @@ export function HomeContent() {
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
     trustScore: p.trustScore || 0,
     verified: p.seller?.cnicVerified || p.verified || false,
-    rating:
-      p.rating ||
-      (p.reviews?.length > 0
-        ? p.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / p.reviews.length
-        : 0),
+    rating: p.seller?.rating || p.rating || 0,
+    reviews: p._count?.reviews || p.reviews?.length || 0,
   });
 
   const displayRecommended = allProducts.slice(0, 8).map(mapProduct);
@@ -149,11 +146,11 @@ export function HomeContent() {
           </AnimatedSVG>
         </SpringAnimated>
         <div className="flex items-center justify-between mb-6 relative z-10">
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-xl sm:text-3xl font-bold text-white">
             Quick Actions
           </h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
           {quickActions.map((action, idx) => {
             const Icon = action.icon;
             return (
@@ -184,13 +181,13 @@ export function HomeContent() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111614] via-[#0d1512] to-[#111614] border border-[rgba(255,255,255,0.08)] p-8 shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111614] via-[#0d1512] to-[#111614] border border-[rgba(255,255,255,0.08)] p-5 sm:p-8 shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
       >
         <div className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             Platform Features
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-slate-400 max-w-2xl mx-auto">
             Discover verification, trust scores, search, and escrow-ready checkout built for Pakistan
           </p>
         </div>

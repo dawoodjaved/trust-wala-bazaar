@@ -23,11 +23,26 @@ export async function POST(request: Request) {
 
     const message = await prisma.message.create({
       data: {
-        ...dto,
+        conversationId: dto.conversationId,
+        receiverId: dto.receiverId,
+        type: dto.type || 'TEXT',
+        content: dto.content,
+        imageUrl: dto.imageUrl,
+        offerPrice: dto.offerPrice,
         senderId: auth.id,
         originalLanguage: detectedLanguage,
       },
-      include: {
+      select: {
+        id: true,
+        conversationId: true,
+        senderId: true,
+        receiverId: true,
+        type: true,
+        content: true,
+        offerPrice: true,
+        translatedContent: true,
+        aiTranslated: true,
+        createdAt: true,
         sender: {
           select: {
             id: true,

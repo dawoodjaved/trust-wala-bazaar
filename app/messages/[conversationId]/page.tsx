@@ -14,9 +14,9 @@ export default async function ChatPage({
   return (
     <>
       <Header />
-      <div className="flex pt-20">
+      <div className="flex pt-16 md:pt-20">
         <Sidebar />
-        <main className="flex-1 pb-20 lg:pb-4">
+        <main className="flex-1 pb-20 lg:pb-4 min-w-0">
           <ChatContent conversationId={conversationId} />
         </main>
       </div>

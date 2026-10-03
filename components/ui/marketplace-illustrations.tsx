@@ -1,6 +1,4 @@
-"use client";
-
-// Inline SVG illustrations for marketplace theme
+// Inline SVG illustrations for marketplace theme (server-safe)
 
 export const ShoppingAppSVG = () => (
   <svg viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">

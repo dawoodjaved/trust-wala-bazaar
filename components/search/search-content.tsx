@@ -225,16 +225,16 @@ export function SearchContent() {
       </motion.div>
 
       {/* Results Header */}
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-muted-foreground">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <p className="text-sm text-muted-foreground min-w-0 truncate">
           {isLoading ? "Searching..." : `Showing 1-${displayResults.length} of ${displayResults.length} results`}
           {searchQuery && ` for "${searchQuery}"`}
         </p>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Sort by:</span>
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-2 flex-1 sm:flex-none">
+            <span className="text-sm text-muted-foreground hidden sm:inline">Sort by:</span>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px] rounded-xl">
+              <SelectTrigger className="w-full sm:w-[180px] rounded-xl">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>

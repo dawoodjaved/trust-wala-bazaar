@@ -45,8 +45,12 @@ const middlewareImpl = hasClerk ? createClerkAuthMiddleware() : createPassthroug
 export default function middleware(request: NextRequest, event: unknown) {
   const { pathname } = request.nextUrl;
 
-  // Next.js API + static uploads handle their own auth / are public assets
-  if (pathname.startsWith('/api') || pathname.startsWith('/uploads')) {
+  // Landing + API + uploads: skip Clerk middleware (keeps first paint fast)
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/uploads")
+  ) {
     return NextResponse.next();
   }
 

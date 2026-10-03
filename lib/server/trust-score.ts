@@ -1,5 +1,13 @@
-/** Port of ProductsService.computeTrustScore / recalculateTrustScore */
-export function computeTrustScore(product: any): {
+/** Trust score helpers — batched updates avoid N+1 recalculation. */
+
+export function computeTrustScore(product: {
+  seller?: { cnicVerified?: boolean; videoVerified?: boolean } | null;
+  ptaVerified?: boolean;
+  specifications?: unknown;
+  reviews?: Array<{ rating: number }>;
+  price?: number;
+  aiPriceSuggestion?: number | null;
+}): {
   score: number;
   breakdown: {
     sellerVerification: number;
@@ -17,15 +25,14 @@ export function computeTrustScore(product: any): {
   if (product.specifications) productAuthenticity += 50;
 
   let reviews = 0;
-  if (product.reviews?.length > 0) {
+  if (product.reviews && product.reviews.length > 0) {
     const avgRating =
-      product.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
-      product.reviews.length;
+      product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length;
     reviews = Math.round((avgRating / 5) * 100);
   }
 
   let priceFairness = 50;
-  if (product.aiPriceSuggestion) {
+  if (product.aiPriceSuggestion && product.price != null) {
     const priceDiff =
       Math.abs(product.price - product.aiPriceSuggestion) / product.aiPriceSuggestion;
     priceFairness = Math.round(Math.max(0, (1 - priceDiff) * 100));
@@ -49,8 +56,16 @@ export function computeTrustScore(product: any): {
   };
 }
 
+type PrismaLike = {
+  product: {
+    findUnique: (args: any) => Promise<any>;
+    findMany: (args: any) => Promise<any[]>;
+    update: (args: any) => Promise<any>;
+  };
+};
+
 export async function recalculateTrustScore(
-  prisma: { product: any },
+  prisma: PrismaLike,
   productId: string,
 ): Promise<number> {
   const product = await prisma.product.findUnique({
@@ -58,18 +73,15 @@ export async function recalculateTrustScore(
     include: {
       seller: {
         select: {
-          id: true,
           cnicVerified: true,
           videoVerified: true,
         },
       },
-      reviews: true,
+      reviews: { select: { rating: true } },
     },
   });
 
-  if (!product) {
-    return 0;
-  }
+  if (!product) return 0;
 
   const trustScore = computeTrustScore(product).score;
 
@@ -79,4 +91,34 @@ export async function recalculateTrustScore(
   });
 
   return trustScore;
+}
+
+/** One read for all seller products, then parallel score writes — no N+1 finds. */
+export async function recalculateTrustScoresForSeller(
+  prisma: PrismaLike,
+  sellerId: string,
+): Promise<void> {
+  const products = await prisma.product.findMany({
+    where: { sellerId, isActive: true },
+    include: {
+      seller: {
+        select: {
+          cnicVerified: true,
+          videoVerified: true,
+        },
+      },
+      reviews: { select: { rating: true } },
+    },
+  });
+
+  if (products.length === 0) return;
+
+  await Promise.all(
+    products.map((product) =>
+      prisma.product.update({
+        where: { id: product.id },
+        data: { trustScore: computeTrustScore(product).score },
+      }),
+    ),
+  );
 }

@@ -1,11 +1,5 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Star, FileText, Layers, Maximize2, Sparkles } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
-import { SpringAnimated } from "@/components/ui/spring-animated";
-import { AnimatedSVG } from "@/components/ui/animated-svg";
+import { Star, Layers, Maximize2, Sparkles } from "lucide-react";
 import {
   ShoppingAppSVG,
   OnlineShoppingSVG,
@@ -21,130 +15,96 @@ import {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0a0f0d] text-white overflow-x-hidden">
-      {/* Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-16 flex items-center justify-between">
-        <div className="text-2xl font-bold text-white">TrustWala Bazaar</div>
-        <div className="flex items-center gap-8">
-          <Link href="#about" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 md:h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-4 md:px-16 flex items-center justify-between">
+        <div className="text-lg md:text-2xl font-bold text-white">TrustWala Bazaar</div>
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="#about" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors">
             About
           </Link>
-          <Link href="#features" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          <Link href="#features" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors">
             Features
           </Link>
-          <Link href="#why-trustwala" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          <Link href="#why-trustwala" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors">
             Why TrustWala
           </Link>
-          <Link href="/home" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors duration-300">
+          <Link href="/home" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors">
             Get Started
           </Link>
         </div>
+        <Link
+          href="/home"
+          className="md:hidden text-sm font-semibold text-[#0a0f0d] bg-[#c8d96f] px-3 py-1.5 rounded-full"
+        >
+          Open app
+        </Link>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden" style={{
-        background: "radial-gradient(ellipse 800px 600px at center top, #1a221e 0%, #0a0f0d 60%)"
-      }}>
-        {/* Spotlight Effect */}
-        <div 
-          className="absolute top-[-100px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[800px] pointer-events-none"
+      <section
+        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-20 px-4"
+        style={{
+          background: "radial-gradient(ellipse 800px 600px at center top, #1a221e 0%, #0a0f0d 60%)",
+        }}
+      >
+        <div
+          className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(200, 217, 111, 0.15) 0%, transparent 70%)"
+            background: "radial-gradient(circle, rgba(200, 217, 111, 0.15) 0%, transparent 70%)",
           }}
         />
-        
-        <div className="relative z-10 max-w-[1440px] mx-auto px-16 text-center">
-          {/* Hero Illustration - Floating above with Spring Animation */}
-          <SpringAnimated
-            from={{ opacity: 0, y: -50, scale: 0.8 }}
-            to={{ opacity: 0.2, y: 0, scale: 1 }}
-            delay={300}
-            className="absolute top-[-100px] left-1/2 transform -translate-x-1/2 w-96 h-96 pointer-events-none"
-          >
-            <AnimatedSVG
-              duration={3000}
-              delay={500}
-              className="w-full h-full"
-            >
-              <ShoppingAppSVG />
-            </AnimatedSVG>
-          </SpringAnimated>
-          
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em]"
-          >
+
+        <div className="relative z-10 max-w-[1440px] mx-auto md:px-16 text-center">
+          <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-64 h-64 md:w-96 md:h-96 pointer-events-none opacity-20 landing-fade">
+            <ShoppingAppSVG />
+          </div>
+
+          <h1 className="text-4xl md:text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em] landing-fade">
             Pakistan&apos;s Most Trusted
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.8 }}
-            className="text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em] mt-2"
+          </h1>
+          <h1
+            className="text-4xl md:text-[72px] font-bold text-white leading-[1.1] tracking-[-0.02em] mt-2 landing-fade"
+            style={{ animationDelay: "80ms" }}
           >
             AI-Enriched Marketplace
-          </motion.h1>
-          
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-[18px] text-[#9ca3af] mt-6 max-w-[600px] mx-auto leading-[1.6]"
+          </h1>
+
+          <p
+            className="text-base md:text-[18px] text-[#9ca3af] mt-6 max-w-[600px] mx-auto leading-[1.6] landing-fade"
+            style={{ animationDelay: "140ms" }}
           >
-            Buy and sell with confidence. Trust scores, seller verification, and safer transactions for mobiles, laptops, electronics, cars, and more.
-          </motion.p>
-          
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="flex gap-4 justify-center mt-10"
+            Buy and sell with confidence. Trust scores, seller verification, and safer transactions for mobiles,
+            laptops, electronics, cars, and more.
+          </p>
+
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center mt-10 landing-fade"
+            style={{ animationDelay: "200ms" }}
           >
-            <Link href="/home">
-              <button
-                className="px-9 py-[14px] bg-[#c8d96f] text-[#0a0f0d] text-base font-semibold rounded-[30px] transition-all duration-300 hover:scale-105"
-                style={{
-                  boxShadow: "0 0 30px rgba(200, 217, 111, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 0 40px rgba(200, 217, 111, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 0 30px rgba(200, 217, 111, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)";
-                }}
-              >
-                Start Buying
-              </button>
+            <Link
+              href="/home"
+              className="px-9 py-[14px] bg-[#c8d96f] text-[#0a0f0d] text-base font-semibold rounded-[30px] transition-transform duration-300 hover:scale-105"
+              style={{
+                boxShadow: "0 0 30px rgba(200, 217, 111, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Start Buying
             </Link>
-            <Link href="/listings/create">
-              <button
-                className="px-9 py-[14px] bg-transparent border-2 border-[rgba(200,217,111,0.3)] text-[#c8d96f] text-base font-semibold rounded-[30px] transition-all duration-300 hover:scale-105 hover:border-[#c8d96f]"
-              >
-                Start Selling
-              </button>
+            <Link
+              href="/listings/create"
+              className="px-9 py-[14px] bg-transparent border-2 border-[rgba(200,217,111,0.3)] text-[#c8d96f] text-base font-semibold rounded-[30px] transition-all duration-300 hover:scale-105 hover:border-[#c8d96f]"
+            >
+              Start Selling
             </Link>
-          </motion.div>
-          
-          {/* 5-Star Rating Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="mt-[60px] flex flex-col items-center"
-          >
+          </div>
+
+          <div className="mt-[60px] flex flex-col items-center landing-fade" style={{ animationDelay: "280ms" }}>
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-5 h-5 fill-[#fbbf24] text-[#fbbf24]" />
               ))}
             </div>
             <p className="text-sm text-[#e5e7eb] mt-3">Built for safer buying and selling in Pakistan</p>
-            
-            {/* Stats */}
-            <div className="mt-12 flex items-center gap-12">
+
+            <div className="mt-12 flex items-center gap-8 md:gap-12">
               <div className="text-center">
                 <div className="text-3xl font-bold text-[#c8d96f]">5★</div>
                 <div className="text-sm text-[#9ca3af] mt-1">Trust Scoring</div>
@@ -158,373 +118,158 @@ export default function LandingPage() {
                 <div className="text-sm text-[#9ca3af] mt-1">Ready Flow</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* About Section - Left Overlay */}
-      <section id="about" className="relative py-[120px] px-16 max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 gap-16 items-start">
-          {/* Left Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="w-[420px] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px] border border-[rgba(200,217,111,0.15)] rounded-2xl p-12"
-          >
+      <section id="about" className="relative py-16 md:py-[120px] px-4 md:px-16 max-w-[1440px] mx-auto">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+          <div className="w-full md:w-[420px] bg-[rgba(17,22,20,0.95)] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 md:p-12">
             <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
               ABOUT TRUSTWALA
             </div>
-            <h2 className="text-[32px] font-bold text-white leading-[1.3] mb-6">
+            <h2 className="text-2xl md:text-[32px] font-bold text-white leading-[1.3] mb-6">
               Revolutionizing Pakistan&apos;s marketplace with AI-powered trust and security.
             </h2>
             <p className="text-[15px] text-[#9ca3af] leading-[1.8]">
-              TrustWala Bazaar is an AI-assisted marketplace built for Pakistan — combining seller verification (CNIC + video), transparent trust scores, listing fraud checks, and escrow-ready checkout so buyers and sellers can trade with clearer signals and less risk.
+              TrustWala Bazaar is an AI-assisted marketplace built for Pakistan — combining seller verification
+              (CNIC + video), transparent trust scores, listing fraud checks, and escrow-ready checkout so buyers
+              and sellers can trade with clearer signals and less risk.
             </p>
-          </motion.div>
-          
-          {/* Right Side - 3D Marketplace Illustration with Animation */}
-          <SpringAnimated
-            from={{ opacity: 0, x: 50, scale: 0.9 }}
-            to={{ opacity: 1, x: 0, scale: 1 }}
-            delay={200}
-            className="flex items-center justify-center"
-          >
-            <div className="relative w-full h-[500px]">
-              <AnimatedSVG
-                duration={2500}
-                delay={400}
-                className="w-full h-full rounded-2xl"
-                style={{ filter: 'brightness(0.9) saturate(1.2)' }}
-              >
-                <OnlineShoppingSVG />
-              </AnimatedSVG>
-              {/* Decorative elements */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(200,217,111,0.1)] to-transparent rounded-2xl pointer-events-none" />
+          </div>
+
+          <div className="relative w-full h-[280px] md:h-[500px]">
+            <div className="w-full h-full rounded-2xl" style={{ filter: "brightness(0.9) saturate(1.2)" }}>
+              <OnlineShoppingSVG />
             </div>
-          </SpringAnimated>
+            <div className="absolute inset-0 bg-gradient-to-br from-[rgba(200,217,111,0.1)] to-transparent rounded-2xl pointer-events-none" />
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-[120px] px-16 bg-[#0a0f0d]">
+      <section id="features" className="py-16 md:py-[120px] px-4 md:px-16 bg-[#0a0f0d]">
         <div className="max-w-[1440px] mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
-            FEATURES
+          <div className="mb-12">
+            <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">FEATURES</div>
+            <h2 className="text-3xl md:text-[36px] font-bold text-white">Why Choose TrustWala Bazaar</h2>
           </div>
-          <h2 className="text-[36px] font-bold text-white">
-            Why Choose TrustWala Bazaar
-          </h2>
-        </motion.div>
-        
-        <div className="grid grid-cols-2 gap-8 w-full">
-          {/* Card 1: AI-Powered Recommendations */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
-          >
-            <div className="w-20 h-20 mb-6 flex items-center justify-center">
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={100}
-                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
-              >
-                <AnimatedSVG
-                  alt="AI Technology"
-                  duration={2000}
-                  delay={300}
-                  className="w-16 h-16"
-                >
-                  <AIIllustrationSVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">AI-Powered Recommendations</h3>
-            <p className="text-sm text-[#9ca3af]">Get personalized product suggestions based on your preferences and browsing history.</p>
-          </motion.div>
-          
-          {/* Card 2: Fraud Detection */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
-          >
-            <div className="w-20 h-20 mb-6 flex items-center justify-center">
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={200}
-                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
-              >
-                <AnimatedSVG
-                  alt="Security Shield"
-                  duration={2000}
-                  delay={400}
-                  className="w-16 h-16"
-                >
-                  <SecuritySVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Fraud Detection</h3>
-            <p className="text-sm text-[#9ca3af]">CNIC upload, video verification workflows, and AI-assisted listing risk checks.</p>
-          </motion.div>
-          
-          {/* Card 3: Voice & Visual Search */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
-          >
-            <div className="w-20 h-20 mb-6 flex items-center justify-center">
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={300}
-                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
-              >
-                <AnimatedSVG
-                  alt="Voice Search"
-                  duration={2000}
-                  delay={500}
-                  className="w-16 h-16"
-                >
-                  <VoiceSearchSVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Voice & Visual Search</h3>
-            <p className="text-sm text-[#9ca3af]">Search using voice (Urdu/English) or upload images to find similar products.</p>
-          </motion.div>
 
-          {/* Card 4: Trust Score System */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] hover:-translate-y-1 transition-all duration-300"
-          >
-            <div className="w-20 h-20 mb-6 flex items-center justify-center">
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0.5, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={400}
-                className="w-full h-full flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl"
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 w-full">
+            {[
+              {
+                title: "AI-Powered Recommendations",
+                body: "Get personalized product suggestions based on your preferences and browsing history.",
+                Icon: AIIllustrationSVG,
+              },
+              {
+                title: "Fraud Detection",
+                body: "CNIC upload, video verification workflows, and AI-assisted listing risk checks.",
+                Icon: SecuritySVG,
+              },
+              {
+                title: "Voice & Visual Search",
+                body: "Search using voice (Urdu/English) or upload images to find similar products.",
+                Icon: VoiceSearchSVG,
+              },
+              {
+                title: "Trust Score System",
+                body: "AI-calculated trust scores for sellers and products with transparent explanations.",
+                Icon: AnalyticsSVG,
+              },
+            ].map(({ title, body, Icon }) => (
+              <div
+                key={title}
+                className="bg-[#111614] border border-[rgba(255,255,255,0.08)] rounded-xl p-8 hover:border-[rgba(200,217,111,0.3)] transition-colors"
               >
-                <AnimatedSVG
-                  alt="Analytics"
-                  duration={2000}
-                  delay={600}
-                  className="w-16 h-16"
-                >
-                  <AnalyticsSVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Trust Score System</h3>
-            <p className="text-sm text-[#9ca3af]">AI-calculated trust scores for sellers and products with transparent explanations.</p>
-          </motion.div>
-        </div>
+                <div className="w-20 h-20 mb-6 flex items-center justify-center bg-[rgba(200,217,111,0.1)] rounded-xl">
+                  <div className="w-16 h-16">
+                    <Icon />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
+                <p className="text-sm text-[#9ca3af]">{body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Solutions Section */}
-      <section id="why-trustwala" className="py-[120px] px-16 bg-[#0a0f0d]">
+      <section id="why-trustwala" className="py-16 md:py-[120px] px-4 md:px-16 bg-[#0a0f0d]">
         <div className="max-w-[1440px] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-12"
-          >
-            <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">
-              SOLUTIONS
-            </div>
-            <h2 className="text-[48px] font-bold text-white">
-              TrustWala for your marketplace needs
-            </h2>
-          </motion.div>
-          
-          <div className="grid grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
-            >
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={100}
-                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
-              >
-                <AnimatedSVG
-                  duration={2000}
-                  delay={300}
-                  className="w-20 h-20"
-                >
-                  <OnlineShoppingSVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-              <h3 className="text-xl font-semibold text-white mb-2">Buyers</h3>
-              <p className="text-sm text-[#9ca3af]">Find verified products with AI recommendations and secure transactions</p>
-            </motion.div>
+          <div className="mb-12">
+            <div className="text-[11px] tracking-[0.1em] text-[#c8d96f] font-semibold uppercase mb-4">SOLUTIONS</div>
+            <h2 className="text-3xl md:text-[48px] font-bold text-white">TrustWala for your marketplace needs</h2>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
-            >
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={200}
-                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {[
+              {
+                title: "Buyers",
+                body: "Find verified products with AI recommendations and secure transactions",
+                Icon: OnlineShoppingSVG,
+              },
+              {
+                title: "Sellers",
+                body: "Build trust scores, get verified, and reach more customers",
+                Icon: BusinessDealSVG,
+              },
+              {
+                title: "Security",
+                body: "Listing fraud checks and escrow-ready checkout",
+                Icon: SecuritySVG,
+              },
+            ].map(({ title, body, Icon }) => (
+              <div
+                key={title}
+                className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
               >
-                <AnimatedSVG
-                  duration={2000}
-                  delay={400}
-                  className="w-20 h-20"
-                >
-                  <BusinessDealSVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-              <h3 className="text-xl font-semibold text-white mb-2">Sellers</h3>
-              <p className="text-sm text-[#9ca3af]">Build trust scores, get verified, and reach more customers</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="bg-[#111614] border border-[rgba(200,217,111,0.15)] rounded-2xl p-8 text-center"
-            >
-              <SpringAnimated
-                from={{ opacity: 0, scale: 0, rotate: -180 }}
-                to={{ opacity: 1, scale: 1, rotate: 0 }}
-                delay={300}
-                className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center"
-              >
-                <AnimatedSVG
-                  duration={2000}
-                  delay={500}
-                  className="w-20 h-20"
-                >
-                  <SecuritySVG />
-                </AnimatedSVG>
-              </SpringAnimated>
-              <h3 className="text-xl font-semibold text-white mb-2">Security</h3>
-              <p className="text-sm text-[#9ca3af]">Listing fraud checks and escrow-ready checkout</p>
-            </motion.div>
+                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[rgba(200,217,111,0.1)] flex items-center justify-center">
+                  <div className="w-20 h-20">
+                    <Icon />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
+                <p className="text-sm text-[#9ca3af]">{body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Bottom Feature Cards */}
-      <section className="py-[120px] px-16 max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-3 gap-8">
-          {/* Card A: AI-Powered */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
-          >
-            <SpringAnimated
-              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
-              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
-              delay={100}
-              className="absolute top-0 right-0 w-32 h-32"
-            >
-              <AnimatedSVG
-                duration={2000}
-                delay={200}
-                className="w-full h-full"
-              >
-                <AIIllustrationSVG />
-              </AnimatedSVG>
-            </SpringAnimated>
+      <section className="py-16 md:py-[120px] px-4 md:px-16 max-w-[1440px] mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          <div className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 md:p-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+              <AIIllustrationSVG />
+            </div>
             <Sparkles className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
-            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">AI-Powered Platform</h3>
-            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">AI helpers for listing checks, recommendations, and transparent trust scoring</p>
-          </motion.div>
-          
-          {/* Card B: Offline Support */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
-          >
-            <SpringAnimated
-              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
-              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
-              delay={200}
-              className="absolute top-0 right-0 w-32 h-32"
-            >
-              <AnimatedSVG
-                duration={2000}
-                delay={300}
-                className="w-full h-full"
-              >
-                <MobileAppsSVG />
-              </AnimatedSVG>
-            </SpringAnimated>
+            <h3 className="text-2xl md:text-[28px] font-semibold text-white mb-4 relative z-10">AI-Powered Platform</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">
+              AI helpers for listing checks, recommendations, and transparent trust scoring
+            </p>
+          </div>
+
+          <div className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 md:p-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+              <MobileAppsSVG />
+            </div>
             <Layers className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
-            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">Offline-First PWA</h3>
-            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Installable PWA with offline caching so browsing stays fast on flaky connections</p>
-          </motion.div>
-          
-          {/* Card C: Multilingual */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-10 relative overflow-hidden"
-          >
-            <SpringAnimated
-              from={{ opacity: 0, scale: 0.5, rotate: -90 }}
-              to={{ opacity: 0.1, scale: 1, rotate: 0 }}
-              delay={300}
-              className="absolute top-0 right-0 w-32 h-32"
-            >
-              <AnimatedSVG
-                duration={2000}
-                delay={400}
-                className="w-full h-full"
-              >
-                <TranslatorSVG />
-              </AnimatedSVG>
-            </SpringAnimated>
+            <h3 className="text-2xl md:text-[28px] font-semibold text-white mb-4 relative z-10">Offline-First PWA</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">
+              Installable PWA with offline caching so browsing stays fast on flaky connections
+            </p>
+          </div>
+
+          <div className="bg-[rgba(17,22,20,0.6)] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 md:p-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+              <TranslatorSVG />
+            </div>
             <Maximize2 className="w-8 h-8 text-[#c8d96f] mb-6 relative z-10" />
-            <h3 className="text-[28px] font-semibold text-white mb-4 relative z-10">Multilingual Support</h3>
-            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">Urdu/English voice search, RTL layout, and accessibility features</p>
-          </motion.div>
+            <h3 className="text-2xl md:text-[28px] font-semibold text-white mb-4 relative z-10">Multilingual Support</h3>
+            <p className="text-[15px] text-[#9ca3af] leading-[1.6] relative z-10">
+              Urdu/English voice search, RTL layout, and accessibility features
+            </p>
+          </div>
         </div>
       </section>
     </div>

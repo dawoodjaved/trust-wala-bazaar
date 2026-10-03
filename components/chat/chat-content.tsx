@@ -136,7 +136,7 @@ export function ChatContent({ conversationId }: ChatContentProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl h-[calc(100vh-8rem)] flex flex-col">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl h-[calc(100vh-8rem)] sm:h-[calc(100vh-9rem)] flex flex-col">
       {/* Header */}
       <Card className="mb-4">
         <CardHeader className="py-4">
@@ -165,7 +165,7 @@ export function ChatContent({ conversationId }: ChatContentProps) {
                 key={message.id}
                 className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
               >
-                <div className={`flex items-start space-x-2 max-w-[70%] ${isOwn ? "flex-row-reverse space-x-reverse" : ""}`}>
+                <div className={`flex items-start space-x-2 max-w-[85%] sm:max-w-[70%] ${isOwn ? "flex-row-reverse space-x-reverse" : ""}`}>
                   {!isOwn && (
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={message.sender.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"} />
