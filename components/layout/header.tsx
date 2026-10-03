@@ -109,7 +109,7 @@ export function Header() {
         {isSignedIn ? (
           <Link href="/profile">
             <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-[rgba(200,217,111,0.4)] hover:ring-[rgba(200,217,111,0.6)] transition-all">
-              <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+              <AvatarImage src={user?.imageUrl ?? undefined} alt={user?.fullName || "User"} />
               <AvatarFallback className="bg-[#c8d96f] text-[#0a0f0d] font-bold">
                 {user?.firstName?.[0] || user?.emailAddresses?.[0]?.emailAddress?.[0] || "U"}
               </AvatarFallback>

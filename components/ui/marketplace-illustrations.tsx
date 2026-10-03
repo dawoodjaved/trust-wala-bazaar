@@ -143,18 +143,6 @@ export const EmptySearchSVG = () => (
   </svg>
 );
 
-export const EmptySavedSVG = () => (
-  <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-    {/* Heart outline */}
-    <path d="M200 100 C200 80, 180 70, 170 80 C160 70, 140 80, 140 100 C140 120, 200 180, 200 180 C200 180, 260 120, 260 100 C260 80, 240 70, 230 80 C220 70, 200 80, 200 100 Z" 
-          fill="none" stroke="#c8d96f" strokeWidth="3" opacity="0.3"/>
-    {/* Plus sign */}
-    <circle cx="200" cy="150" r="25" fill="none" stroke="#c8d96f" strokeWidth="2" opacity="0.2"/>
-    <line x1="200" y1="140" x2="200" y2="160" stroke="#c8d96f" strokeWidth="2" opacity="0.3"/>
-    <line x1="190" y1="150" x2="210" y2="150" stroke="#c8d96f" strokeWidth="2" opacity="0.3"/>
-  </svg>
-);
-
 export const CreateListingSVG = () => (
   <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
     {/* Document/Form */}

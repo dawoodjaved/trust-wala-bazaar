@@ -2,14 +2,6 @@
 
 import { getApiBase } from "@/lib/api-base";
 
-export async function getAuthToken(): Promise<string | null> {
-  try {
-    return localStorage.getItem("token");
-  } catch {
-    return null;
-  }
-}
-
 export async function setAuthToken(token: string): Promise<void> {
   try {
     localStorage.setItem("token", token);

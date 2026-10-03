@@ -59,7 +59,7 @@ export function ProfileContent() {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={user?.imageUrl} />
+              <AvatarImage src={user?.imageUrl ?? undefined} />
               <AvatarFallback className="text-2xl">
                 {user?.firstName?.[0] || user?.emailAddresses?.[0]?.emailAddress?.[0] || "U"}
               </AvatarFallback>

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { User } from '@prisma/client';
+import type { NextResponse } from 'next/server';
 import { prisma } from './prisma';
 import { error } from './http';
 
@@ -48,7 +49,7 @@ export async function getUserFromRequest(request: Request): Promise<User | null>
   }
 }
 
-export async function requireUser(request: Request): Promise<User | Response> {
+export async function requireUser(request: Request): Promise<User | NextResponse> {
   const user = await getUserFromRequest(request);
   if (!user) {
     return error('Unauthorized', 401);

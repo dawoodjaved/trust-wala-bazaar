@@ -27,10 +27,6 @@ export class AiService {
     return this.usingGeminiFallback ? 'gemini-3-flash-preview' : 'gpt-4-vision-preview';
   }
 
-  private getEmbeddingModel(): string {
-    return this.usingGeminiFallback ? 'text-embedding-004' : 'text-embedding-3-small';
-  }
-
   async suggestPrice(productData: any): Promise<{ suggestedPrice: number; confidence: number }> {
     try {
       const prompt = `Analyze the fair market price for "${productData.title}" in Pakistan. 
@@ -75,65 +71,6 @@ Respond in JSON format: {"suggestedPrice": number, "confidence": number}`;
     const suggestedPrice = basePrice * 0.95;
     const confidence = 0.85;
     return { suggestedPrice, confidence };
-  }
-
-  async generateReviewSummary(reviews: any[]): Promise<{ pros: string[]; cons: string[]; summary: string }> {
-    if (!reviews || reviews.length === 0) {
-      return { pros: [], cons: [], summary: 'No reviews yet.' };
-    }
-
-    try {
-      const reviewsText = reviews
-        .map((r, i) => `Review ${i + 1}: Rating ${r.rating}/5 - ${r.content}`)
-        .join('\n\n');
-
-      const prompt = `Analyze these product reviews and extract:
-1. Pros (positive points) - as a JSON array of strings
-2. Cons (negative points) - as a JSON array of strings  
-3. Summary - a brief 2-3 sentence summary
-
-Reviews:
-${reviewsText}
-
-Respond in JSON format:
-{
-  "pros": ["pro1", "pro2"],
-  "cons": ["con1", "con2"],
-  "summary": "summary text"
-}`;
-
-      if (this.openai) {
-        const completion = await this.openai.chat.completions.create({
-          messages: [{ role: 'user', content: prompt }],
-          model: this.getTextModel(),
-          temperature: 0.3,
-        });
-
-        const response = completion.choices[0]?.message?.content || '';
-        try {
-          const parsed = JSON.parse(response);
-          return {
-            pros: Array.isArray(parsed.pros) ? parsed.pros : [],
-            cons: Array.isArray(parsed.cons) ? parsed.cons : [],
-            summary: parsed.summary || 'Overall positive reviews.',
-          };
-        } catch {
-          return {
-            pros: ['Great quality', 'Fast delivery'],
-            cons: ['Could be cheaper'],
-            summary: 'Overall positive reviews with minor concerns.',
-          };
-        }
-      }
-    } catch (error) {
-      console.error('Error in generateReviewSummary:', error);
-    }
-
-    return {
-      pros: ['Great quality', 'Fast delivery', 'Good value'],
-      cons: ['Could be cheaper', 'Limited warranty'],
-      summary: 'Overall positive reviews with minor concerns about pricing.',
-    };
   }
 
   async detectFraud(productData: any, sellerData: any): Promise<{ isFraud: boolean; riskScore: number; reasons: string[] }> {
@@ -277,25 +214,6 @@ Text to translate: "${text}"`;
     }
 
     return text;
-  }
-
-  async generateRecommendations(userId: string, preferences: any): Promise<any[]> {
-    return [];
-  }
-
-  async generateEmbedding(text: string): Promise<number[]> {
-    try {
-      if (this.openai) {
-        const response = await this.openai.embeddings.create({
-          model: this.getEmbeddingModel(),
-          input: text,
-        });
-        return response.data[0].embedding;
-      }
-    } catch (error) {
-      console.error('Error generating embedding:', error);
-    }
-    return [];
   }
 
   async analyzeImageForVisualSearch(imageUrl: string): Promise<{ labels: string[]; description: string }> {

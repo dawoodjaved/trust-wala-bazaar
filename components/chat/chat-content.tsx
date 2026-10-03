@@ -2,13 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-hook";
-import {
-  Send,
-  Mic,
-  Image as ImageIcon,
-  DollarSign,
-  MoreVertical,
-} from "lucide-react";
+import { Send, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -16,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Input as PriceInput } from "@/components/ui/input";
 import { getApiBase } from "@/lib/api-base";
 
 interface Message {
@@ -43,15 +36,11 @@ export function ChatContent({ conversationId }: ChatContentProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
   const [offerPrice, setOfferPrice] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [socket, setSocket] = useState<any>(null);
 
-  // HTTP polling by default (Nest Socket.io deprecated on pure Next.js)
   useEffect(() => {
-    let socketInstance: any = null;
     let pollInterval: NodeJS.Timeout | null = null;
 
     const pollMessages = async () => {
@@ -73,33 +62,10 @@ export function ChatContent({ conversationId }: ChatContentProps) {
       }
     };
 
-    const initializeChat = async () => {
-      const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
-      if (socketUrl) {
-        try {
-          const io = (await import("socket.io-client")).default;
-          socketInstance = io(socketUrl, { transports: ["websocket", "polling"] });
-          socketInstance.on("connect", () => {
-            socketInstance.emit("join-room", { conversationId });
-          });
-          socketInstance.on("message", (message: Message) => {
-            setMessages((prev) => [...prev, message]);
-          });
-          setSocket(socketInstance);
-          return;
-        } catch {
-          console.warn("Socket.io failed, using polling");
-        }
-      }
-
-      await pollMessages();
-      pollInterval = setInterval(pollMessages, 3000);
-    };
-
-    initializeChat();
+    pollMessages();
+    pollInterval = setInterval(pollMessages, 3000);
 
     return () => {
-      if (socketInstance) socketInstance.disconnect();
       if (pollInterval) clearInterval(pollInterval);
     };
   }, [conversationId]);
@@ -129,32 +95,21 @@ export function ChatContent({ conversationId }: ChatContentProps) {
     setMessages([...messages, newMessage]);
     setInput("");
 
-    // Send via Socket.io or API
-    if (socket) {
-      socket.emit('send-message', {
+    const apiUrl = getApiBase();
+    fetch(`${apiUrl}/api/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      },
+      body: JSON.stringify({
         conversationId,
-        type: 'TEXT',
         content,
-        senderId: user?.id,
-      });
-    } else {
-      // Fallback to API call
-      const apiUrl = getApiBase();
-      fetch(`${apiUrl}/api/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-        body: JSON.stringify({
-          conversationId,
-          content,
-          type: 'TEXT',
-        }),
-      }).catch(() => {
-        // Silently fail - message already added to UI
-      });
-    }
+        type: "TEXT",
+      }),
+    }).catch(() => {
+      // Message already shown in UI
+    });
   };
 
   const handleOffer = () => {
@@ -196,9 +151,6 @@ export function ChatContent({ conversationId }: ChatContentProps) {
                 <p className="text-xs text-muted-foreground">Online</p>
               </div>
             </div>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="h-5 w-5" />
-            </Button>
           </div>
         </CardHeader>
       </Card>
@@ -248,13 +200,6 @@ export function ChatContent({ conversationId }: ChatContentProps) {
               </div>
             );
           })}
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg px-4 py-2">
-                <p className="text-sm text-muted-foreground">Typing...</p>
-              </div>
-            </div>
-          )}
           <div ref={messagesEndRef} />
         </CardContent>
 
@@ -268,12 +213,6 @@ export function ChatContent({ conversationId }: ChatContentProps) {
               placeholder="Type your message..."
               className="flex-1"
             />
-            <Button variant="ghost" size="icon">
-              <ImageIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <Mic className="h-5 w-5" />
-            </Button>
             <Button variant="accent" size="icon" onClick={() => setShowOfferDialog(true)}>
               <DollarSign className="h-5 w-5" />
             </Button>
@@ -281,9 +220,6 @@ export function ChatContent({ conversationId }: ChatContentProps) {
               <Send className="h-5 w-5" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            AI can help translate, suggest offers, detect fraud
-          </p>
         </div>
       </Card>
 
@@ -299,7 +235,7 @@ export function ChatContent({ conversationId }: ChatContentProps) {
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium">Offer Price (PKR)</label>
-              <PriceInput
+              <Input
                 type="number"
                 value={offerPrice}
                 onChange={(e) => setOfferPrice(e.target.value)}

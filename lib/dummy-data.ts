@@ -125,15 +125,6 @@ export function getDeterministicDummyProducts(limit = 20): DummyProduct[] {
   return ALL_PRODUCTS.slice(0, Math.min(limit, ALL_PRODUCTS.length));
 }
 
-export function getDummyProductById(id: string): DummyProduct | null {
-  return ALL_PRODUCTS.find((p) => p.id === id) || null;
-}
-
-export function getDummyProductsByCategory(categoryId: string, limit?: number): DummyProduct[] {
-  const filtered = ALL_PRODUCTS.filter((p) => p.categoryId === categoryId);
-  return limit ? filtered.slice(0, limit) : filtered;
-}
-
 export function searchDummyProducts(query: string, limit?: number): DummyProduct[] {
   const lowerQuery = query.toLowerCase();
   const filtered = ALL_PRODUCTS.filter(

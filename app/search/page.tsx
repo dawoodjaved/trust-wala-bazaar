@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -11,7 +12,9 @@ export default function SearchPage() {
       <div className="flex pt-20">
         <Sidebar />
         <main className="flex-1 pb-20 lg:pb-4">
-          <SearchContent />
+          <Suspense fallback={<div className="p-6 text-sm text-muted-foreground">Loading search…</div>}>
+            <SearchContent />
+          </Suspense>
         </main>
       </div>
       <MobileNav />

@@ -367,63 +367,8 @@ export function CreateListingContent() {
           {currentStep === 2 && (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Add specifications based on your product category. AI can help auto-fill these.
+                Add specifications based on your product category.
               </p>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={async () => {
-                  if (!formData.title || !formData.description) {
-                    toast({
-                      title: "Missing Information",
-                      description: "Please fill in title and description first.",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  
-                  try {
-                    const token = localStorage.getItem('token');
-                    const response = await fetch(`${apiUrl}/api/ai/specifications`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-                      },
-                      body: JSON.stringify({
-                        title: formData.title,
-                        description: formData.description,
-                        category: formData.category,
-                      }),
-                    });
-
-                    if (response.ok) {
-                      const data = await response.json();
-                      setFormData({
-                        ...formData,
-                        specifications: data.specifications || {},
-                      });
-                      toast({
-                        title: "Specifications Generated",
-                        description: "AI has auto-filled the specifications.",
-                      });
-                    } else {
-                      throw new Error('AI service unavailable');
-                    }
-                  } catch (error) {
-                    console.warn('AI auto-fill error:', error);
-                    toast({
-                      title: "AI Service Unavailable",
-                      description: "Please fill in specifications manually. AI feature requires API keys to be configured.",
-                      variant: "destructive",
-                    });
-                  }
-                }}
-              >
-                <Sparkles className="mr-2 h-4 w-4" />
-                Auto-fill with AI
-              </Button>
-              {/* Dynamic form based on category would go here */}
               <div className="space-y-4">
                 <div>
                   <Label>Brand</Label>

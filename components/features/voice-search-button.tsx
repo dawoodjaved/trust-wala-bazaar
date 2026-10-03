@@ -8,36 +8,35 @@ import { cn } from "@/lib/utils";
 export function VoiceSearchButton() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "webkitSpeechRecognition" in window) {
-      const SpeechRecognition =
-        window.webkitSpeechRecognition || (window as any).SpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = "en-US";
+    if (typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      const SpeechRecognitionCtor =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognitionCtor();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = "en-US";
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const transcript = event.results[0][0].transcript;
-        setTranscript(transcript);
+      recognitionInstance.onresult = (event: SpeechRecognitionEventLike) => {
+        const nextTranscript = event.results[0][0].transcript;
+        setTranscript(nextTranscript);
         setIsListening(false);
-        // Navigate to search with transcript
-        if (transcript) {
-          window.location.href = `/search?q=${encodeURIComponent(transcript)}`;
+        if (nextTranscript) {
+          window.location.href = `/search?q=${encodeURIComponent(nextTranscript)}`;
         }
       };
 
-      recognition.onerror = () => {
+      recognitionInstance.onerror = () => {
         setIsListening(false);
       };
 
-      recognition.onend = () => {
+      recognitionInstance.onend = () => {
         setIsListening(false);
       };
 
-      setRecognition(recognition);
+      setRecognition(recognitionInstance);
     }
   }, []);
 
@@ -77,11 +76,27 @@ export function VoiceSearchButton() {
   );
 }
 
-// Extend Window interface for TypeScript
+type SpeechRecognitionLike = {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+};
+
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
 declare global {
   interface Window {
-    webkitSpeechRecognition: any;
-    SpeechRecognition: any;
+    webkitSpeechRecognition: SpeechRecognitionConstructor;
+    SpeechRecognition: SpeechRecognitionConstructor;
   }
 }
 

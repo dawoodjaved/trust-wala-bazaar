@@ -104,9 +104,6 @@ $RECYCLE.BIN/
 .nfs*
 
 # Prisma
-# Note: schema.prisma should be committed, but generated client should not
-# Uncomment if you generate Prisma client in a different location
-# /backend/prisma/generated/
 
 # Logs
 logs/
@@ -188,7 +185,6 @@ temp/
 **/public/worker-*.js.map
 
 # Local uploads
-backend/uploads/
 public/uploads/**
 !public/uploads/.gitkeep
 !public/uploads/images/.gitkeep

@@ -22,10 +22,3 @@ export function formatDate(date: Date | string): string {
   }).format(new Date(date));
 }
 
-export function formatDistance(distance: number): string {
-  if (distance < 1000) {
-    return `${Math.round(distance)}m`;
-  }
-  return `${(distance / 1000).toFixed(1)}km`;
-}
-
