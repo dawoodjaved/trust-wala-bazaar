@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useClerk, useUser, useSession } from "@clerk/nextjs";
 import { clearAuthToken, syncUserWithBackend } from "./auth-utils";
 
 export type AuthUser = {
@@ -70,14 +70,23 @@ function toPlainUser(user: {
 
 function ClerkAuthProvider({ children }: { children: ReactNode }) {
   const { user, isSignedIn, isLoaded } = useUser();
+  const { session } = useSession();
   const { signOut: clerkSignOut } = useClerk();
 
   const plainUser = useMemo(() => (user ? toPlainUser(user) : null), [user]);
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn || !plainUser) return;
-    syncUserWithBackend(plainUser).catch(() => undefined);
-  }, [isLoaded, isSignedIn, plainUser?.id]);
+    if (!isLoaded || !isSignedIn || !plainUser || !session) return;
+    let cancelled = false;
+    (async () => {
+      const clerkSessionToken = await session.getToken();
+      if (cancelled) return;
+      await syncUserWithBackend(plainUser, { clerkSessionToken }).catch(() => undefined);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoaded, isSignedIn, plainUser?.id, session]);
 
   const signOut = useCallback(async () => {
     await clearAuthToken();
@@ -151,9 +160,10 @@ export function useAuth() {
 }
 
 export function createDemoUser(email: string, name: string): AuthUser {
+  const demoId = `demo_${Date.now()}`;
   const demoUser: AuthUser = {
-    id: `demo_${Date.now()}`,
-    clerkId: `demo_${Date.now()}`,
+    id: demoId,
+    clerkId: demoId,
     email,
     emailAddresses: [{ emailAddress: email }],
     fullName: name,

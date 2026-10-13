@@ -18,29 +18,45 @@ export async function clearAuthToken(): Promise<void> {
   }
 }
 
-export async function syncUserWithBackend(user: {
-  id?: string;
-  clerkId?: string;
-  email?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
-  fullName?: string | null;
-  emailAddresses?: Array<{ emailAddress: string }>;
-}): Promise<void> {
+/**
+ * Sync identity with the API.
+ * When clerkSessionToken is set, the server verifies it and ignores client clerkId.
+ */
+export async function syncUserWithBackend(
+  user: {
+    id?: string;
+    clerkId?: string;
+    email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    fullName?: string | null;
+    emailAddresses?: Array<{ emailAddress: string }>;
+  },
+  options?: { clerkSessionToken?: string | null },
+): Promise<void> {
   try {
     const apiUrl = getApiBase();
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (options?.clerkSessionToken) {
+      headers.Authorization = `Bearer ${options.clerkSessionToken}`;
+    }
+
+    const body = options?.clerkSessionToken
+      ? {}
+      : {
+          clerkId: user.id || user.clerkId,
+          email: user.email || user.emailAddresses?.[0]?.emailAddress,
+          firstName: user.firstName || user.fullName?.split(" ")[0],
+          lastName: user.lastName || user.fullName?.split(" ").slice(1).join(" "),
+        };
 
     const response = await fetch(`${apiUrl}/api/auth/verify`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        clerkId: user.id || user.clerkId,
-        email: user.email || user.emailAddresses?.[0]?.emailAddress,
-        firstName: user.firstName || user.fullName?.split(" ")[0],
-        lastName: user.lastName || user.fullName?.split(" ").slice(1).join(" "),
-      }),
+      headers,
+      body: JSON.stringify(body),
     });
 
     if (response.ok) {

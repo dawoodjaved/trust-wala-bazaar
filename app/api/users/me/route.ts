@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/server/prisma";
 import { requireUser } from "@/lib/server/jwt";
 import { json, error } from "@/lib/server/http";
-import { recalculateTrustScoresForSeller } from "@/lib/server/trust-score";
 
 export async function GET(request: Request) {
   const auth = await requireUser(request);
@@ -55,7 +54,8 @@ export async function PUT(request: Request) {
   try {
     const dto = await request.json();
 
-    // Only allow safe profile fields — never mass-assign
+    // Privilege escalation fix: verification flags are server-only
+    // (see /api/users/me/verify/cnic and /verify/video).
     const data: Record<string, unknown> = {};
     const allowed = [
       "phone",
@@ -71,12 +71,6 @@ export async function PUT(request: Request) {
       "simpleMode",
       "highContrast",
       "fontSize",
-      "cnicNumber",
-      "cnicImage",
-      "cnicVerified",
-      "videoUrl",
-      "videoVerified",
-      "verificationStatus",
     ] as const;
 
     for (const key of allowed) {
@@ -98,13 +92,6 @@ export async function PUT(request: Request) {
         avatar: true,
       },
     });
-
-    if (dto.cnicVerified !== undefined || dto.videoVerified !== undefined) {
-      // Batched recalculation — one findMany + parallel updates (no N+1 finds)
-      void recalculateTrustScoresForSeller(prisma, auth.id).catch((err) => {
-        console.error("Error recalculating trust scores after verification update:", err);
-      });
-    }
 
     return json(updated);
   } catch (e) {

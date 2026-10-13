@@ -86,8 +86,8 @@ export function CNICUpload({ onVerified }: CNICUploadProps) {
       const uploadData = await uploadResponse.json();
       const imageUrl = uploadData.url;
 
-      // Extract CNIC data using AI
-      const extractResponse = await fetch(`${apiUrl}/api/ai/cnic-extract`, {
+      // Server-owned verification — never set cnicVerified from the client
+      const verifyResponse = await fetch(`${apiUrl}/api/users/me/verify/cnic`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,36 +96,17 @@ export function CNICUpload({ onVerified }: CNICUploadProps) {
         body: JSON.stringify({ imageUrl }),
       });
 
-      if (!extractResponse.ok) {
-        throw new Error("Failed to extract CNIC data");
+      if (!verifyResponse.ok) {
+        throw new Error("Failed to verify CNIC");
       }
 
-      const extractedData = await extractResponse.json();
+      const verifiedData = await verifyResponse.json();
 
-      // Update user profile with CNIC data
-      const updateResponse = await fetch(`${apiUrl}/api/users/me`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(authHeader ? { Authorization: authHeader } : {}),
-        },
-        body: JSON.stringify({
-          cnicImage: imageUrl,
-          cnicNumber: extractedData.cnicNumber,
-          cnicVerified: extractedData.valid || false,
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        throw new Error("Failed to update profile");
-      }
-
-      // Return verification result
       const result = {
-        verified: extractedData.valid || false,
-        cnicNumber: extractedData.cnicNumber,
-        name: extractedData.name,
-        dob: extractedData.dob,
+        verified: verifiedData.verified || false,
+        cnicNumber: verifiedData.cnicNumber,
+        name: verifiedData.name,
+        dob: verifiedData.dob,
       };
       
       setVerificationResult(result);

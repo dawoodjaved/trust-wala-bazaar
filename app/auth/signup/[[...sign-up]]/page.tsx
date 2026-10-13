@@ -25,6 +25,7 @@ export default function SignUpPage() {
   const handleDemoSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    void password;
 
     const demoUser = createDemoUser(email || "demo@example.com", name || "Demo User");
 
@@ -41,14 +42,25 @@ export default function SignUpPage() {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.access_token) {
-          await setAuthToken(data.access_token);
-        }
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        alert(
+          err.message ||
+            "Demo signup blocked. Set ALLOW_DEMO_AUTH=true in .env.local (local only).",
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.access_token) {
+        await setAuthToken(data.access_token);
       }
     } catch (error) {
-      console.warn("Backend not available, using demo mode:", error);
+      console.warn("Backend not available:", error);
+      alert("Could not reach auth API. Ensure the server is running and JWT_SECRET is set.");
+      setIsLoading(false);
+      return;
     }
 
     setIsLoading(false);
@@ -154,7 +166,7 @@ export default function SignUpPage() {
 
           <div className="p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-subtle)]">
             <p className="text-xs text-[var(--text-muted)] mb-2">
-              <strong>Demo Mode:</strong> Clerk authentication is not configured. This is a development signup.
+              <strong>Demo Mode:</strong> Requires ALLOW_DEMO_AUTH=true locally — blocked in production.
             </p>
           </div>
 

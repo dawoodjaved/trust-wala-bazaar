@@ -36,6 +36,13 @@ npm run dev           # http://localhost:3010
 
 Leave `NEXT_PUBLIC_API_URL` empty so the app uses same-origin `/api` routes.
 
+## Security (secrets)
+
+- Never commit `.env` / `.env.local`. Rotate any secret that was ever hardcoded or pushed to git history.
+- `JWT_SECRET` must be a strong random value (32+ characters). The old fallback `your-secret-key` is rejected.
+- Do not put API keys or `CLERK_SECRET_KEY` in `NEXT_PUBLIC_*` variables.
+- Demo auth (`ALLOW_DEMO_AUTH=true`) is for local development only and is blocked in production.
+
 ## License
 
 MIT

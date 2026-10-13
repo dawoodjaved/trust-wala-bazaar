@@ -44,8 +44,19 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    if (!body?.videoUrl) {
+    if (!body?.videoUrl || typeof body.videoUrl !== 'string') {
       return error('videoUrl is required', 400);
+    }
+
+    // Block arbitrary remote URLs (SSRF / content abuse)
+    try {
+      const parsed = new URL(body.videoUrl);
+      const origin = new URL(request.url).origin;
+      if (parsed.origin !== origin || !parsed.pathname.startsWith('/uploads/videos/')) {
+        return error('videoUrl must be an upload on this app', 400);
+      }
+    } catch {
+      return error('Invalid videoUrl', 400);
     }
 
     const user = await prisma.user.findUnique({

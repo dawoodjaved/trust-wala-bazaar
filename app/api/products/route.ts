@@ -97,8 +97,9 @@ export async function POST(request: Request) {
         videos: dto.videos || [],
         thumbnail: dto.thumbnail,
         specifications: dto.specifications,
-        ptaVerified: Boolean(dto.ptaVerified),
-        ptaStatus: dto.ptaStatus,
+        // Privilege escalation: PTA flags are server/admin-only
+        ptaVerified: false,
+        ptaStatus: undefined,
         slug,
         sellerId: auth.id,
         aiPriceSuggestion: aiPrice.suggestedPrice,

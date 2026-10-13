@@ -22,6 +22,7 @@ export default function LoginPage() {
   const handleDemoLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    void password; // UI only — demo auth does not verify passwords
 
     const demoUser = createDemoUser(email || "demo@example.com", "Demo User");
 
@@ -38,14 +39,25 @@ export default function LoginPage() {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.access_token) {
-          await setAuthToken(data.access_token);
-        }
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        alert(
+          err.message ||
+            "Demo login blocked. Set ALLOW_DEMO_AUTH=true in .env.local (local only).",
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.access_token) {
+        await setAuthToken(data.access_token);
       }
     } catch (error) {
-      console.warn("Backend not available, using demo mode:", error);
+      console.warn("Backend not available:", error);
+      alert("Could not reach auth API. Ensure the server is running and JWT_SECRET is set.");
+      setIsLoading(false);
+      return;
     }
 
     setIsLoading(false);
@@ -138,7 +150,7 @@ export default function LoginPage() {
 
           <div className="p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-subtle)]">
             <p className="text-xs text-[var(--text-muted)] mb-2">
-              <strong>Demo Mode:</strong> Clerk authentication is not configured. This is a development login.
+              <strong>Demo Mode:</strong> Requires ALLOW_DEMO_AUTH=true locally — blocked in production. Passwords are not verified.
             </p>
           </div>
 

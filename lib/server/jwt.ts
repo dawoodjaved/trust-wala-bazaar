@@ -3,8 +3,8 @@ import type { User } from '@prisma/client';
 import type { NextResponse } from 'next/server';
 import { prisma } from './prisma';
 import { error } from './http';
+import { getJwtSecret } from './env';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const JWT_EXPIRES_IN = '7d';
 
 export type AccessTokenPayload = {
@@ -19,11 +19,11 @@ export function signAccessToken(user: Pick<User, 'id' | 'email' | 'clerkId'>): s
     email: user.email,
     clerkId: user.clerkId,
   };
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: JWT_EXPIRES_IN });
 }
 
 export function verifyAccessToken(token: string): AccessTokenPayload {
-  return jwt.verify(token, JWT_SECRET) as AccessTokenPayload;
+  return jwt.verify(token, getJwtSecret()) as AccessTokenPayload;
 }
 
 function extractBearerToken(request: Request): string | null {

@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import { getClientIp } from './http';
+import { verifyAccessToken } from './jwt';
 
 type WindowEntry = {
   count: number;
@@ -31,19 +31,17 @@ export class TokenRateLimitService {
 
 const rateLimitService = new TokenRateLimitService();
 
+/** Prefer verified JWT subject; never trust jwt.decode (forgeable). */
 function clientKey(request: Request): string {
   const auth = request.headers.get('authorization');
   if (auth?.toLowerCase().startsWith('bearer ')) {
     const token = auth.slice(7).trim();
     if (token) {
       try {
-        const payload = jwt.decode(token) as { sub?: string; id?: string } | null;
-        const userId = payload?.sub || payload?.id;
-        if (userId) {
-          return `user:${userId}`;
-        }
+        const payload = verifyAccessToken(token);
+        if (payload.sub) return `user:${payload.sub}`;
       } catch {
-        // fall through to IP
+        // Invalid / non-app token — bucket by IP
       }
     }
   }
@@ -51,9 +49,6 @@ function clientKey(request: Request): string {
   return `ip:${getClientIp(request)}`;
 }
 
-/**
- * Returns a 429 NextResponse if limited; otherwise null (request allowed).
- */
 export function enforceRateLimit(
   request: Request,
   bucket: string,
@@ -67,7 +62,7 @@ export function enforceRateLimit(
     return NextResponse.json(
       {
         statusCode: 429,
-        message: `Too many AI requests. Try again in ${retryAfterSec} seconds.`,
+        message: `Too many requests. Try again in ${retryAfterSec} seconds.`,
         retryAfterSec,
       },
       {
