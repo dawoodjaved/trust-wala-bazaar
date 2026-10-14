@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { shouldEnableClerk } from "@/lib/clerk-config";
 
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const hasClerk = !!(publishableKey && publishableKey !== "pk_test_placeholder");
+const hasClerk = shouldEnableClerk();
 
 const publicMatchers = [
   "/",
@@ -36,6 +36,7 @@ function createClerkAuthMiddleware() {
     },
     {
       signInUrl: "/auth/login",
+      signUpUrl: "/auth/signup",
     },
   );
 }

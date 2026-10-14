@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { useClerk, useUser, useSession } from "@clerk/nextjs";
+import { shouldEnableClerk } from "@/lib/clerk-config";
 import { clearAuthToken, syncUserWithBackend } from "./auth-utils";
 
 export type AuthUser = {
@@ -37,8 +38,7 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
 });
 
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const hasClerk = !!(publishableKey && publishableKey !== "pk_test_placeholder");
+const hasClerk = shouldEnableClerk();
 
 function toPlainUser(user: {
   id: string;
@@ -159,8 +159,18 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+/** Stable id from email so repeat sign-ins map to the same DB user. */
+function emailAuthId(email: string): string {
+  const normalized = email.trim().toLowerCase();
+  let hash = 0;
+  for (let i = 0; i < normalized.length; i++) {
+    hash = (hash * 31 + normalized.charCodeAt(i)) >>> 0;
+  }
+  return `email_${hash.toString(16)}_${normalized.replace(/[^a-z0-9]/g, "").slice(0, 24)}`;
+}
+
 export function createDemoUser(email: string, name: string): AuthUser {
-  const demoId = `demo_${Date.now()}`;
+  const demoId = emailAuthId(email || "demo@example.com");
   const demoUser: AuthUser = {
     id: demoId,
     clerkId: demoId,

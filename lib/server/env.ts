@@ -1,5 +1,10 @@
 /** Secret / auth env helpers. Lazy so tooling can import without env present. */
 
+import {
+  isClerkDomainMisconfigured,
+  shouldEnableClerkServer,
+} from "@/lib/clerk-config";
+
 const WEAK_JWT_SECRETS = new Set([
   "",
   "your-secret-key",
@@ -28,13 +33,19 @@ export function isDemoAuthAllowed(): boolean {
   return process.env.ALLOW_DEMO_AUTH === "true";
 }
 
+/**
+ * Email/passwordless local form auth when Clerk cannot run (misconfigured
+ * vercel.app FAPI host, or explicit ALLOW_EMAIL_AUTH). Used by the login UI
+ * fallback so the marketplace stays usable.
+ */
+export function isEmailAuthAllowed(): boolean {
+  if (isDemoAuthAllowed()) return true;
+  if (process.env.ALLOW_EMAIL_AUTH === "true") return true;
+  // Automatic rescue when Clerk live keys point at an unusable vercel.app host
+  if (isClerkDomainMisconfigured()) return true;
+  return false;
+}
+
 export function hasClerkConfigured(): boolean {
-  const pk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const sk = process.env.CLERK_SECRET_KEY;
-  return !!(
-    pk &&
-    pk !== "pk_test_placeholder" &&
-    sk &&
-    sk !== "sk_test_placeholder"
-  );
+  return shouldEnableClerkServer();
 }

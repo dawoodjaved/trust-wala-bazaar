@@ -38,17 +38,17 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[rgba(10,15,13,0.9)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)]">
       <div className="h-16 md:h-20 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center gap-2 sm:gap-4">
-        <Link href="/" className="flex items-center gap-2 shrink-0 min-w-0">
+        <Link href="/" className="flex items-center gap-2 shrink-0 min-w-0" aria-label="TrustWala Bazaar home">
           <Image
             src="/brand/logo.png"
             alt="TrustWala Bazaar"
-            width={36}
-            height={36}
-            className="rounded-lg shrink-0"
+            width={44}
+            height={44}
+            className="rounded-xl shrink-0 h-9 w-9 sm:h-11 sm:w-11 object-cover"
             priority
           />
-          <span className="text-base sm:text-xl font-bold text-white truncate hidden sm:inline">
-            TrustWala
+          <span className="text-base sm:text-xl font-bold text-white truncate hidden sm:inline tracking-tight">
+            Trust<span className="text-[#c8d96f]">Wala</span>
           </span>
         </Link>
 

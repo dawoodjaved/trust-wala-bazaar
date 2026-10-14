@@ -3,7 +3,7 @@ import { prisma } from "@/lib/server/prisma";
 import { signAccessToken } from "@/lib/server/jwt";
 import { json, error } from "@/lib/server/http";
 import { enforceRateLimit } from "@/lib/server/rate-limit";
-import { hasClerkConfigured, isDemoAuthAllowed } from "@/lib/server/env";
+import { hasClerkConfigured, isEmailAuthAllowed } from "@/lib/server/env";
 
 type UpsertInput = {
   clerkId: string;
@@ -80,7 +80,7 @@ async function verifyClerkBearer(request: Request): Promise<UpsertInput | null> 
 
 export async function POST(request: Request) {
   // Login / token minting abuse
-  const limited = enforceRateLimit(request, "auth-verify", 5, 60);
+  const limited = enforceRateLimit(request, "auth-verify", 20, 60);
   if (limited) return limited;
 
   try {
@@ -90,9 +90,9 @@ export async function POST(request: Request) {
       return json(await upsertAndToken(fromClerk));
     }
 
-    if (!isDemoAuthAllowed()) {
+    if (!isEmailAuthAllowed()) {
       return error(
-        "Unauthorized. Configure Clerk, or set ALLOW_DEMO_AUTH=true for local demo only.",
+        "Unauthorized. Configure a working Clerk instance (not clerk.*.vercel.app), or set ALLOW_DEMO_AUTH / ALLOW_EMAIL_AUTH.",
         401,
       );
     }
@@ -101,11 +101,11 @@ export async function POST(request: Request) {
     const { clerkId, email, firstName, lastName } = body || {};
 
     if (!clerkId || !email || typeof clerkId !== "string" || typeof email !== "string") {
-      return error("clerkId and email are required for demo auth", 400);
+      return error("clerkId and email are required for email auth", 400);
     }
 
-    if (!clerkId.startsWith("demo_")) {
-      return error("Demo auth only accepts demo_ clerkId values", 400);
+    if (!clerkId.startsWith("demo_") && !clerkId.startsWith("email_")) {
+      return error("Email auth only accepts demo_ or email_ clerkId values", 400);
     }
 
     return json(

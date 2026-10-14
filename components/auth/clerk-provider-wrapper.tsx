@@ -2,13 +2,14 @@
 
 import { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { getClerkPublishableKey, shouldEnableClerk } from "@/lib/clerk-config";
 
 export function ClerkProviderWrapper({ children }: { children: ReactNode }) {
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-  if (!publishableKey || publishableKey === "pk_test_placeholder") {
+  if (!shouldEnableClerk()) {
     return <>{children}</>;
   }
+
+  const publishableKey = getClerkPublishableKey();
 
   return (
     <ClerkProvider

@@ -1,78 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { SignIn } from "@clerk/nextjs";
+import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { createDemoUser } from "@/lib/auth-hook";
-import { setAuthToken } from "@/lib/auth-utils";
-import { getApiBase } from "@/lib/api-base";
+import { EmailAuthForm } from "@/components/auth/email-auth-form";
+import { shouldEnableClerk } from "@/lib/clerk-config";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  if (!shouldEnableClerk()) {
+    return <EmailAuthForm mode="login" />;
+  }
 
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const hasClerk = !!(publishableKey && publishableKey !== "pk_test_placeholder");
-
-  const handleDemoLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    void password; // UI only — demo auth does not verify passwords
-
-    const demoUser = createDemoUser(email || "demo@example.com", "Demo User");
-
-    try {
-      const apiUrl = getApiBase();
-      const response = await fetch(`${apiUrl}/api/auth/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clerkId: demoUser.clerkId,
-          email: demoUser.emailAddresses[0].emailAddress,
-          firstName: demoUser.firstName,
-          lastName: demoUser.lastName,
-        }),
-      });
-
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        alert(
-          err.message ||
-            "Demo login blocked. Set ALLOW_DEMO_AUTH=true in .env.local (local only).",
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      const data = await response.json();
-      if (data.access_token) {
-        await setAuthToken(data.access_token);
-      }
-    } catch (error) {
-      console.warn("Backend not available:", error);
-      alert("Could not reach auth API. Ensure the server is running and JWT_SECRET is set.");
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(false);
-    window.location.href = "/home";
-  };
-
-  if (hasClerk) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4"
-        style={{
-          background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)",
-        }}
-      >
-        <Card className="w-full max-w-md border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4"
+      style={{
+        background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)",
+      }}
+    >
+      <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-center">
+          <Image
+            src="/brand/logo.png"
+            alt="TrustWala Bazaar"
+            width={120}
+            height={120}
+            className="rounded-2xl"
+            priority
+          />
+        </div>
+        <Card className="border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-[var(--text-primary)]">Welcome Back</CardTitle>
             <CardDescription className="text-[var(--text-secondary)]">
@@ -85,11 +43,10 @@ export default function LoginPage() {
               path="/auth/login"
               signUpUrl="/auth/signup"
               fallbackRedirectUrl="/home"
-              forceRedirectUrl="/home"
               appearance={{
                 elements: {
-                  rootBox: "mx-auto",
-                  card: "shadow-none",
+                  rootBox: "mx-auto w-full",
+                  card: "shadow-none bg-transparent",
                 },
               }}
             />
@@ -104,66 +61,6 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
-    );
-  }
-
-  return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-[#0a0f0d] p-4"
-      style={{
-        background: "radial-gradient(ellipse 800px 600px at center, #1a221e 0%, #0a0f0d 60%)",
-      }}
-    >
-      <Card className="w-full max-w-md border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your TrustWala Bazaar account</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleDemoLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
-
-          <div className="p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-subtle)]">
-            <p className="text-xs text-[var(--text-muted)] mb-2">
-              <strong>Demo Mode:</strong> Requires ALLOW_DEMO_AUTH=true locally — blocked in production. Passwords are not verified.
-            </p>
-          </div>
-
-          <div className="text-center text-sm">
-            <p className="text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="text-primary hover:underline">
-                Sign up
-              </Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
