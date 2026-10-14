@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IconKeycap } from "@/components/ui/icon-keycap";
 import { AnimatedSVG } from "@/components/ui/animated-svg";
 import { HelpSupportSVG } from "@/components/ui/marketplace-illustrations";
+import { BrandLogo } from "@/components/brand/brand-logo";
 
 export function HelpContent() {
   const faqs = [
@@ -39,13 +40,11 @@ export function HelpContent() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 text-center"
       >
-        <div className="relative mb-8">
-          <AnimatedSVG duration={2000} delay={200} className="w-32 h-32 mx-auto opacity-30">
+        <div className="relative mb-8 flex flex-col items-center gap-4">
+          <BrandLogo href={null} size="lg" showWordmark={false} />
+          <AnimatedSVG duration={2000} delay={200} className="w-32 h-32 mx-auto opacity-20">
             <HelpSupportSVG />
           </AnimatedSVG>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-[rgba(200,217,111,0.1)] border border-[rgba(200,217,111,0.2)] flex items-center justify-center shadow-[0_14px_40px_rgba(200,217,111,0.3)]">
-            <HelpCircle className="h-8 w-8 text-[#c8d96f]" />
-          </div>
         </div>
         <h1 className="text-4xl font-bold mb-2 text-[var(--text-primary)]">
           Help Center

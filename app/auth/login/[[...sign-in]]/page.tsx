@@ -2,9 +2,9 @@
 
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailAuthForm } from "@/components/auth/email-auth-form";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { shouldEnableClerk } from "@/lib/clerk-config";
 
 export default function LoginPage() {
@@ -21,14 +21,7 @@ export default function LoginPage() {
     >
       <div className="w-full max-w-md space-y-6">
         <div className="flex justify-center">
-          <Image
-            src="/brand/logo.png"
-            alt="TrustWala Bazaar"
-            width={120}
-            height={120}
-            className="rounded-2xl"
-            priority
-          />
+          <BrandLogo href="/" size="xl" showWordmark={false} priority />
         </div>
         <Card className="border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
           <CardHeader className="text-center">

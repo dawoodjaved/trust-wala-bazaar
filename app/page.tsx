@@ -11,24 +11,13 @@ import {
   MobileAppsSVG,
   TranslatorSVG,
 } from "@/components/ui/marketplace-illustrations";
+import { BrandLogo } from "@/components/brand/brand-logo";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0a0f0d] text-white overflow-x-hidden">
       <nav className="fixed top-0 left-0 right-0 z-50 h-16 md:h-20 bg-[rgba(10,15,13,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.08)] px-4 md:px-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 min-w-0" aria-label="TrustWala Bazaar">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/brand/logo.png"
-            alt="TrustWala Bazaar"
-            width={48}
-            height={48}
-            className="h-10 w-10 md:h-12 md:w-12 rounded-xl object-cover shrink-0"
-          />
-          <span className="text-lg md:text-2xl font-bold text-white tracking-tight truncate">
-            Trust<span className="text-[#c8d96f]">Wala</span> Bazaar
-          </span>
-        </Link>
+        <BrandLogo size="lg" showWordmark showBazaar priority />
         <div className="hidden md:flex items-center gap-8">
           <Link href="#about" className="text-[15px] text-[#e5e7eb] hover:text-[#c8d96f] transition-colors">
             About
@@ -284,6 +273,13 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-[rgba(255,255,255,0.08)] px-4 md:px-16 py-10">
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <BrandLogo size="md" showWordmark showBazaar />
+          <p className="text-sm text-[#9ca3af]">Pakistan&apos;s trusted AI marketplace</p>
+        </div>
+      </footer>
     </div>
   );
 }

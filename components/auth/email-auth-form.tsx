@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import { createDemoUser } from "@/lib/auth-hook";
 import { setAuthToken } from "@/lib/auth-utils";
 import { getApiBase } from "@/lib/api-base";
 import { isClerkDomainMisconfigured } from "@/lib/clerk-config";
+import { BrandLogo } from "@/components/brand/brand-logo";
 
 type Mode = "login" | "signup";
 
@@ -79,15 +79,8 @@ export function EmailAuthForm({ mode }: { mode: Mode }) {
     >
       <Card className="w-full max-w-md border-[rgba(200,217,111,0.15)] bg-[rgba(17,22,20,0.95)] backdrop-blur-[10px]">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto">
-            <Image
-              src="/brand/logo.png"
-              alt="TrustWala Bazaar"
-              width={120}
-              height={120}
-              className="rounded-2xl"
-              priority
-            />
+          <div className="mx-auto flex justify-center">
+            <BrandLogo href="/" size="xl" showWordmark={false} priority />
           </div>
           <CardTitle className="text-3xl text-[var(--text-primary)]">
             {isSignup ? "Create Account" : "Welcome Back"}

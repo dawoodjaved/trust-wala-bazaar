@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { BrandLogo } from "@/components/brand/brand-logo";
 
 const categories = [
   { name: "Mobiles", icon: Smartphone, href: "/categories/mobiles" },
@@ -47,6 +48,9 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-[rgba(255,255,255,0.08)] bg-[#0a0f0d] h-[calc(100vh-5rem)] sticky top-20 shrink-0 shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+      <div className="px-4 pt-4 pb-2 border-b border-[rgba(255,255,255,0.08)]">
+        <BrandLogo href="/home" size="sm" showWordmark showBazaar />
+      </div>
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         <Link href="/home">
           <Button
