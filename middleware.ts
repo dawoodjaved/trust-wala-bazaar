@@ -21,14 +21,14 @@ function createPassthroughMiddleware() {
 }
 
 function createClerkAuthMiddleware() {
-  // Clerk v5: `auth` is a function — call auth().protect(), not auth.protect()
+  // Clerk v6: auth() is async — await auth() inside clerkMiddleware
   const { clerkMiddleware, createRouteMatcher } = require("@clerk/nextjs/server") as typeof import("@clerk/nextjs/server");
   const isPublic = createRouteMatcher(publicMatchers);
 
   return clerkMiddleware(
-    (auth, req) => {
+    async (auth, req) => {
       if (!isPublic(req)) {
-        const { userId, redirectToSignIn } = auth();
+        const { userId, redirectToSignIn } = await auth();
         if (!userId) {
           return redirectToSignIn({ returnBackUrl: req.url });
         }
